@@ -16,9 +16,9 @@ Library kismina 3 adet kutuphane ekleyecegiz.Add ile tek tek sunlari ekleyin
   .google_play_services
 
 5) ve son olarak AndroidManifest icinde bulunan
-        <meta-data
+        
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyBI-Vyyh8nT4FH60hTRhKmuUkUkIf48l5A" />
+            android:value="AIzaSyBI-Vyyh8nT4FH60hTRhKmuUkUkIf48l5A"
             
     kismindaki API KEY i kendinize ozel olan API key ile degistirin. API-KEY almayi bilmiyorsaniz kadiranilturgut.com
     da anlatmistim :D:D 
