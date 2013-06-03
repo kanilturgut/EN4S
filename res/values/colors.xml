@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="background_window">#FFE5E5E5</color>
+   <color name="yellow1">#AAAAAA</color>
+   <color name="yellow2">#AAAAAA</color>
+   <color name="orange4">#F7BE45</color>
+   <color name="orange5">#F7D896</color>
+   <color name="blue2">#42a35a</color>
+   <color name="blue25">#42a35a</color>
+   <color name="grey05">#42a35a</color>
+   <color name="white1">#FFFFFF</color>
+   <color name="white2">#DDDDDD</color>
+   
+   <color name="upGreen">#42a35a</color>
+   <color name="downRed">#ca3838</color>
+
+</resources>
