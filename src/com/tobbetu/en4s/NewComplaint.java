@@ -1,7 +1,9 @@
-package com.example.tumsiniflar;
+package com.tobbetu.en4s;
 
 import java.util.List;
 import java.util.Locale;
+
+import com.example.tumsiniflar.R;
 
 import android.app.Activity;
 import android.content.Intent;

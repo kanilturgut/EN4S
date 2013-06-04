@@ -1,4 +1,4 @@
-package com.example.tumsiniflar;
+package com.tobbetu.en4s;
 
 import android.content.Context;
 import android.support.v4.view.ViewPager;

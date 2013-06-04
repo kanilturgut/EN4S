@@ -4,7 +4,9 @@ EN4S
 Yuklemek icin yapmaniz gerekenler
 
 1)libs klasoru icindeki libs.zip in icindekileri cikarin
+
 2)Android SDK Manageri calistirip, Extras kategorisinden Google Play services i yukleyin
+
 3)Simdi 3 adet kutuphaneyi Eclipse import edecegiz.
    libs.zip icinden cikan 2 kutuphaneyi, import edin
    <sdk klasorunuz>\extras\google\google_play_services i import edin.

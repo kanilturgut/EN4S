@@ -1,4 +1,4 @@
-package com.example.tumsiniflar;
+package com.tobbetu.en4s;
 
 import android.graphics.Point;
 import android.os.Build;
@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.astuetz.viewpager.extensions.PagerSlidingTabStrip;
 import com.astuetz.viewpager.extensions.PagerSlidingTabStrip.IconTabProvider;
+import com.example.tumsiniflar.R;
 
 public class QuickContactFragment extends DialogFragment {
 

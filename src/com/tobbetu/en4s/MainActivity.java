@@ -1,4 +1,4 @@
-package com.example.tumsiniflar;
+package com.tobbetu.en4s;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.astuetz.viewpager.extensions.PagerSlidingTabStrip;
+import com.example.tumsiniflar.R;
 
 
 public class MainActivity extends FragmentActivity {
