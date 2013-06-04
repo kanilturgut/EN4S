@@ -3,8 +3,6 @@ package com.tobbetu.en4s;
 import java.util.List;
 import java.util.Locale;
 
-import com.example.tumsiniflar.R;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -22,6 +20,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.tumsiniflar.R;
+
 public class NewComplaint extends Activity implements OnClickListener{
 
 	private Button bTakePic, bPush;
@@ -37,12 +37,14 @@ public class NewComplaint extends Activity implements OnClickListener{
 	private Bitmap bmp = null;
 
 	private Complaint newComplaint = null;
+	
+	private String TAG = "NewComplaint";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_new_complaint);
-		
+
 		tvLat = (TextView) findViewById(R.id.tvLatitude);
 		tvLong = (TextView) findViewById(R.id.tvLongitude);
 
@@ -105,7 +107,16 @@ public class NewComplaint extends Activity implements OnClickListener{
 
 			//simdi butun bilgileri toplayip, server a push edelim.
 
-			//			newComplaint = new Complaint(title, date, address)
+			newComplaint = new Complaint(etComplaintTitle.getText().toString(),
+					"today", 
+					str);
+			
+			String reporter = LoginPageActivity.loginPreferences.getString("username", "unknown");
+			Log.e(TAG, "reporter : " + reporter);
+			
+			newComplaint.setCategory("Kategori");
+			newComplaint.setLatitude(latitude);
+			newComplaint.setLongitude(longitude);
 
 		}
 
@@ -139,7 +150,7 @@ public class NewComplaint extends Activity implements OnClickListener{
 			longitude = loc.getLongitude();
 
 			Log.e("loc", loc.getLatitude() + "," + loc.getLongitude());
-			
+
 			if(loc != null) {
 
 				tvLat.setText("your latitude is " + latitude);

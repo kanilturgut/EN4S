@@ -190,7 +190,7 @@ public class MainActivity extends FragmentActivity {
 
 		@Override
 		public Fragment getItem(int position) {
-			return SuperAwesomeCardFragment.newInstance(position);
+			return TabCreator.newInstance(position);
 		}
 
 	}

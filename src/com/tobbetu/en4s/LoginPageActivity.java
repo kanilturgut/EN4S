@@ -20,7 +20,7 @@ public class LoginPageActivity extends Activity {
 	private EditText etUsername, etPassword;
 	
 	private String sharedFileName = "loginInfo";
-	private SharedPreferences loginPreferences;
+	protected static SharedPreferences loginPreferences;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
