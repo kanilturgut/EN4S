@@ -19,12 +19,14 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.example.tumsiniflar.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class NewComplaint extends Activity implements OnClickListener{
@@ -32,8 +34,10 @@ public class NewComplaint extends Activity implements OnClickListener{
 	private Button bPush;
 	private ImageButton bTakePic;
 	private EditText etComplaintTitle;
+	private TextView tvNewComplaintAdress;
 
 	private GoogleMap myMap;
+	private Marker place = null;
 	private LocationManager lManager = null;
 	private double latitude = 0;
 	private double longitude = 0;
@@ -51,7 +55,8 @@ public class NewComplaint extends Activity implements OnClickListener{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_new_complaint);
 
-	//	etComplaintTitle = (EditText) findViewById(R.id.etComplaint);
+		etComplaintTitle = (EditText) findViewById(R.id.etNewComplaint);
+		tvNewComplaintAdress = (TextView) findViewById(R.id.tvNewComplaintAdress);
 
 		bTakePic = (ImageButton) findViewById(R.id.bTakePhoto);
 		bPush = (Button) findViewById(R.id.bPush);
@@ -83,24 +88,6 @@ public class NewComplaint extends Activity implements OnClickListener{
 			Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 			startActivityForResult(cameraIntent, 0);
 		} else {
-
-			/*Once kullanicinin adresini alalim*/
-			Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
-
-			try {
-				List<Address> addresses = gcd.getFromLocation(latitude, longitude, 1);
-
-				if (addresses.size() > 0)  {
-
-					Log.e("deneme", "3");
-					for (int i=0; i<addresses.get(0).getMaxAddressLineIndex();i++) {
-
-						fullAddress += addresses.get(0).getAddressLine(i) + ",";
-					}
-				}
-			} catch(Exception e) {
-				Log.e("exception", e.getMessage());
-			}
 
 			//simdi butun bilgileri toplayip, server a push edelim.
 
@@ -148,8 +135,27 @@ public class NewComplaint extends Activity implements OnClickListener{
 			
 			LatLng position = new LatLng(loc.getLatitude(), loc.getLongitude());
 			
-			myMap.addMarker(new MarkerOptions().position(position));
-			myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 15));
+			if (place != null) //surekli yeni marker eklememek icin..
+				place.remove();
+			
+			place = myMap.addMarker(new MarkerOptions().position(position)); //konuma marker koyar
+			myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 15)); //konumu haritada ortalayip, zoom yapar
+			
+			Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
+			try {
+				List<Address> addresses = gcd.getFromLocation(latitude, longitude, 1);
+
+				if (addresses.size() > 0)  {
+					for (int i=0; i<addresses.get(0).getMaxAddressLineIndex();i++) {
+						fullAddress += addresses.get(0).getAddressLine(i) + ",";
+					}
+					
+					tvNewComplaintAdress.setText(fullAddress);	
+					fullAddress = ""; //yeni bilgi geldiginde adresler arka arkaya eklenmemeli.
+				}
+			} catch(Exception e) {
+				Log.e("exception", e.getMessage());
+			}
 			
 		}
 
