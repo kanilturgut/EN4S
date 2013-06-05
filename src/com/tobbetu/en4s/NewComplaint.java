@@ -16,9 +16,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.tumsiniflar.R;
@@ -33,8 +38,10 @@ public class NewComplaint extends Activity implements OnClickListener{
 
 	private Button bPush;
 	private ImageButton bTakePic;
+	private ImageView ivTakenPhoto;
 	private EditText etComplaintTitle;
 	private TextView tvNewComplaintAdress;
+	private Spinner categoriesSpinner;
 
 	private GoogleMap myMap;
 	private Marker place = null;
@@ -47,6 +54,7 @@ public class NewComplaint extends Activity implements OnClickListener{
 	private Bitmap bmp = null;
 
 	private Complaint newComplaint = null;
+	private String category;
 	
 	private String TAG = "NewComplaint";
 
@@ -54,10 +62,11 @@ public class NewComplaint extends Activity implements OnClickListener{
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_new_complaint);
+		getActionBar().hide();
 
 		etComplaintTitle = (EditText) findViewById(R.id.etNewComplaint);
 		tvNewComplaintAdress = (TextView) findViewById(R.id.tvNewComplaintAdress);
-
+		ivTakenPhoto = (ImageView) findViewById(R.id.ivTakenPhoto);
 		bTakePic = (ImageButton) findViewById(R.id.bTakePhoto);
 		bPush = (Button) findViewById(R.id.bPush);
 
@@ -71,6 +80,26 @@ public class NewComplaint extends Activity implements OnClickListener{
 		
 		myMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.mapNewComplaint)).getMap();		
 		myMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+		
+		categoriesSpinner = (Spinner) findViewById(R.id.spinnerNewComplaintCategory);
+		ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this,
+				R.array.categories, 
+				android.R.layout.simple_spinner_item);
+		spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		categoriesSpinner.setAdapter(spinnerAdapter);
+		categoriesSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				category = arg0.getItemAtPosition(arg2).toString();				
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				category = "All"; //default category				
+			}
+		});
 
 	}
 
@@ -121,6 +150,18 @@ public class NewComplaint extends Activity implements OnClickListener{
 
 			img.setImageByteArray(buffer);
 			img.setBmp(bmp);
+			
+			int height = bmp.getHeight();
+			int width = bmp.getWidth();
+			
+			Log.e(TAG, "height : " + height + ", width : " + width);
+			
+			bTakePic.setVisibility(View.GONE);
+			ivTakenPhoto.setVisibility(View.VISIBLE);
+			ivTakenPhoto.getLayoutParams().height = height*3;
+			ivTakenPhoto.getLayoutParams().width = width*3;
+			ivTakenPhoto.setImageBitmap(bmp);
+			
 		}
 
 	}

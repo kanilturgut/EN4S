@@ -24,6 +24,15 @@
             android:background="@drawable/camera"
             android:contentDescription="@string/photoDescription" />
 
+        <ImageView
+            android:id="@+id/ivTakenPhoto"
+            android:contentDescription="@string/photoDescription"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone"
+            android:src="@android:drawable/btn_minus" />
+
         <View
             android:layout_width="fill_parent"
             android:layout_height="2dp"
@@ -35,7 +44,7 @@
             android:id="@+id/newComplaintTitleLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="horizontal" >
 
             <TextView
                 android:id="@+id/textView1"
@@ -65,7 +74,7 @@
             android:id="@+id/categoryLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
+            android:orientation="horizontal" >
 
             <TextView
                 android:id="@+id/tvCategories"
@@ -76,7 +85,7 @@
                 android:textStyle="bold" />
 
             <Spinner
-                android:id="@+id/spinner1"
+                android:id="@+id/spinnerNewComplaintCategory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
         </LinearLayout>
