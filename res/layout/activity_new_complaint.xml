@@ -1,5 +1,6 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ScrollView1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingBottom="@dimen/activity_vertical_margin"
@@ -8,62 +9,83 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".NewComplaint" >
 
-    <Button
-        android:id="@+id/bTakePhoto"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/newComplaintMainLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="33dp"
-        android:text="Foto" />
+        android:layout_margin="5dp"
+        android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/tvLongitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/tvLatitude"
-        android:layout_below="@+id/tvLatitude"
-        android:layout_marginTop="28dp"
-        android:text="longitude" />
+        <ImageButton
+            android:id="@+id/bTakePhoto"
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:layout_gravity="center"
+            android:background="@drawable/camera"
+            android:contentDescription="@string/photoDescription" />
 
-    <TextView
-        android:id="@+id/tvLatitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/bTakePhoto"
-        android:layout_marginTop="60dp"
-        android:layout_toLeftOf="@+id/bTakePhoto"
-        android:text="latitude" />
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="15dp"
+            android:background="#AAAAAA" />
 
-    <TextView
-        android:id="@+id/textView34"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/tvLongitude"
-        android:layout_below="@+id/tvLongitude"
-        android:layout_marginTop="42dp"
-        android:text="Şikayet" />
+        <LinearLayout
+            android:id="@+id/newComplaintTitleLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
 
-    <EditText
-        android:id="@+id/etComplaint"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/textView34"
-        android:layout_alignBottom="@+id/textView34"
-        android:layout_alignLeft="@+id/bTakePhoto"
-        android:layout_marginLeft="30dp"
-        android:ems="10" >
+            <TextView
+                android:id="@+id/textView1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cName"
+                android:textSize="15sp"
+                android:textStyle="bold" />
 
-        <requestFocus />
-    </EditText>
+            <Spinner
+                android:id="@+id/spinner1"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+        </LinearLayout>
 
-    <Button
-        android:id="@+id/bPush"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="58dp"
-        android:text="Şikayeti İlet" />
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="15dp"
+            android:background="#AAAAAA" />
 
-</RelativeLayout>
+        <LinearLayout
+            android:id="@+id/newComplaintMapLayout"
+            android:layout_width="match_parent"
+            android:layout_height="475dp"
+            android:layout_margin="10dp"
+            android:background="#FFFFFF"
+            android:orientation="vertical" >
+
+            <fragment
+                android:id="@+id/mapNewComplaint"
+                android:layout_width="wrap_content"
+                android:layout_height="400dp"
+                class="com.google.android.gms.maps.MapFragment" />
+
+            <TextView
+                android:id="@+id/tvNewComplaintAdress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/adressName" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/bPush"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/sendButton" />
+
+    </LinearLayout>
+
+</ScrollView>

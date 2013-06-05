@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scroller"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
@@ -66,7 +67,8 @@
                     android:background="@drawable/up_button_style"
                     android:text="@string/voteUp"
                     android:textColor="#FFFFFF"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="ButtonStyle" />
 
                 <Button
                     android:id="@+id/button2"
@@ -77,7 +79,9 @@
                     android:background="@drawable/down_button_style"
                     android:text="@string/voteDown"
                     android:textColor="#FFFFFF"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    tools:ignore="ButtonStyle" />
+
             </LinearLayout>
 
             <View
@@ -98,6 +102,7 @@
 
                 <ImageView
                     android:id="@+id/ivAvatar"
+                    android:contentDescription="@string/photoDescription"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
@@ -145,6 +150,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="400dp"
                 class="com.google.android.gms.maps.MapFragment" />
+
+            <TextView
+                android:id="@+id/tvComplaintAdress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/adressName" />
         </LinearLayout>
     </LinearLayout>
 

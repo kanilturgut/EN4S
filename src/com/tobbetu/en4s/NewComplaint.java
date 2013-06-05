@@ -18,20 +18,26 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
+import android.widget.ImageButton;
 
 import com.example.tumsiniflar.R;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public class NewComplaint extends Activity implements OnClickListener{
 
-	private Button bTakePic, bPush;
+	private Button bPush;
+	private ImageButton bTakePic;
 	private EditText etComplaintTitle;
 
-	private TextView tvLat, tvLong;
-
+	private GoogleMap myMap;
 	private LocationManager lManager = null;
 	private double latitude = 0;
 	private double longitude = 0;
+	private String fullAddress = "";
 
 	private Image img = null;
 	private Bitmap bmp = null;
@@ -45,12 +51,9 @@ public class NewComplaint extends Activity implements OnClickListener{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_new_complaint);
 
-		tvLat = (TextView) findViewById(R.id.tvLatitude);
-		tvLong = (TextView) findViewById(R.id.tvLongitude);
+	//	etComplaintTitle = (EditText) findViewById(R.id.etComplaint);
 
-		etComplaintTitle = (EditText) findViewById(R.id.etComplaint);
-
-		bTakePic = (Button) findViewById(R.id.bTakePhoto);
+		bTakePic = (ImageButton) findViewById(R.id.bTakePhoto);
 		bPush = (Button) findViewById(R.id.bPush);
 
 		bTakePic.setOnClickListener(this);
@@ -60,6 +63,9 @@ public class NewComplaint extends Activity implements OnClickListener{
 		LocationListener mlocListener = new MyLocationListener();
 		lManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,
 				mlocListener);
+		
+		myMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.mapNewComplaint)).getMap();		
+		myMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
 	}
 
@@ -79,27 +85,18 @@ public class NewComplaint extends Activity implements OnClickListener{
 		} else {
 
 			/*Once kullanicinin adresini alalim*/
-			String str = "";
-
 			Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
-			//
-			try {
-				Log.e("deneme", "1");
-				List<Address> addresses = gcd.getFromLocation(latitude, longitude, 1);
 
-				Log.e("deneme", "2");
+			try {
+				List<Address> addresses = gcd.getFromLocation(latitude, longitude, 1);
 
 				if (addresses.size() > 0)  {
 
 					Log.e("deneme", "3");
 					for (int i=0; i<addresses.get(0).getMaxAddressLineIndex();i++) {
 
-						str += addresses.get(0).getAddressLine(i) + ",";
-
+						fullAddress += addresses.get(0).getAddressLine(i) + ",";
 					}
-
-					Log.e("adres", str);
-
 				}
 			} catch(Exception e) {
 				Log.e("exception", e.getMessage());
@@ -109,7 +106,7 @@ public class NewComplaint extends Activity implements OnClickListener{
 
 			newComplaint = new Complaint(etComplaintTitle.getText().toString(),
 					"today", 
-					str);
+					fullAddress);
 			
 			String reporter = LoginPageActivity.loginPreferences.getString("username", "unknown");
 			Log.e(TAG, "reporter : " + reporter);
@@ -148,15 +145,12 @@ public class NewComplaint extends Activity implements OnClickListener{
 
 			latitude = loc.getLatitude();
 			longitude = loc.getLongitude();
-
-			Log.e("loc", loc.getLatitude() + "," + loc.getLongitude());
-
-			if(loc != null) {
-
-				tvLat.setText("your latitude is " + latitude);
-				tvLong.setText("your longitude is " + longitude);
-			}
-
+			
+			LatLng position = new LatLng(loc.getLatitude(), loc.getLongitude());
+			
+			myMap.addMarker(new MarkerOptions().position(position));
+			myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 15));
+			
 		}
 
 		@Override
