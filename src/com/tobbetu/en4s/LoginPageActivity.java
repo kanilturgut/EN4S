@@ -3,6 +3,9 @@ package com.tobbetu.en4s;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -20,22 +23,27 @@ public class LoginPageActivity extends Activity {
 	private String sharedFileName = "loginInfo";
 	protected static SharedPreferences loginPreferences;
 	
+	private LocationManager lManager = null;
+	private double latitude = 0;
+	private double longitude = 0;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 //		startService(new Intent(this, EN4SService.class));
 		
+		lManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+		LocationListener mlocListener = new LoginPageLocationListener();
+		lManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,
+				mlocListener);
+		
+		
 		//Burada sessionID ile HTTP POST yapilacak, olumlu donerse giris olacak
 		//olumsuz donerse kullanici adi ve sifre ile yeni bir baglanti gerceklestirilecek ve 
 		//yeni sessionID guncellenecek.
 		
-		loginPreferences = getSharedPreferences(sharedFileName, MODE_PRIVATE);
-		if(loginPreferences.getAll().size() != 0){
-			Log.e("Login", "1");
-			Intent i = new Intent(LoginPageActivity.this, MainActivity.class);
-			startActivity(i);
-		}
+
 		
 		setContentView(R.layout.activity_login_page);
 		getActionBar().hide();
@@ -69,6 +77,8 @@ public class LoginPageActivity extends Activity {
 				
 				//unique bir kullanici mi ?
 				Intent i = new Intent(LoginPageActivity.this, MainActivity.class);
+				i.putExtra("latitude", latitude);
+				i.putExtra("longitude", longitude);
 				startActivity(i);
 			}
 		}
@@ -84,6 +94,45 @@ public class LoginPageActivity extends Activity {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.login_page, menu);
 		return true;
+	}
+	
+	class LoginPageLocationListener implements LocationListener {
+
+		@Override
+		public void onLocationChanged(Location arg0) {
+			
+			latitude = arg0.getLatitude();
+			longitude = arg0.getLongitude();		
+			
+			loginPreferences = getSharedPreferences(sharedFileName, MODE_PRIVATE);
+			if(loginPreferences.getAll().size() != 0){
+				Log.e("Login", "1");
+				Intent i = new Intent(LoginPageActivity.this, MainActivity.class);
+				i.putExtra("latitude", latitude);
+				i.putExtra("longitude", longitude);
+				startActivity(i);
+			}
+			
+		}
+
+		@Override
+		public void onProviderDisabled(String arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onProviderEnabled(String arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+			// TODO Auto-generated method stub
+			
+		}
+		
 	}
 
 }

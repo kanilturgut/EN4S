@@ -22,6 +22,7 @@ import java.util.List;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,6 +42,10 @@ public class TabCreator extends Fragment {
     private static final String ARG_POSITION = "position";
     private ListView bugList = null;
     private int position;
+    private String TAG = "TabCreator";
+
+	private double latitude = 0;
+	private double longitude = 0;
 
     public static TabCreator newInstance(int position) {
         TabCreator f = new TabCreator();
@@ -54,6 +59,11 @@ public class TabCreator extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        latitude = getActivity().getIntent().getDoubleExtra("latitude", 0);
+        longitude = getActivity().getIntent().getDoubleExtra("longitude", 0);
+        
+        Log.e(TAG, "latitude : " + latitude + ", longitude : " + longitude);
+        
         position = getArguments().getInt(ARG_POSITION);
     }
 
@@ -92,8 +102,7 @@ public class TabCreator extends Fragment {
                 @Override
                 public List<Complaint> getContent() {
                     try {
-                        // TODO kanil will implement there
-                        return Complaint.getNearList(0, 0);
+                        return Complaint.getNearList(latitude, longitude);
                     } catch (IOException e) {
                         e.printStackTrace();
                         return null;
