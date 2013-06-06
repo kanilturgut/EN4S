@@ -17,12 +17,19 @@ package com.tobbetu.en4s;
 
 
 import com.example.tumsiniflar.R;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.tobbetu.en4s.NewComplaint.MyLocationListener;
 
 import uk.co.senab.photoview.PhotoView;
 import uk.co.senab.photoview.PhotoViewAttacher.OnPhotoTapListener;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -31,11 +38,20 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 @SuppressLint("NewApi")
 public class DetailsActivity extends Activity {
 
+	
+	private TextView tvComplaintAdress;
+	
 	private ViewPager mViewPager;
+	
+	private Utils util = null;
+	
+	private GoogleMap myMap;
+
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -44,12 +60,31 @@ public class DetailsActivity extends Activity {
 		setContentView(R.layout.details_layout);
 		getActionBar().hide();
 		
-		mViewPager = new HackyViewPager(this);
+		util = new Utils();
 		
+		tvComplaintAdress = (TextView) findViewById(R.id.tvComplaintAdress);
+		
+		mViewPager = new HackyViewPager(this);		
 		LinearLayout linearLayout = (LinearLayout) findViewById(R.id.viewPagerLayout);
-		linearLayout.addView(mViewPager);
-			
+		linearLayout.addView(mViewPager);		
 		mViewPager.setAdapter(new SamplePagerAdapter());
+			
+		myMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.mapDetails)).getMap();		
+		myMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+		
+		/*Cakma adresi yaratiyorum*/
+				
+		// Burada AsyncTask ile serverdan sorun bilgisi alinip, butun bilgiler set edilecek
+		double cakmaLat = 39.212312;
+		double cakmaLong = 32.123412;
+		
+		LatLng cakmaPos = new LatLng(cakmaLat, cakmaLong);
+		util.addAMarker(myMap, cakmaPos);
+		util.centerAndZomm(myMap, cakmaPos, 15);
+		tvComplaintAdress.setText(util.getAddress(getBaseContext(), cakmaPos));
+		
+		/*Cakma adres yaratma biter*/
+		
 	}
 
 	class SamplePagerAdapter extends PagerAdapter {
@@ -104,5 +139,4 @@ public class DetailsActivity extends Activity {
 		}
 
 	}
-
 }
