@@ -2,8 +2,6 @@ package com.tobbetu.en4s;
 
 import java.util.ArrayList;
 
-import com.example.tumsiniflar.R;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;

@@ -1,5 +1,6 @@
 package com.tobbetu.en4s;
 
+import android.annotation.SuppressLint;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,7 +18,6 @@ import android.widget.TextView;
 
 import com.astuetz.viewpager.extensions.PagerSlidingTabStrip;
 import com.astuetz.viewpager.extensions.PagerSlidingTabStrip.IconTabProvider;
-import com.example.tumsiniflar.R;
 
 public class QuickContactFragment extends DialogFragment {
 
@@ -51,6 +51,7 @@ public class QuickContactFragment extends DialogFragment {
 		return root;
 	}
 
+	@SuppressLint("NewApi")
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onStart() {

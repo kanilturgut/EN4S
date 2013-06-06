@@ -1,7 +1,5 @@
 package com.tobbetu.en4s;
 
-import com.example.tumsiniflar.R;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;

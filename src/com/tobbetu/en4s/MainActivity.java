@@ -21,7 +21,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.astuetz.viewpager.extensions.PagerSlidingTabStrip;
-import com.example.tumsiniflar.R;
 
 
 public class MainActivity extends FragmentActivity {
