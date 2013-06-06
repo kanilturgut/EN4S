@@ -1,13 +1,8 @@
 package com.tobbetu.en4s;
 
-import java.util.List;
-import java.util.Locale;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -27,12 +22,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.tumsiniflar.R;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 public class NewComplaint extends Activity implements OnClickListener{
 
@@ -43,8 +35,10 @@ public class NewComplaint extends Activity implements OnClickListener{
 	private TextView tvNewComplaintAdress;
 	private Spinner categoriesSpinner;
 
+	private Utils util = null;
+	
 	private GoogleMap myMap;
-	private Marker place = null;
+//	private Marker place = null;
 	private LocationManager lManager = null;
 	private double latitude = 0;
 	private double longitude = 0;
@@ -64,6 +58,8 @@ public class NewComplaint extends Activity implements OnClickListener{
 		setContentView(R.layout.activity_new_complaint);
 		getActionBar().hide();
 
+		util = new Utils();
+		
 		etComplaintTitle = (EditText) findViewById(R.id.etNewComplaint);
 		tvNewComplaintAdress = (TextView) findViewById(R.id.tvNewComplaintAdress);
 		ivTakenPhoto = (ImageView) findViewById(R.id.ivTakenPhoto);
@@ -127,7 +123,7 @@ public class NewComplaint extends Activity implements OnClickListener{
 			String reporter = LoginPageActivity.loginPreferences.getString("username", "unknown");
 			Log.e(TAG, "reporter : " + reporter);
 			
-			newComplaint.setCategory("Kategori");
+			newComplaint.setCategory(category);
 			newComplaint.setLatitude(latitude);
 			newComplaint.setLongitude(longitude);
 
@@ -176,27 +172,34 @@ public class NewComplaint extends Activity implements OnClickListener{
 			
 			LatLng position = new LatLng(loc.getLatitude(), loc.getLongitude());
 			
-			if (place != null) //surekli yeni marker eklememek icin..
-				place.remove();
+//			if (place != null) //surekli yeni marker eklememek icin..
+//				place.remove();
+//			
+//			place = myMap.addMarker(new MarkerOptions().position(position)); //konuma marker koyar
+			util.addAMarker(myMap, position);
 			
-			place = myMap.addMarker(new MarkerOptions().position(position)); //konuma marker koyar
-			myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 15)); //konumu haritada ortalayip, zoom yapar
 			
-			Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
-			try {
-				List<Address> addresses = gcd.getFromLocation(latitude, longitude, 1);
-
-				if (addresses.size() > 0)  {
-					for (int i=0; i<addresses.get(0).getMaxAddressLineIndex();i++) {
-						fullAddress += addresses.get(0).getAddressLine(i) + ",";
-					}
-					
-					tvNewComplaintAdress.setText(fullAddress);	
-					fullAddress = ""; //yeni bilgi geldiginde adresler arka arkaya eklenmemeli.
-				}
-			} catch(Exception e) {
-				Log.e("exception", e.getMessage());
-			}
+//			myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 15)); //konumu haritada ortalayip, zoom yapar
+			util.centerAndZomm(myMap, position, 15);
+			
+			
+//			Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
+//			try {
+//				List<Address> addresses = gcd.getFromLocation(latitude, longitude, 1);
+//
+//				if (addresses.size() > 0)  {
+//					for (int i=0; i<addresses.get(0).getMaxAddressLineIndex();i++) {
+//						fullAddress += addresses.get(0).getAddressLine(i) + ",";
+//					}
+//					
+//					tvNewComplaintAdress.setText(fullAddress);	
+//					fullAddress = ""; //yeni bilgi geldiginde adresler arka arkaya eklenmemeli.
+//				}
+//			} catch(Exception e) {
+//				Log.e("exception", e.getMessage());
+//			}			
+			tvNewComplaintAdress.setText(util.getAddress(getBaseContext(), position));
+			
 			
 		}
 
