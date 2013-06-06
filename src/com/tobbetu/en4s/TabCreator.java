@@ -16,9 +16,8 @@
 
 package com.tobbetu.en4s;
 
-import java.util.ArrayList;
-
-import com.tobbetu.en4s.backend.Complaint;
+import java.io.IOException;
+import java.util.List;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,150 +32,140 @@ import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.ListView;
 
+import com.tobbetu.en4s.backend.Complaint;
+import com.tobbetu.en4s.helpers.ContentProviderFunction;
+import com.tobbetu.en4s.helpers.ListAsyncTask;
+
 public class TabCreator extends Fragment {
 
-	private static final String ARG_POSITION = "position";
-	private ListView bugList = null;
-	private int position;
+    private static final String ARG_POSITION = "position";
+    private ListView bugList = null;
+    private int position;
 
-	public static TabCreator newInstance(int position) {
-		TabCreator f = new TabCreator();
-		Bundle b = new Bundle();
-		b.putInt(ARG_POSITION, position);
-		f.setArguments(b);
-		return f;
-	}
+    public static TabCreator newInstance(int position) {
+        TabCreator f = new TabCreator();
+        Bundle b = new Bundle();
+        b.putInt(ARG_POSITION, position);
+        f.setArguments(b);
+        return f;
+    }
 
-	@Override
-	public void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-		position = getArguments().getInt(ARG_POSITION);
-	}
+        position = getArguments().getInt(ARG_POSITION);
+    }
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		if(position == 0){
-			return createHottestList();
-		}
-		else if(position == 1){
-			return createNewestList();
-		}
-		else if(position == 2){
-			return createNeariestList();
-		} else {
-			return createTopList();
-		}
-	}
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState) {
+        if (position == 0) {
+            return createTab(new ContentProviderFunction<Complaint>() {
 
-	public View createHottestList(){
-		LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-		FrameLayout frameLayout = new FrameLayout(getActivity());
-		final int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics());
+                @Override
+                public List<Complaint> getContent() {
+                    try {
+                        return Complaint.getHotList();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                }
+            });
+        } else if (position == 1) {
+            return createTab(new ContentProviderFunction<Complaint>() {
 
-		bugList = new ListView(getActivity());
-		params.setMargins(margin, margin, margin, margin);
-		bugList.setLayoutParams(params);
+                @Override
+                public List<Complaint> getContent() {
+                    try {
+                        return Complaint.getNewList();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                }
+            });
+        } else if (position == 2) {
+            return createTab(new ContentProviderFunction<Complaint>() {
 
-		ArrayList<Complaint> complaints = new ArrayList<Complaint>();
+                @Override
+                public List<Complaint> getContent() {
+                    try {
+                        // TODO kanil will implement there
+                        return Complaint.getNearList(0, 0);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                }
+            });
+        } else {
+            return createTab(new ContentProviderFunction<Complaint>() {
 
-		complaints.add(new Complaint("Sorun1", "31.05.2013", "Burasi"));
-		complaints.add(new Complaint("Polis", "31.05.2013", "Taksim & kugulu Park"));
-		complaints.add(new Complaint("ED", "Always", "TOBB ETU"));
+                @Override
+                public List<Complaint> getContent() {
+                    try {
+                        return Complaint.getTopList();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return null;
+                    }
+                }
+            });
+        }
+    }
 
-		bugList.setAdapter(new BugListAdapter(getActivity(), complaints));
-		frameLayout.addView(bugList);
+    public View createTab(ContentProviderFunction<Complaint> func) {
+        LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT);
+        FrameLayout frameLayout = new FrameLayout(getActivity());
+        final int margin = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 8, getResources()
+                        .getDisplayMetrics());
 
-		initListener();
+        bugList = new ListView(getActivity());
+        params.setMargins(margin, margin, margin, margin);
+        bugList.setLayoutParams(params);
 
-		return frameLayout;
-	}
+        ListAsyncTask hotTask = new ListAsyncTask(getActivity(), bugList,
+                new ContentProviderFunction<Complaint>() {
 
-	public View createNewestList(){
-		LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-		FrameLayout frameLayout = new FrameLayout(getActivity());
-		final int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics());
+                    @Override
+                    public List<Complaint> getContent() {
+                        try {
+                            return Complaint.getHotList();
+                        } catch (IOException e) {
+                            // TODO hata guiye kadar throw edilecek
+                            e.printStackTrace();
+                            return null;
+                        }
+                    }
+                });
+        hotTask.execute();
+        frameLayout.addView(bugList);
 
-		bugList = new ListView(getActivity());
-		params.setMargins(margin, margin, margin, margin);
-		bugList.setLayoutParams(params);
+        initListener();
 
-		ArrayList<Complaint> complaints = new ArrayList<Complaint>();
+        return frameLayout;
+    }
 
-		complaints.add(new Complaint("Sorun2", "31.05.2013", "Burasi"));
-		complaints.add(new Complaint("Polis", "31.05.2013", "Taksim & kugulu Park"));
-		complaints.add(new Complaint("Büyük Sorun", "12.11.2002", "TURKEY"));
-		complaints.add(new Complaint("OE", "Often", "TOBB ETU"));
+    private void initListener() {
 
-		bugList.setAdapter(new BugListAdapter(getActivity(), complaints));
-		frameLayout.addView(bugList);
+        bugList.setOnItemClickListener(new OnItemClickListener() {
 
-		initListener();
-		
-		return frameLayout;
-	}
+            @Override
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+                    long arg3) {
 
-	public View createNeariestList(){
-		LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-		FrameLayout frameLayout = new FrameLayout(getActivity());
-		final int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics());
+                Complaint temp = (Complaint) bugList.getItemAtPosition(arg2);
+                Intent anIntent = new Intent(getActivity(),
+                        DetailsActivity.class);
+                anIntent.putExtra("class", temp);
+                startActivity(anIntent);
+            }
 
-		bugList = new ListView(getActivity());
-		params.setMargins(margin, margin, margin, margin);
-		bugList.setLayoutParams(params);
+        });
 
-		ArrayList<Complaint> complaints = new ArrayList<Complaint>();
-
-		complaints.add(new Complaint("Sorun3", "31.05.2013", "Burasi"));
-		complaints.add(new Complaint("Polis", "31.05.2013", "Taksim & kugulu Park"));
-		complaints.add(new Complaint("ED", "Always", "TOBB ETU"));
-
-		bugList.setAdapter(new BugListAdapter(getActivity(), complaints));
-		frameLayout.addView(bugList);
-
-		initListener();
-		
-		return frameLayout;
-	}
-
-	public View createTopList(){
-		LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-		FrameLayout frameLayout = new FrameLayout(getActivity());
-		final int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics());
-
-		bugList = new ListView(getActivity());
-		params.setMargins(margin, margin, margin, margin);
-		bugList.setLayoutParams(params);
-
-		ArrayList<Complaint> complaints = new ArrayList<Complaint>();
-
-		complaints.add(new Complaint("Sorun4", "31.05.2013", "Burasi"));
-		complaints.add(new Complaint("Polis", "31.05.2013", "Taksim & kugulu Park"));
-		complaints.add(new Complaint("ED", "Always", "TOBB ETU"));
-
-		bugList.setAdapter(new BugListAdapter(getActivity(), complaints));
-		frameLayout.addView(bugList);
-
-		initListener();
-		
-		return frameLayout;
-	}
-	
-	private void initListener() {
-		
-		bugList.setOnItemClickListener(new OnItemClickListener() {
-
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-					long arg3) {
-
-				Complaint temp = (Complaint) bugList.getItemAtPosition(arg2);
-				Intent anIntent = new Intent(getActivity(), DetailsActivity.class);
-				anIntent.putExtra("class", temp);
-				startActivity(anIntent);
-			}
-
-		});
-		
-	}
+    }
 }

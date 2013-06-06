@@ -28,12 +28,12 @@ public class Complaint implements Serializable {
     private double longitude;
     private String address;
     private String city;
-    
+
     public Complaint() {
         // TODO Auto-generated constructor stub
     }
-    
-    public Complaint(String title, String date, String address){
+
+    public Complaint(String title, String date, String address) {
         this.title = title;
         this.date = date;
         this.address = address;
@@ -144,20 +144,22 @@ public class Complaint implements Serializable {
     }
 
     private static Complaint fromJSON(JSONObject elem) {
+        // TODO yeni apiye uyarla
         Complaint obj = new Complaint();
-        try {
-            obj.setTitle(elem.getString("title"));
-            obj.setReporter(elem.getString("reporter"));
-            obj.setCategory(elem.getString("category"));
-            obj.setUpVote(elem.getInt("upvote"));
-            obj.setDownVote(elem.getInt("downvote"));
-            obj.setLatitude(elem.getDouble("latitude"));
-            obj.setLongitude(elem.getDouble("longtitude"));
-            obj.setAddress(elem.getString("address"));
-            obj.setCity(elem.getString("city"));
-        } catch (JSONException e) {
-            Log.e("Complaint.fromJSON", "Unexpected JSON Error", e);
-        }
+
+        obj.setId(elem.optString("_id"));
+        obj.setTitle(elem.optString("title"));
+        obj.setReporter(elem.optString("user"));
+        obj.setCategory(elem.optString("category"));
+        obj.setUpVote(elem.optInt("upvote_count", 0));
+        obj.setDownVote(elem.optInt("downvote_count", 0));
+        obj.setAddress(elem.optString("address"));
+        obj.setCity(elem.optString("city"));
+
+        // TODO msimav fix latitude longitude error
+        obj.setLatitude(elem.optDouble("latitude", 0));
+        obj.setLongitude(elem.optDouble("longtitude", 0));
+
         return obj;
     }
 
@@ -177,10 +179,11 @@ public class Complaint implements Serializable {
 
     public static List<Complaint> getHotList() throws IOException {
         // TODO not forget to change that
-        HttpResponse get = Requests.get("http://en4s.msimav.net/complaint/new");
+        HttpResponse get = Requests
+                .get("http://en4s.msimav.net/complaint/recent");
         String response = null;
         try {
-            response = Requests.readResponse(get, HttpStatus.SC_OK);
+            response = Requests.readResponse(get, 200);
         } catch (ReturnStatusMismatchException e) {
             Log.e("Complaint", "[EPIC FAIL] We all are fucked!", e);
         }
@@ -189,7 +192,8 @@ public class Complaint implements Serializable {
     }
 
     public static List<Complaint> getNewList() throws IOException {
-        HttpResponse get = Requests.get("http://en4s.msimav.net/complaint/new");
+        HttpResponse get = Requests
+                .get("http://en4s.msimav.net/complaint/recent");
         String response = null;
         try {
             response = Requests.readResponse(get, HttpStatus.SC_OK);
