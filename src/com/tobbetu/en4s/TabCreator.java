@@ -18,6 +18,8 @@ package com.tobbetu.en4s;
 
 import java.util.ArrayList;
 
+import com.tobbetu.en4s.backend.Complaint;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;

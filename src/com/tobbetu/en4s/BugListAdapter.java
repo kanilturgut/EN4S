@@ -1,6 +1,8 @@
 package com.tobbetu.en4s;
 
-import java.util.ArrayList;
+import java.util.List;
+
+import com.tobbetu.en4s.backend.Complaint;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -13,9 +15,9 @@ import android.widget.TextView;
 public class BugListAdapter extends ArrayAdapter<Complaint> {
 
 	private Context context;
-	private ArrayList<Complaint> complaints;
+	private List<Complaint> complaints;
 
-	public BugListAdapter(Context context, ArrayList<Complaint> complaints) {
+	public BugListAdapter(Context context, List<Complaint> complaints) {
 		//super(c, R.layout.bug_list_item, complaints);
 		super(context, R.layout.bug_list_item, complaints);
 		
