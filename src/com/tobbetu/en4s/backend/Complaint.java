@@ -132,10 +132,13 @@ public class Complaint implements Serializable {
             newObj.put("title", this.title);
             newObj.put("date", this.date);
             newObj.put("category", this.category);
-            newObj.put("latitude", this.latitude);
-            newObj.put("longtitude", this.longitude);
             newObj.put("city", this.city);
             newObj.put("address", this.address);
+
+            JSONArray geo = new JSONArray();
+            geo.put(this.latitude);
+            geo.put(this.longitude);
+            newObj.put("location", geo);
         } catch (JSONException e) {
             Log.e("Complaint.toJSON", "Unexpected JSONException", e);
         }
@@ -143,7 +146,6 @@ public class Complaint implements Serializable {
     }
 
     private static Complaint fromJSON(JSONObject elem) {
-        // TODO yeni apiye uyarla
         Complaint obj = new Complaint();
 
         obj.setId(elem.optString("_id"));
@@ -155,7 +157,6 @@ public class Complaint implements Serializable {
         obj.setAddress(elem.optString("address"));
         obj.setCity(elem.optString("city"));
 
-        // TODO msimav fix latitude longitude error
         JSONArray geo = elem.optJSONArray("location");
         obj.setLatitude(geo.optDouble(0, 0));
         obj.setLongitude(geo.optDouble(1, 0));
