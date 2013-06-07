@@ -30,7 +30,6 @@ public class Complaint implements Serializable {
     private String city;
 
     public Complaint() {
-        // TODO Auto-generated constructor stub
     }
 
     public Complaint(String title, String date, String address) {
@@ -157,8 +156,9 @@ public class Complaint implements Serializable {
         obj.setCity(elem.optString("city"));
 
         // TODO msimav fix latitude longitude error
-        obj.setLatitude(elem.optDouble("latitude", 0));
-        obj.setLongitude(elem.optDouble("longtitude", 0));
+        JSONArray geo = elem.optJSONArray("location");
+        obj.setLatitude(geo.optDouble(0, 0));
+        obj.setLongitude(geo.optDouble(1, 0));
 
         return obj;
     }
@@ -183,7 +183,7 @@ public class Complaint implements Serializable {
                 .get("http://en4s.msimav.net/complaint/recent");
         String response = null;
         try {
-            response = Requests.readResponse(get, 200);
+            response = Requests.readResponse(get, HttpStatus.SC_OK);
         } catch (ReturnStatusMismatchException e) {
             Log.e("Complaint", "[EPIC FAIL] We all are fucked!", e);
         }
@@ -218,9 +218,10 @@ public class Complaint implements Serializable {
 
     public static List<Complaint> getNearList(double lat, double lon)
             throws IOException {
-        HttpResponse get = Requests.get(
-                "http://en4s.msimav.net/complaint/near",
-                Requests.buildParams("latitude", lat, "longitude", lon));
+        HttpResponse get = Requests
+                .get(String
+                        .format("http://en4s.msimav.net/complaint/near?latitude=%f&longitude=%f",
+                                lat, lon));
         String response = null;
         try {
             response = Requests.readResponse(get, HttpStatus.SC_OK);
