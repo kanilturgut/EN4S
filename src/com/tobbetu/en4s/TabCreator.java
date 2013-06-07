@@ -62,7 +62,7 @@ public class TabCreator extends Fragment {
         latitude = getActivity().getIntent().getDoubleExtra("latitude", 0);
         longitude = getActivity().getIntent().getDoubleExtra("longitude", 0);
         
-        Log.e(TAG, "latitude : " + latitude + ", longitude : " + longitude);
+        Log.d(TAG, "latitude : " + latitude + ", longitude : " + longitude);
         
         position = getArguments().getInt(ARG_POSITION);
     }
@@ -137,20 +137,7 @@ public class TabCreator extends Fragment {
         params.setMargins(margin, margin, margin, margin);
         bugList.setLayoutParams(params);
 
-        ListAsyncTask hotTask = new ListAsyncTask(getActivity(), bugList,
-                new ContentProviderFunction<Complaint>() {
-
-                    @Override
-                    public List<Complaint> getContent() {
-                        try {
-                            return Complaint.getHotList();
-                        } catch (IOException e) {
-                            // TODO hata guiye kadar throw edilecek
-                            e.printStackTrace();
-                            return null;
-                        }
-                    }
-                });
+        ListAsyncTask hotTask = new ListAsyncTask(getActivity(), bugList, func);
         hotTask.execute();
         frameLayout.addView(bugList);
 
