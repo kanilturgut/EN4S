@@ -70,8 +70,16 @@
     font-weight: bold;
   }
 
+  tr td {
+    font-size: 12px;
+  }
+
   .kalin {
     font-weight: bold;
+  }
+
+  p {
+    font-size: 12px;
   }
 
 </style>
@@ -81,8 +89,8 @@
   <div class="container">
 
     <div class="row">
-      <div class="twelve columns center">
-        <h1 style="margin-bottom: 30px;"> Enforce API Docs </h1>
+      <div class="twelve columns">
+        <h2 style="margin: 30px 0px;"> Enforce API Docs </h2>
       </div>
     </div>
 
@@ -296,7 +304,40 @@
         <br />
         <div class="cizdir"></div>
 
+        <h3>Upvote Complaint [PUT]</h3>
+        <p>
+          Upvotes given complaint. <br />
+          Returns 404 if complaint couldn't found. <br />
+          Returns 406 if user already upvoted. <br />
+          Returns 406 if user not in 1 km range. <br />
+          Returns 202 if accepted.
+        </p>
+        <table width="700" cellspacing="50" cellpadding="50" border="1">
+          <tr>
+            <th> Path</th>
+            <th> Method </th>
+            <th> Format </th>
+            <th> Requires Auth </th>
+          </tr>
+          <tr>
+            <td> /complaint/obj_id/upvote </td>
+            <td> PUT </td>
+            <td> JSON </td>
+            <td> YES </td>
+          </tr>
+        </table>
+        <br />
+        <span class="kalin"> Arguments </span> <br />
+        <table class="small" cellspacing="50" cellpadding="50" border="1">
+          <tr>
+            <td> Location </td>
+            <td> Required </td>
+            <td> JSON Object </td>
+          </tr>
+        </table>
 
+        <br />
+        <div class="cizdir"></div>
       </div>
     </div>
   </div> <!--! end of #container -->
