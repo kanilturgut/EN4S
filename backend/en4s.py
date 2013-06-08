@@ -1,6 +1,8 @@
 import os
 import json
 import base64
+import geopy
+import geopy.distance
 from datetime import datetime
 from functools import wraps
 
@@ -249,6 +251,45 @@ class ComplaintPicturePut(restful.Resource):
             return {'success': 'update is complete'}
 
 
+class ComplaintUpvote(restful.Resource):
+    method_decorators = [authenticate]
+
+    def put(self, obj_id):
+        data_dict = json.loads(request.data)
+        obj_id = ObjectId(str(obj_id))
+        obj = db.complaint.find_one({"_id": obj_id})
+        if not obj:
+            return abort(404)
+
+        upvoters = obj["upvoters"]
+        if session["user"]["username"] in upvoters:
+            return {"error": "user already upvoted"}, 406
+
+        comp_lati = obj["location"][0]
+        comp_longi = obj["location"][1]
+
+        user_lati = data_dict["location"][0]
+        user_longi = data_dict["location"][1]
+
+        pt_comp = geopy.Point(comp_lati, comp_longi)
+        pt_user = geopy.Point(user_lati, user_longi)
+
+        distance = geopy.distance.distance(pt_comp, pt_user).km
+        distance = float(distance)
+
+        if distance > 1:
+            return {"error": "user is not close"}, 406
+        else:
+            db.complaint.update(
+                {"_id": obj_id},
+                {"$addToSet": {"upvoters": session["user"]["username"]}}
+            )
+            db.complaint.update(
+                {"_id": obj_id}, {"$inc": {"upvote_count": 1}}
+            )
+            return {"success": "upvote accepted"}, 202
+
+
 class ComplaintSingle(restful.Resource):
     # implement this
     def get(self, obj_id):
@@ -287,6 +328,7 @@ api.add_resource(Login, '/login')
 api.add_resource(Register, '/register')
 api.add_resource(Complaint, '/complaint')
 api.add_resource(ComplaintSingle, '/complaint/<string:obj_id>')
+api.add_resource(ComplaintUpvote, '/complaint/<string:obj_id>/upvote')
 api.add_resource(ComplaintRecent, '/complaint/recent')
 api.add_resource(ComplaintTop, '/complaint/top')
 api.add_resource(ComplaintNear, '/complaint/near')
