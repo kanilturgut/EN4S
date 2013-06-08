@@ -221,8 +221,8 @@ public class Complaint implements Serializable {
             throws IOException {
         HttpResponse get = Requests
                 .get(String
-                        .format("http://en4s.msimav.net/complaint/near?latitude=%f&longitude=%f",
-                                lat, lon));
+                        .format("http://en4s.msimav.net/complaint/near?latitude=%s&longitude=%s",
+                                Double.toString(lat), Double.toString(lon)));
         String response = null;
         try {
             response = Requests.readResponse(get, HttpStatus.SC_OK);
