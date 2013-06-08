@@ -1,0 +1,194 @@
+<!doctype html>
+<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if IE 9]>    <html class="no-js ie9" lang="en"> <![endif]-->
+<!-- Consider adding an manifest.appcache: h5bp.com/d/Offline -->
+<!--[if gt IE 9]><!--> <html class="no-js" lang="en" itemscope itemtype="http://schema.org/Product"> <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+
+  <!-- Use the .htaccess and remove these lines to avoid edge case issues.
+       More info: h5bp.com/b/378 -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title> Enforce Developer API :: Users </title>
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+  <meta name="author" content="humans.txt">
+
+  <link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
+
+  <!-- Facebook Metadata /-->
+  <meta property="fb:page_id" content="" />
+  <meta property="og:image" content="" />
+  <meta property="og:description" content=""/>
+  <meta property="og:title" content=""/>
+
+  <!-- Google+ Metadata /-->
+  <meta itemprop="name" content="">
+  <meta itemprop="description" content="">
+  <meta itemprop="image" content="">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+  <!-- We highly recommend you use SASS and write your custom styles in sass/_custom.scss.
+       However, there is a blank style.css in the css directory should you prefer -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/gumby.css') }}">
+  <!-- <link rel="stylesheet" href="css/style.css"> -->
+
+  <script src="{{ url_for('static', filename='js/libs/modernizr-2.6.2.min.js') }}"></script>
+</head>
+
+<style>
+  .center h1 {
+    text-align: center;
+  }
+
+  .sidebar-buttons {
+    display: block;
+    width: 200px;
+    margin: 5px;
+  }
+
+  .cizdir {
+    border-bottom: 1px solid #efefef;
+    margin-bottom: 20px;
+  }
+
+  table {
+    table-layout: fixed;
+    width: 100%;
+  }
+
+  table.small {
+    width: 60%;
+  }
+
+  tr th {
+    font-weight: bold;
+  }
+
+  .kalin {
+    font-weight: bold;
+  }
+
+</style>
+
+<body>
+
+  <div class="container">
+
+    <div class="row">
+      <div class="twelve columns center">
+        <h1 style="margin-bottom: 30px;"> Enforce API Docs </h1>
+      </div>
+    </div>
+
+    <div class="row">
+
+      <div class="three columns">
+        <div class="medium primary btn sidebar-buttons">
+          <a href="/apidocs/users">Users</a>
+        </div>
+        <div class="medium primary btn sidebar-buttons">
+          <a href="/apidocs/complaints">Complaint</a>
+        </div>
+        <div class="medium primary btn sidebar-buttons">
+          <a href="/apidocs/comments">Comments</a>
+        </div>
+      </div>
+
+      <div class="eight columns push_one">
+        <h2 class="cizdir" style="padding-top: 0px;">Users Api</h2>
+        <h3>User Login [POST]</h3>
+        <p>
+          Authenticate user on the server.
+        </p>
+        <table cellspacing="50" cellpadding="50" border="1">
+          <tr>
+            <th> Path</th>
+            <th> Method </th>
+            <th> Format </th>
+            <th> Requires Auth </th>
+          </tr>
+          <tr>
+            <td> /login </td>
+            <td> POST </td>
+            <td> JSON </td>
+            <td> NO </td>
+          </tr>
+        </table>
+        <br />
+        <span class="kalin"> Arguments </span> <br />
+        <table class="small" cellspacing="50" cellpadding="50" border="1">
+          <tr>
+            <td> Username </td>
+            <td> Required </td>
+            <td> JSON Object </td>
+          </tr>
+          <tr>
+            <td> Password </td>
+            <td> Required </td>
+            <td> JSON Object </td>
+          </tr>
+        </table>
+
+        <br />
+        <div class="cizdir"></div>
+
+
+        <h3>Register Login [POST]</h3>
+        <p>
+          Register new user on the server.
+        </p>
+        <table cellspacing="50" cellpadding="50" border="1">
+          <tr>
+            <th> Path</th>
+            <th> Method </th>
+            <th> Format </th>
+            <th> Requires Auth </th>
+          </tr>
+          <tr>
+            <td> /register </td>
+            <td> POST </td>
+            <td> JSON </td>
+            <td> NO </td>
+          </tr>
+        </table>
+        <br />
+        <span class="kalin"> Arguments </span> <br />
+        <table class="small" cellspacing="50" cellpadding="50" border="1">
+          <tr>
+            <td> Username </td>
+            <td> Required </td>
+            <td> JSON Object </td>
+          </tr>
+          <tr>
+            <td> Password </td>
+            <td> Required </td>
+            <td> JSON Object </td>
+          </tr>
+          <tr>
+            <td> E-mail </td>
+            <td> Required </td>
+            <td> JSON Object </td>
+          </tr>
+        </table>
+
+
+      </div>
+    </div>
+  </div> <!--! end of #container -->
+
+  <!-- Grab Google CDN's jQuery, fall back to local if offline -->
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+
+  <script src="{{ url_for('static', filename='js/libs/gumby.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/plugins.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+  </body>
+</html>
