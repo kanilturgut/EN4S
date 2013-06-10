@@ -164,4 +164,11 @@ public class TabCreator extends Fragment {
         });
 
     }
+    
+    @Override
+    public void onPause() {
+    	super.onPause();
+    	
+    	//TODO kanil will implement here   	
+    }
 }
