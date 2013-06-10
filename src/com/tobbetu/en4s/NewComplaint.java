@@ -20,6 +20,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -36,20 +37,20 @@ public class NewComplaint extends Activity implements OnClickListener{
 	private Spinner categoriesSpinner;
 
 	private Utils util = null;
-	
+
 	private GoogleMap myMap;
-//	private Marker place = null;
+	//	private Marker place = null;
 	private LocationManager lManager = null;
+	private LatLng position = null;
 	private double latitude = 0;
 	private double longitude = 0;
-	private String fullAddress = "";
 
 	private Image img = null;
 	private Bitmap bmp = null;
 
 	private Complaint newComplaint = null;
 	private String category;
-	
+
 	private String TAG = "NewComplaint";
 
 	@Override
@@ -59,7 +60,7 @@ public class NewComplaint extends Activity implements OnClickListener{
 		getActionBar().hide();
 
 		util = new Utils();
-		
+
 		etComplaintTitle = (EditText) findViewById(R.id.etNewComplaint);
 		tvNewComplaintAdress = (TextView) findViewById(R.id.tvNewComplaintAdress);
 		ivTakenPhoto = (ImageView) findViewById(R.id.ivTakenPhoto);
@@ -73,10 +74,10 @@ public class NewComplaint extends Activity implements OnClickListener{
 		LocationListener mlocListener = new MyLocationListener();
 		lManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,
 				mlocListener);
-		
+
 		myMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.mapNewComplaint)).getMap();		
 		myMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-		
+
 		categoriesSpinner = (Spinner) findViewById(R.id.spinnerNewComplaintCategory);
 		ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this,
 				R.array.categories, 
@@ -114,26 +115,32 @@ public class NewComplaint extends Activity implements OnClickListener{
 			startActivityForResult(cameraIntent, 0);
 		} else {
 
-			//simdi butun bilgileri toplayip, server a push edelim.
+			if(etComplaintTitle.getText().toString().equals(""))
+				Toast.makeText(getApplicationContext(), "You have to fill title!", Toast.LENGTH_SHORT).show();
+			else {
 
-			newComplaint = new Complaint(etComplaintTitle.getText().toString(),
-					"today", 
-					fullAddress);
-			
-			String reporter = LoginPageActivity.loginPreferences.getString("username", "unknown");
-			Log.e(TAG, "reporter : " + reporter);
-			
-			newComplaint.setCategory(category);
-			newComplaint.setLatitude(latitude);
-			newComplaint.setLongitude(longitude);
+				newComplaint = new Complaint();
+				newComplaint.setTitle(etComplaintTitle.getText().toString());			
+				newComplaint.setAddress(util.getAddress(getBaseContext(), position));
+				newComplaint.setCity(util.getCity(getBaseContext(), position));		
+				newComplaint.setCategory(category);
+				newComplaint.setLatitude(latitude);
+				newComplaint.setLongitude(longitude);
 
+
+				Log.d("title", newComplaint.getTitle());
+				Log.d("category", newComplaint.getCategory());
+				Log.d("address", newComplaint.getAddress());
+				Log.d("city", newComplaint.getCity());
+				Log.d("location", newComplaint.getLatitude() + "," + newComplaint.getLongitude());
+			}
 		}
 
 	}
 
 	@Override //fotograf
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) { 
-		// TODO Auto-generated method stub
+
 		super.onActivityResult(requestCode, resultCode, data);
 
 		if (resultCode == RESULT_OK) {
@@ -146,18 +153,18 @@ public class NewComplaint extends Activity implements OnClickListener{
 
 			img.setImageByteArray(buffer);
 			img.setBmp(bmp);
-			
+
 			int height = bmp.getHeight();
 			int width = bmp.getWidth();
-			
+
 			Log.e(TAG, "height : " + height + ", width : " + width);
-			
+
 			bTakePic.setVisibility(View.GONE);
 			ivTakenPhoto.setVisibility(View.VISIBLE);
 			ivTakenPhoto.getLayoutParams().height = height*3;
 			ivTakenPhoto.getLayoutParams().width = width*3;
 			ivTakenPhoto.setImageBitmap(bmp);
-			
+
 		}
 
 	}
@@ -169,38 +176,38 @@ public class NewComplaint extends Activity implements OnClickListener{
 
 			latitude = loc.getLatitude();
 			longitude = loc.getLongitude();
-			
-			LatLng position = new LatLng(loc.getLatitude(), loc.getLongitude());
-			
-//			if (place != null) //surekli yeni marker eklememek icin..
-//				place.remove();
-//			
-//			place = myMap.addMarker(new MarkerOptions().position(position)); //konuma marker koyar
+
+			position = new LatLng(loc.getLatitude(), loc.getLongitude());
+
+			//			if (place != null) //surekli yeni marker eklememek icin..
+			//				place.remove();
+			//			
+			//			place = myMap.addMarker(new MarkerOptions().position(position)); //konuma marker koyar
 			util.addAMarker(myMap, position);
-			
-			
-//			myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 15)); //konumu haritada ortalayip, zoom yapar
+
+
+			//			myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 15)); //konumu haritada ortalayip, zoom yapar
 			util.centerAndZomm(myMap, position, 15);
-			
-			
-//			Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
-//			try {
-//				List<Address> addresses = gcd.getFromLocation(latitude, longitude, 1);
-//
-//				if (addresses.size() > 0)  {
-//					for (int i=0; i<addresses.get(0).getMaxAddressLineIndex();i++) {
-//						fullAddress += addresses.get(0).getAddressLine(i) + ",";
-//					}
-//					
-//					tvNewComplaintAdress.setText(fullAddress);	
-//					fullAddress = ""; //yeni bilgi geldiginde adresler arka arkaya eklenmemeli.
-//				}
-//			} catch(Exception e) {
-//				Log.e("exception", e.getMessage());
-//			}			
+
+
+			//			Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
+			//			try {
+			//				List<Address> addresses = gcd.getFromLocation(latitude, longitude, 1);
+			//
+			//				if (addresses.size() > 0)  {
+			//					for (int i=0; i<addresses.get(0).getMaxAddressLineIndex();i++) {
+			//						fullAddress += addresses.get(0).getAddressLine(i) + ",";
+			//					}
+			//					
+			//					tvNewComplaintAdress.setText(fullAddress);	
+			//					fullAddress = ""; //yeni bilgi geldiginde adresler arka arkaya eklenmemeli.
+			//				}
+			//			} catch(Exception e) {
+			//				Log.e("exception", e.getMessage());
+			//			}			
 			tvNewComplaintAdress.setText(util.getAddress(getBaseContext(), position));
-			
-			
+
+
 		}
 
 		@Override
