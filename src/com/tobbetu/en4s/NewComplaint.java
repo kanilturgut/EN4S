@@ -26,6 +26,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.tobbetu.en4s.backend.Complaint;
+import com.tobbetu.en4s.backend.Image;
 
 public class NewComplaint extends Activity implements OnClickListener{
 
