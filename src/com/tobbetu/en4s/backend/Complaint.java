@@ -126,6 +126,27 @@ public class Complaint implements Serializable {
         this.category = category;
     }
 
+    public void save() throws IOException {
+        Log.d("[JSON]", this.toJSON());
+        HttpResponse post = Requests.post("http://en4s.msimav.net/complaint",
+                this.toJSON());
+        if (!Requests.checkStatusCode(post, HttpStatus.SC_CREATED)) {
+            // TODO throw exception
+            Log.d(getClass().getName(), "Status Code in not 201");
+        }
+        try {
+            Complaint response = fromJSON(new JSONObject(Requests.readResponse(post)));
+            this.id = response.id;
+            this.date = response.date;
+            this.upVote = response.upVote;
+            this.downVote = response.downVote;
+
+            // TODO save image too
+        } catch (JSONException e) {
+            Log.e(getClass().getName(), "Impossible JSONException throwed", e);
+        }
+    }
+
     public String toJSON() {
         JSONObject newObj = new JSONObject();
         try {

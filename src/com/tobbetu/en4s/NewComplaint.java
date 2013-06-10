@@ -1,11 +1,14 @@
 package com.tobbetu.en4s;
 
+import java.io.IOException;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -134,6 +137,8 @@ public class NewComplaint extends Activity implements OnClickListener{
 				Log.d("address", newComplaint.getAddress());
 				Log.d("city", newComplaint.getCity());
 				Log.d("location", newComplaint.getLatitude() + "," + newComplaint.getLongitude());
+
+				new SaveTask().execute();
 			}
 		}
 
@@ -221,6 +226,26 @@ public class NewComplaint extends Activity implements OnClickListener{
 		public void onStatusChanged(String provider, int status, Bundle extras) {
 
 		}
+	}
+
+	private class SaveTask extends AsyncTask<String, String, String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            try {
+                newComplaint.save();
+            } catch (IOException e) {
+                // TODO: handle exception
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            // TODO kanil: open new activity to display
+        }
+
 	}
 
 }
