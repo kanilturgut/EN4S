@@ -13,6 +13,8 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
+import org.apache.http.params.HttpProtocolParams;
+import org.apache.http.protocol.HTTP;
 
 import android.util.Log;
 
@@ -23,7 +25,13 @@ public class Requests {
     private HttpClient httpclient;
 
     private Requests() {
-        httpclient = new DefaultHttpClient();
+        HttpParams utf8params = new BasicHttpParams();
+        HttpProtocolParams.setContentCharset(utf8params, HTTP.UTF_8);
+        HttpProtocolParams.setHttpElementCharset(utf8params, HTTP.UTF_8);
+
+        httpclient = new DefaultHttpClient(utf8params);
+        httpclient.getParams().setParameter("http.protocol.content-charset",
+                HTTP.UTF_8);
     }
 
     public static Requests getInstance() {
@@ -56,13 +64,15 @@ public class Requests {
         HttpClient httpclient = Requests.getInstance().getHttpClient();
         HttpResponse response;
         HttpPost postRequest = new HttpPost(uri);
+        postRequest.setHeader("Accept", "application/json");
         StringEntity input = null;
         try {
-            input = new StringEntity(data);
+            input = new StringEntity(data, HTTP.UTF_8);
         } catch (UnsupportedEncodingException e) {
             Log.e("Requests.post", "Unexpected UnsupportedEncodingException", e);
         }
-        input.setContentType("application/json");
+        input.setContentType("application/json; charset=UTF-8");
+        input.setContentEncoding("UTF-8");
 
         postRequest.setEntity(input);
         response = httpclient.execute(postRequest);
@@ -80,7 +90,7 @@ public class Requests {
         return out.toString();
 
     }
-    
+
     public static boolean checkStatusCode(HttpResponse response, int expected) {
         return response.getStatusLine().getStatusCode() == expected;
     }
