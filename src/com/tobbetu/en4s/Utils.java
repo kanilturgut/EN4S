@@ -1,9 +1,12 @@
 package com.tobbetu.en4s;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.location.Address;
 import android.location.Geocoder;
 import android.util.Log;
@@ -64,10 +67,69 @@ public class Utils {
 				}
 			}
 		} catch (Exception e) {
-			Log.e("exception", e.getMessage());
+			Log.e(getClass().getName(), "Couldn't get address", e);
 		}
 		return address;
 
+	}
+
+	public String getCity(Context context, LatLng position) {
+
+		String city = null;
+		
+		Geocoder gcd = new Geocoder(context, Locale.getDefault());
+		List<Address> addresses;
+		try {
+			addresses = gcd.getFromLocation(position.latitude,
+					position.longitude, 1);
+			
+			if (addresses.size() > 0)
+				city = addresses.get(0).getLocality();
+			
+		} catch (IOException e) {
+			Log.e(getClass().getName(), "Couldn't get city name", e);
+		}
+	
+		return city;
+	}
+
+	public static void createAlert(Context context, String title,
+			String message, boolean cancelable, String posButton,
+			String negButton) {
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+				context);
+
+		// set title
+		alertDialogBuilder.setTitle(title);
+
+		// set dialog message
+		alertDialogBuilder.setMessage(message).setCancelable(cancelable);
+
+		if (!posButton.equals("")) {
+			alertDialogBuilder.setPositiveButton(posButton,
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							// if this button is clicked, close
+							// current activity
+							dialog.cancel();
+						}
+					});
+		}
+		if (!negButton.equals("")) {
+			alertDialogBuilder.setNegativeButton(negButton,
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							// if this button is clicked, just close
+							// the dialog box and do nothing
+							dialog.cancel();
+						}
+					});
+		}
+		// create alert dialog
+		AlertDialog alertDialog = alertDialogBuilder.create();
+
+		// show it
+		alertDialog.show();
 	}
 
 }
