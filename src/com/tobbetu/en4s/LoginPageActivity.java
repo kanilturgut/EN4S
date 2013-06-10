@@ -2,15 +2,15 @@ package com.tobbetu.en4s;
 
 import java.io.IOException;
 
-import com.tobbetu.en4s.backend.Login;
-import com.tobbetu.en4s.backend.Login.LoginFailedException;
-
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,160 +21,213 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.tobbetu.en4s.backend.Login;
+import com.tobbetu.en4s.backend.Login.LoginFailedException;
+
 public class LoginPageActivity extends Activity {
 
-    private Button bLogin = null;
-    private EditText etUsername, etPassword;
+	private Button bLogin = null;
+	private EditText etUsername, etPassword;
 
-    private String sharedFileName = "loginInfo";
-    protected static SharedPreferences loginPreferences;
+	private String sharedFileName = "loginInfo";
+	protected static SharedPreferences loginPreferences;
 
-    private LocationManager lManager = null;
-    private double latitude = 0;
-    private double longitude = 0;
+	private LocationManager lManager = null;
+	private double latitude = 0;
+	private double longitude = 0;
 
-    private boolean flag = false;
+	private boolean flag = false;
+	private boolean loginFlag = false;
+	private boolean locationFlag = false;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 
-        // startService(new Intent(this, EN4SService.class));
+		if (!isNetworkAvailable()) {
+			Toast.makeText(getApplicationContext(),
+					"You have no internet access, please open your network",
+					Toast.LENGTH_SHORT).show();
+			finish();
+		} else {
 
-        lManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        LocationListener mlocListener = new LoginPageLocationListener();
-        lManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,
-                mlocListener);
+			// startService(new Intent(this, EN4SService.class));
 
-        // Burada sessionID ile HTTP POST yapilacak, olumlu donerse giris olacak
-        // olumsuz donerse kullanici adi ve sifre ile yeni bir baglanti
-        // gerceklestirilecek ve
-        // yeni sessionID guncellenecek.
+			lManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+			LocationListener mlocListener = new LoginPageLocationListener();
+			lManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+					0, 0, mlocListener);
 
-        setContentView(R.layout.activity_login_page);
-        getActionBar().hide();
-        etUsername = (EditText) findViewById(R.id.etUsername);
-        etPassword = (EditText) findViewById(R.id.etPassword);
+			// Burada sessionID ile HTTP POST yapilacak, olumlu donerse giris
+			// olacak
+			// olumsuz donerse kullanici adi ve sifre ile yeni bir baglanti
+			// gerceklestirilecek ve
+			// yeni sessionID guncellenecek.
 
-        bLogin = (Button) findViewById(R.id.bLogin);
-        bLogin.setOnClickListener(loginButtonListener);
+			setContentView(R.layout.activity_login_page);
+			getActionBar().hide();
+			etUsername = (EditText) findViewById(R.id.etUsername);
+			etPassword = (EditText) findViewById(R.id.etPassword);
 
-    }
+			bLogin = (Button) findViewById(R.id.bLogin);
+			bLogin.setOnClickListener(loginButtonListener);
 
-    OnClickListener loginButtonListener = new OnClickListener() {
-        public void onClick(View v) {
+			loginPreferences = getSharedPreferences(sharedFileName,
+					MODE_PRIVATE);
+			if ((loginPreferences.getAll().size() != 0) && flag == false) {
+				flag = true;
 
-            if (etUsername.getText().toString().equals("")
-                    || etPassword.getText().toString().equals("")) {
-                Toast.makeText(getApplicationContext(),
-                        "Missing content, please fill username field !",
-                        Toast.LENGTH_SHORT).show();
-            } else {
+				new LoginTask().execute(
+						loginPreferences.getString("username", ""),
+						loginPreferences.getString("password", ""));
+			}
+		}
+	}
 
-                /* Share Share Share Preferences */
-                SharedPreferences.Editor preferencesEditor = loginPreferences
-                        .edit();
-                preferencesEditor.putString("username", etUsername.getText()
-                        .toString());
-                preferencesEditor.putString("password", etPassword.getText()
-                        .toString());
-                // =======Session ID
-                // ==================================================================
-                preferencesEditor.putString("sessionID", "sessionID");
-                // =======Session ID
-                // ==================================================================
-                preferencesEditor.apply();
-                /* Share Share Share Preferences */
+	OnClickListener loginButtonListener = new OnClickListener() {
+		public void onClick(View v) {
 
-                // unique bir kullanici mi ?
-                Intent i = new Intent(LoginPageActivity.this,
-                        MainActivity.class);
-                i.putExtra("latitude", latitude);
-                i.putExtra("longitude", longitude);
-                startActivity(i);
-            }
-        }
-    };
+			if (etUsername.getText().toString().equals("")
+					|| etPassword.getText().toString().equals("")) {
+				Toast.makeText(getApplicationContext(),
+						"Missing content, please fill username field !",
+						Toast.LENGTH_SHORT).show();
+			} else {
 
-    protected void onPause() {
-        super.onPause();
-        finish();
-    };
+				/* Share Share Share Preferences */
+				SharedPreferences.Editor preferencesEditor = loginPreferences
+						.edit();
+				preferencesEditor.putString("username", etUsername.getText()
+						.toString());
+				preferencesEditor.putString("password", etPassword.getText()
+						.toString());
+				// =======Session ID
+				// ==================================================================
+				preferencesEditor.putString("sessionID", "sessionID");
+				// =======Session ID
+				// ==================================================================
+				preferencesEditor.apply();
+				/* Share Share Share Preferences */
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.login_page, menu);
-        return true;
-    }
+				// unique bir kullanici mi ?
 
-    class LoginPageLocationListener implements LocationListener {
+				new LoginTask().execute(etUsername.getText().toString(),
+						etPassword.getText().toString());
+			}
+		}
+	};
 
-        @Override
-        public void onLocationChanged(Location arg0) {
+	protected void onPause() {
+		super.onPause();
+		finish();
+	};
 
-            latitude = arg0.getLatitude();
-            longitude = arg0.getLongitude();
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.login_page, menu);
+		return true;
+	}
 
-            loginPreferences = getSharedPreferences(sharedFileName,
-                    MODE_PRIVATE);
-            if ((loginPreferences.getAll().size() != 0) && flag == false) {
+	class LoginPageLocationListener implements LocationListener {
 
-                flag = true;
+		@Override
+		public void onLocationChanged(Location loc) {
 
-                Intent i = new Intent(LoginPageActivity.this,
-                        MainActivity.class);
-                i.putExtra("latitude", latitude);
-                i.putExtra("longitude", longitude);
-                new LoginTask().execute(
-                        loginPreferences.getString("username", ""),
-                        loginPreferences.getString("password", ""));
-                startActivity(i);
-            }
+			latitude = loc.getLatitude();
+			longitude = loc.getLongitude();
 
-        }
+			locationFlag = true;
+			startIntent();
+		}
 
-        @Override
-        public void onProviderDisabled(String arg0) {
-        }
+		@Override
+		public void onProviderDisabled(String arg0) {
+		}
 
-        @Override
-        public void onProviderEnabled(String arg0) {
-        }
+		@Override
+		public void onProviderEnabled(String arg0) {
+		}
 
-        @Override
-        public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-        }
+		@Override
+		public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+		}
 
-    }
+	}
 
-    class LoginTask extends AsyncTask<String, String, String> {
+	class LoginTask extends AsyncTask<String, String, String> {
 
-        @Override
-        protected String doInBackground(String... arg0) {
-            String username = arg0[0];
-            String passwd = arg0[1];
-            Login newLogin = new Login(username, passwd);
-            try {
-                newLogin.makeRequest();
-            } catch (IOException e) {
-                // TODO user have no internet connection
-                Log.e(getClass().getName(), "IOException", e);
+		@Override
+		protected String doInBackground(String... arg0) {
+			String username = arg0[0];
+			String passwd = arg0[1];
+			Login newLogin = new Login(username, passwd);
+			try {
+				newLogin.makeRequest();
+			} catch (IOException e) {
+				Toast.makeText(
+						getApplicationContext(),
+						"You have no internet access, please open your network !",
+						Toast.LENGTH_SHORT).show();
+				Log.e(getClass().getName(), "IOException", e);
 
-            } catch (LoginFailedException e) {
-                // TODO inform user
-                Log.e(getClass().getName(), String.format(
-                        "[Login Failed] username: %s, passwd: %s", username,
-                        passwd), e);
-            }
-            return null;
-        }
+			} catch (LoginFailedException e) {
+				Toast.makeText(
+						getApplicationContext(),
+						"Your username or password is wrong, please check your information !",
+						Toast.LENGTH_SHORT).show();
+				Log.e(getClass().getName(), String.format(
+						"[Login Failed] username: %s, passwd: %s", username,
+						passwd), e);
+				Log.e(getClass().getName(), "Login olamadik!");
+			}
+			return null;
+		}
 
-        @Override
-        protected void onPostExecute(String result) {
-            // TODO kanil will implement here
-        }
+		@Override
+		protected void onPostExecute(String result) {
+			loginFlag = true;
+			startIntent();
+		}
 
-    }
+	}
+
+	// class LocationTask extends AsyncTask<String, String, String> {
+	//
+	// @Override
+	// protected String doInBackground(String... arg0) {
+	// // TODO kanil will implement here
+	// return null;
+	// }
+	//
+	// @Override
+	// protected void onPostExecute(String result) {
+	// locationFlag = true;
+	// startIntent();
+	// }
+	// }
+
+	private boolean isNetworkAvailable() {
+		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo activeNetworkInfo = connectivityManager
+				.getActiveNetworkInfo();
+		return activeNetworkInfo != null;
+	}
+
+	private void startIntent() {
+		if (locationFlag == true && loginFlag == true) {
+
+			Intent i = new Intent(LoginPageActivity.this, MainActivity.class);
+			i.putExtra("latitude", latitude);
+			i.putExtra("longitude", longitude);
+
+			startActivity(i);
+
+			loginFlag = false;
+
+		} else {
+			// ikisi birden false gelirse, biraz bekleyip yeniden bakmaliyiz.
+		}
+	}
 
 }
