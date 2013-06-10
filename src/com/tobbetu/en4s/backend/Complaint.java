@@ -138,6 +138,7 @@ public class Complaint implements Serializable {
             Complaint response = fromJSON(new JSONObject(Requests.readResponse(post)));
             this.id = response.id;
             this.date = response.date;
+            this.reporter = response.reporter;
             this.upVote = response.upVote;
             this.downVote = response.downVote;
 
