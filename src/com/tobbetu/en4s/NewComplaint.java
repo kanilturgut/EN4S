@@ -31,7 +31,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.tobbetu.en4s.backend.Complaint;
 import com.tobbetu.en4s.backend.Image;
 
-public class NewComplaint extends Activity implements OnClickListener{
+public class NewComplaint extends Activity implements OnClickListener {
 
 	private Button bPush;
 	private ImageButton bTakePic;
@@ -43,7 +43,7 @@ public class NewComplaint extends Activity implements OnClickListener{
 	private Utils util = null;
 
 	private GoogleMap myMap;
-	//	private Marker place = null;
+	// private Marker place = null;
 	private LocationManager lManager = null;
 	private LatLng position = null;
 	private double latitude = 0;
@@ -79,28 +79,31 @@ public class NewComplaint extends Activity implements OnClickListener{
 		lManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,
 				mlocListener);
 
-		myMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.mapNewComplaint)).getMap();		
+		myMap = ((MapFragment) getFragmentManager().findFragmentById(
+				R.id.mapNewComplaint)).getMap();
 		myMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 
 		categoriesSpinner = (Spinner) findViewById(R.id.spinnerNewComplaintCategory);
-		ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(this,
-				R.array.categories, 
-				android.R.layout.simple_spinner_item);
-		spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter
+				.createFromResource(this, R.array.categories,
+						android.R.layout.simple_spinner_item);
+		spinnerAdapter
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		categoriesSpinner.setAdapter(spinnerAdapter);
-		categoriesSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+		categoriesSpinner
+				.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-			@Override
-			public void onItemSelected(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3) {
-				category = arg0.getItemAtPosition(arg2).toString();				
-			}
+					@Override
+					public void onItemSelected(AdapterView<?> arg0, View arg1,
+							int arg2, long arg3) {
+						category = arg0.getItemAtPosition(arg2).toString();
+					}
 
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {
-				category = "All"; //default category				
-			}
-		});
+					@Override
+					public void onNothingSelected(AdapterView<?> arg0) {
+						category = "All"; // default category
+					}
+				});
 
 	}
 
@@ -115,28 +118,31 @@ public class NewComplaint extends Activity implements OnClickListener{
 	public void onClick(View v) {
 
 		if (v.getId() == R.id.bTakePhoto) {
-			Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+			Intent cameraIntent = new Intent(
+					android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
 			startActivityForResult(cameraIntent, 0);
 		} else {
 
-			if(etComplaintTitle.getText().toString().equals(""))
-				Toast.makeText(getApplicationContext(), "You have to fill title!", Toast.LENGTH_SHORT).show();
+			if (etComplaintTitle.getText().toString().equals(""))
+				Toast.makeText(getApplicationContext(),
+						"You have to fill title!", Toast.LENGTH_SHORT).show();
 			else {
 
 				newComplaint = new Complaint();
-				newComplaint.setTitle(etComplaintTitle.getText().toString());			
-				newComplaint.setAddress(util.getAddress(getBaseContext(), position));
-				newComplaint.setCity(util.getCity(getBaseContext(), position));		
+				newComplaint.setTitle(etComplaintTitle.getText().toString());
+				newComplaint.setAddress(util.getAddress(getBaseContext(),
+						position));
+				newComplaint.setCity(util.getCity(getBaseContext(), position));
 				newComplaint.setCategory(category);
 				newComplaint.setLatitude(latitude);
 				newComplaint.setLongitude(longitude);
-
 
 				Log.d("title", newComplaint.getTitle());
 				Log.d("category", newComplaint.getCategory());
 				Log.d("address", newComplaint.getAddress());
 				Log.d("city", newComplaint.getCity());
-				Log.d("location", newComplaint.getLatitude() + "," + newComplaint.getLongitude());
+				Log.d("location", newComplaint.getLatitude() + ","
+						+ newComplaint.getLongitude());
 
 				new SaveTask().execute();
 			}
@@ -144,8 +150,9 @@ public class NewComplaint extends Activity implements OnClickListener{
 
 	}
 
-	@Override //fotograf
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) { 
+	@Override
+	// fotograf
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 		super.onActivityResult(requestCode, resultCode, data);
 
@@ -164,15 +171,15 @@ public class NewComplaint extends Activity implements OnClickListener{
 
 			bTakePic.setVisibility(View.GONE);
 			ivTakenPhoto.setVisibility(View.VISIBLE);
-			ivTakenPhoto.getLayoutParams().height = height*3;
-			ivTakenPhoto.getLayoutParams().width = width*3;
+			ivTakenPhoto.getLayoutParams().height = height * 3;
+			ivTakenPhoto.getLayoutParams().width = width * 3;
 			ivTakenPhoto.setImageBitmap(bmp);
 
 		}
 
 	}
 
-	public class MyLocationListener implements LocationListener { //location
+	public class MyLocationListener implements LocationListener { // location
 
 		@Override
 		public void onLocationChanged(Location loc) {
@@ -182,34 +189,37 @@ public class NewComplaint extends Activity implements OnClickListener{
 
 			position = new LatLng(loc.getLatitude(), loc.getLongitude());
 
-			//			if (place != null) //surekli yeni marker eklememek icin..
-			//				place.remove();
-			//			
-			//			place = myMap.addMarker(new MarkerOptions().position(position)); //konuma marker koyar
+			// if (place != null) //surekli yeni marker eklememek icin..
+			// place.remove();
+			//
+			// place = myMap.addMarker(new MarkerOptions().position(position));
+			// //konuma marker koyar
 			util.addAMarker(myMap, position);
 
-
-			//			myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 15)); //konumu haritada ortalayip, zoom yapar
+			// myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position,
+			// 15)); //konumu haritada ortalayip, zoom yapar
 			util.centerAndZomm(myMap, position, 15);
 
-
-			//			Geocoder gcd = new Geocoder(getBaseContext(), Locale.getDefault());
-			//			try {
-			//				List<Address> addresses = gcd.getFromLocation(latitude, longitude, 1);
+			// Geocoder gcd = new Geocoder(getBaseContext(),
+			// Locale.getDefault());
+			// try {
+			// List<Address> addresses = gcd.getFromLocation(latitude,
+			// longitude, 1);
 			//
-			//				if (addresses.size() > 0)  {
-			//					for (int i=0; i<addresses.get(0).getMaxAddressLineIndex();i++) {
-			//						fullAddress += addresses.get(0).getAddressLine(i) + ",";
-			//					}
-			//					
-			//					tvNewComplaintAdress.setText(fullAddress);	
-			//					fullAddress = ""; //yeni bilgi geldiginde adresler arka arkaya eklenmemeli.
-			//				}
-			//			} catch(Exception e) {
-			//				Log.e("exception", e.getMessage());
-			//			}			
-			tvNewComplaintAdress.setText(util.getAddress(getBaseContext(), position));
-
+			// if (addresses.size() > 0) {
+			// for (int i=0; i<addresses.get(0).getMaxAddressLineIndex();i++) {
+			// fullAddress += addresses.get(0).getAddressLine(i) + ",";
+			// }
+			//
+			// tvNewComplaintAdress.setText(fullAddress);
+			// fullAddress = ""; //yeni bilgi geldiginde adresler arka arkaya
+			// eklenmemeli.
+			// }
+			// } catch(Exception e) {
+			// Log.e("exception", e.getMessage());
+			// }
+			tvNewComplaintAdress.setText(util.getAddress(getBaseContext(),
+					position));
 
 		}
 
@@ -217,6 +227,7 @@ public class NewComplaint extends Activity implements OnClickListener{
 		public void onProviderDisabled(String provider) {
 
 		}
+
 		@Override
 		public void onProviderEnabled(String provider) {
 
@@ -230,21 +241,29 @@ public class NewComplaint extends Activity implements OnClickListener{
 
 	private class SaveTask extends AsyncTask<String, String, String> {
 
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-                newComplaint.save();
-            } catch (IOException e) {
-                // TODO: handle exception
-            }
-            return null;
-        }
+		@Override
+		protected String doInBackground(String... params) {
+			try {
+				newComplaint.save();
+			} catch (IOException e) {
+				// TODO: handle exception
+			}
+			return null;
+		}
 
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-            // TODO kanil: open new activity to display
-        }
+		@Override
+		protected void onPostExecute(String result) {
+			super.onPostExecute(result);
+
+			Toast.makeText(getApplicationContext(),
+					"Your complaint is saved succesfully", Toast.LENGTH_SHORT)
+					.show();
+			
+			Intent anIntent = new Intent(NewComplaint.this,
+                    DetailsActivity.class);
+            anIntent.putExtra("class", newComplaint);
+            startActivity(anIntent);
+		}
 
 	}
 
