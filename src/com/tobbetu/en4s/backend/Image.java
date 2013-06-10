@@ -11,7 +11,6 @@ import org.apache.http.HttpStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.R.string;
 import android.graphics.Bitmap;
 import android.util.Base64;
 import android.util.Log;
