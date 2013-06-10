@@ -182,38 +182,32 @@ public class Complaint implements Serializable {
         // TODO not forget to change that
         HttpResponse get = Requests
                 .get("http://en4s.msimav.net/complaint/recent");
-        String response = null;
-        try {
-            response = Requests.readResponse(get, HttpStatus.SC_OK);
-        } catch (ReturnStatusMismatchException e) {
-            Log.e("Complaint", "[EPIC FAIL] We all are fucked!", e);
-        }
 
+        if (!Requests.checkStatusCode(get, HttpStatus.SC_OK))
+            Log.e("Complaint.getHotList", "[ERROR] Status Code: "
+                    + get.getStatusLine().getStatusCode());
+        String response = Requests.readResponse(get);
         return Complaint.parseList(response);
     }
 
     public static List<Complaint> getNewList() throws IOException {
         HttpResponse get = Requests
                 .get("http://en4s.msimav.net/complaint/recent");
-        String response = null;
-        try {
-            response = Requests.readResponse(get, HttpStatus.SC_OK);
-        } catch (ReturnStatusMismatchException e) {
-            Log.e("Complaint", "[EPIC FAIL] We all are fucked!", e);
-        }
 
+        if (!Requests.checkStatusCode(get, HttpStatus.SC_OK))
+            Log.e("Complaint.getHotList", "[ERROR] Status Code: "
+                    + get.getStatusLine().getStatusCode());
+        String response = Requests.readResponse(get);
         return Complaint.parseList(response);
     }
 
     public static List<Complaint> getTopList() throws IOException {
         HttpResponse get = Requests.get("http://en4s.msimav.net/complaint/top");
-        String response = null;
-        try {
-            response = Requests.readResponse(get, HttpStatus.SC_OK);
-        } catch (ReturnStatusMismatchException e) {
-            Log.e("Complaint", "[EPIC FAIL] We all are fucked!", e);
-        }
 
+        if (!Requests.checkStatusCode(get, HttpStatus.SC_OK))
+            Log.e("Complaint.getHotList", "[ERROR] Status Code: "
+                    + get.getStatusLine().getStatusCode());
+        String response = Requests.readResponse(get);
         return Complaint.parseList(response);
     }
 
@@ -223,13 +217,10 @@ public class Complaint implements Serializable {
                 .get(String
                         .format("http://en4s.msimav.net/complaint/near?latitude=%s&longitude=%s",
                                 Double.toString(lat), Double.toString(lon)));
-        String response = null;
-        try {
-            response = Requests.readResponse(get, HttpStatus.SC_OK);
-        } catch (ReturnStatusMismatchException e) {
-            Log.e("Complaint", "[EPIC FAIL] We all are fucked!", e);
-        }
-
+        if (!Requests.checkStatusCode(get, HttpStatus.SC_OK))
+            Log.e("Complaint.getHotList", "[ERROR] Status Code: "
+                    + get.getStatusLine().getStatusCode());
+        String response = Requests.readResponse(get);
         return Complaint.parseList(response);
     }
 }

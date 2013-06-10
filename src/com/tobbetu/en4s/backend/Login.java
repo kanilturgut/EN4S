@@ -26,7 +26,7 @@ public class Login {
     public void makeRequest() throws IOException, LoginFailedException {
         HttpResponse loginResponse = Requests.post(
                 "http://en4s.msimav.net/login", loginInfo.toString());
-        if (loginResponse.getStatusLine().getStatusCode() == HttpStatus.SC_NOT_FOUND)
+        if (Requests.checkStatusCode(loginResponse, HttpStatus.SC_NOT_FOUND))
             throw new LoginFailedException();
     }
 

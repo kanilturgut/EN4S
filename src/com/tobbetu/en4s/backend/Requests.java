@@ -35,12 +35,13 @@ public class Requests {
     public HttpClient getHttpClient() {
         return httpclient;
     }
-    
+
     public static HttpResponse get(String uri) throws IOException {
         return Requests.get(uri, null);
     }
 
-    public static HttpResponse get(String uri, HttpParams params) throws IOException {
+    public static HttpResponse get(String uri, HttpParams params)
+            throws IOException {
         HttpClient httpclient = Requests.getInstance().getHttpClient();
         HttpGet getRequest = new HttpGet(uri);
         if (params != null) {
@@ -69,33 +70,27 @@ public class Requests {
         return response;
     }
 
-    public static String readResponse(HttpResponse response, int returncode)
-            throws IOException, ReturnStatusMismatchException {
+    public static String readResponse(HttpResponse response) throws IOException {
         StatusLine statusLine = response.getStatusLine();
-        if (statusLine.getStatusCode() == returncode) {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            response.getEntity().writeTo(out);
-            out.close();
-            Log.d("Requests.readResponse",
-                    "[OK] statuscode: " + statusLine.getStatusCode());
-            return out.toString();
-        } else {
-            // Closes the connection.
-            response.getEntity().getContent().close();
-            Log.e("Requests.readResponse", String.format(
-                    "[FAIL] statuscode: %d, expected: %d",
-                    statusLine.getStatusCode(), returncode));
-            throw new ReturnStatusMismatchException(statusLine.getReasonPhrase());
-        }
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        response.getEntity().writeTo(out);
+        out.close();
+        Log.d("Requests.readResponse",
+                "statuscode: " + statusLine.getStatusCode());
+        return out.toString();
 
     }
     
+    public static boolean checkStatusCode(HttpResponse response, int expected) {
+        return response.getStatusLine().getStatusCode() == expected;
+    }
+
     public static HttpParams buildParams(Object... args) {
         HttpParams newParams = new BasicHttpParams();
-        for (int i = 0; i < args.length; i+=2) {
-            newParams.setParameter((String) args[i], args[i+1]);
+        for (int i = 0; i < args.length; i += 2) {
+            newParams.setParameter((String) args[i], args[i + 1]);
         }
-        
+
         return newParams;
     }
 }
