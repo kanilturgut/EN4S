@@ -130,7 +130,6 @@ public class Complaint implements Serializable {
         JSONObject newObj = new JSONObject();
         try {
             newObj.put("title", this.title);
-            newObj.put("date", this.date);
             newObj.put("category", this.category);
             newObj.put("city", this.city);
             newObj.put("address", this.address);
