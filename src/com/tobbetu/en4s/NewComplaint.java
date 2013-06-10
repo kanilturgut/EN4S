@@ -150,9 +150,6 @@ public class NewComplaint extends Activity implements OnClickListener{
 
 			img = new Image();
 
-			byte[] buffer = img.bitmapToByteArray(bmp);
-
-			img.setImageByteArray(buffer);
 			img.setBmp(bmp);
 
 			int height = bmp.getHeight();
