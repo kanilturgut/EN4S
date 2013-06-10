@@ -245,6 +245,7 @@ public class NewComplaint extends Activity implements OnClickListener {
 		protected String doInBackground(String... params) {
 			try {
 				newComplaint.save();
+				img.upload(newComplaint.getId());
 			} catch (IOException e) {
 				// TODO: handle exception
 			}
