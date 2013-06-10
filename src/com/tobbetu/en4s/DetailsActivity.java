@@ -34,18 +34,21 @@ import android.widget.TextView;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.tobbetu.en4s.backend.Complaint;
 
 @SuppressLint("NewApi")
 public class DetailsActivity extends Activity {
 
 	
-	private TextView tvComplaintAdress;
+	private TextView tvComplaintAdress, tvComplaintTitle, tvComplaintCategory, tvReporter, tvReporterDate;
 	
 	private ViewPager mViewPager;
 	
 	private Utils util = null;
 	
 	private GoogleMap myMap;
+	
+	private Complaint comp = null;
 
 
 	@Override
@@ -57,7 +60,15 @@ public class DetailsActivity extends Activity {
 		
 		util = new Utils();
 		
+		comp = (Complaint) getIntent().getSerializableExtra("class");
+		
 		tvComplaintAdress = (TextView) findViewById(R.id.tvComplaintAdress);
+		tvComplaintTitle = (TextView) findViewById(R.id.tvComplaintTitle);
+		tvComplaintCategory = (TextView) findViewById(R.id.tvComplaintCategory);
+		
+		tvReporter = (TextView) findViewById(R.id.tvReporter);
+		tvReporterDate = (TextView) findViewById(R.id.tvReporterDate);
+		
 		
 		mViewPager = new HackyViewPager(this);		
 		LinearLayout linearLayout = (LinearLayout) findViewById(R.id.viewPagerLayout);
@@ -70,13 +81,16 @@ public class DetailsActivity extends Activity {
 		/*Cakma adresi yaratiyorum*/
 				
 		// Burada AsyncTask ile serverdan sorun bilgisi alinip, butun bilgiler set edilecek
-		double cakmaLat = 39.212312;
-		double cakmaLong = 32.123412;
 		
-		LatLng cakmaPos = new LatLng(cakmaLat, cakmaLong);
-		util.addAMarker(myMap, cakmaPos);
-		util.centerAndZomm(myMap, cakmaPos, 15);
-		tvComplaintAdress.setText(util.getAddress(getBaseContext(), cakmaPos));
+		LatLng compPos = new LatLng(comp.getLatitude(), comp.getLongitude());
+		util.addAMarker(myMap, compPos);
+		util.centerAndZomm(myMap, compPos, 15);
+		tvComplaintAdress.setText(comp.getAddress());
+		tvComplaintTitle.setText(comp.getTitle());
+		tvComplaintCategory.setText(comp.getCategory());
+		
+		tvReporter.setText(comp.getReporter());
+		tvReporterDate.setText(comp.getDate());
 		
 		/*Cakma adres yaratma biter*/
 		
@@ -99,7 +113,7 @@ public class DetailsActivity extends Activity {
 			photoView.setOnPhotoTapListener(new OnPhotoTapListener() {
 				@Override
 				public void onPhotoTap(View view, float x, float y) {
-					//Toast.makeText(container.getContext(), "tÄ±klandÄ±", Toast.LENGTH_SHORT).show();
+					//Toast.makeText(container.getContext(), "týklandý", Toast.LENGTH_SHORT).show();
 					//Log.e("image", "tik");
 					Intent intent = new Intent(getApplication(), FullScreenPhotoActivity.class);
 					intent.putExtra("imageId", sDrawables[position]);
