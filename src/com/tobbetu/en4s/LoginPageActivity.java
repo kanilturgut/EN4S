@@ -170,6 +170,10 @@ public class LoginPageActivity extends Activity {
 		protected String doInBackground(String... arg0) {
 			String username = arg0[0];
 			String passwd = arg0[1];
+
+            Log.d(getClass().getName(), "username: " + username);
+            Log.d(getClass().getName(), "passwd: " + passwd);
+
 			Login newLogin = new Login(username, passwd);
 			try {
 				newLogin.makeRequest();
@@ -224,6 +228,8 @@ public class LoginPageActivity extends Activity {
 	}
 
 	private void startIntent() {
+	    Log.d(getClass().getName(), String.format("Location: %s, Login: %s",
+	            locationFlag, loginFlag));
 		if (locationFlag == true && loginFlag == true) {
 
 			Intent i = new Intent(LoginPageActivity.this, MainActivity.class);
