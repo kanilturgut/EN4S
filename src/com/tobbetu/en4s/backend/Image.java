@@ -12,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Base64;
 import android.util.Log;
 
@@ -75,6 +76,13 @@ public class Image {
             // TODO throw exception
             Log.d(getClass().getName(), "Status Code in not 201");
         }
+    }
+
+    public static Image download(String url) throws IOException {
+        Image dl = new Image();
+        byte[] bitmapdata = Requests.download(url);
+        dl.setBmp(BitmapFactory.decodeByteArray(bitmapdata, 0, bitmapdata .length));
+        return dl;
     }
 
 }

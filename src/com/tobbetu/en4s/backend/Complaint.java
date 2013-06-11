@@ -2,6 +2,7 @@ package com.tobbetu.en4s.backend;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,6 +29,8 @@ public class Complaint implements Serializable {
     private double longitude;
     private String address;
     private String city;
+    private List<String> imageURLs = null;
+    private List<Image> images = null;
 
     public Complaint() {
     }
@@ -126,6 +129,25 @@ public class Complaint implements Serializable {
         this.category = category;
     }
 
+    public void setImages(List<String> images) {
+        this.imageURLs = images;
+    }
+
+    public int imageCount() {
+        return imageURLs.size();
+    }
+
+    public Image getImage(int index) throws IOException {
+        if (index > imageURLs.size())
+            throw new IndexOutOfBoundsException();
+        if (images == null)
+            images = new ArrayList<Image>(imageURLs.size());
+        if (images.get(index) == null)
+            images.set(index, Image.download(imageURLs.get(index)));
+        return images.get(index);
+
+    }
+
     public void save() throws IOException {
         Log.d("[JSON]", this.toJSON());
         HttpResponse post = Requests.post("http://en4s.msimav.net/complaint",
@@ -135,7 +157,8 @@ public class Complaint implements Serializable {
             Log.d(getClass().getName(), "Status Code in not 201");
         }
         try {
-            Complaint response = fromJSON(new JSONObject(Requests.readResponse(post)));
+            Complaint response = fromJSON(new JSONObject(
+                    Requests.readResponse(post)));
             this.id = response.id;
             this.date = response.date;
             this.reporter = response.reporter;
@@ -181,6 +204,15 @@ public class Complaint implements Serializable {
         JSONArray geo = elem.optJSONArray("location");
         obj.setLatitude(geo.optDouble(0, 0));
         obj.setLongitude(geo.optDouble(1, 0));
+
+        if (elem.has("pics")) {
+            JSONArray pics = elem.optJSONArray("pics");
+            ArrayList<String> picsList = new ArrayList<String>();
+            for (int i = 0; i < pics.length(); i++) {
+                picsList.add(pics.optString(i));
+            }
+            obj.setImages(picsList);
+        }
 
         return obj;
     }

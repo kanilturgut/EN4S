@@ -1,8 +1,11 @@
 package com.tobbetu.en4s.backend;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -78,6 +81,28 @@ public class Requests {
         response = httpclient.execute(postRequest);
 
         return response;
+    }
+
+    public static byte[] download(String image) throws IOException {
+        URL url = null;
+        try {
+            url = new URL("http://en4s.msimav.net" + image);
+        } catch (MalformedURLException e) {
+            Log.e("Requests.download", "MalformedURLException] URL: " + image,
+                    e);
+        }
+        BufferedInputStream in = new BufferedInputStream(url.openStream());
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        byte[] buf = new byte[1024];
+        int n = 0;
+        while (-1 != (n = in.read(buf))) {
+            out.write(buf, 0, n);
+        }
+        out.close();
+        in.close();
+
+        return out.toByteArray();
     }
 
     public static String readResponse(HttpResponse response) throws IOException {
