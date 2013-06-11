@@ -52,19 +52,12 @@ public class LoginPageActivity extends Activity {
 					Toast.LENGTH_SHORT).show();
 			finish();
 		} else {
-
 			// startService(new Intent(this, EN4SService.class));
 
 			lManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 			LocationListener mlocListener = new LoginPageLocationListener();
 			lManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
 					0, 0, mlocListener);
-
-			// Burada sessionID ile HTTP POST yapilacak, olumlu donerse giris
-			// olacak
-			// olumsuz donerse kullanici adi ve sifre ile yeni bir baglanti
-			// gerceklestirilecek ve
-			// yeni sessionID guncellenecek.
 
 			setContentView(R.layout.activity_login_page);
 			getActionBar().hide();
@@ -163,7 +156,7 @@ public class LoginPageActivity extends Activity {
 
 		@Override
 		protected void onPreExecute() {
-			lockToScreen();
+			lockToComponents();
 		}
 		
 		@Override
@@ -205,21 +198,6 @@ public class LoginPageActivity extends Activity {
 
 	}
 
-	// class LocationTask extends AsyncTask<String, String, String> {
-	//
-	// @Override
-	// protected String doInBackground(String... arg0) {
-	// // TODO kanil will implement here
-	// return null;
-	// }
-	//
-	// @Override
-	// protected void onPostExecute(String result) {
-	// locationFlag = true;
-	// startIntent();
-	// }
-	// }
-
 	private boolean isNetworkAvailable() {
 		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo activeNetworkInfo = connectivityManager
@@ -240,19 +218,14 @@ public class LoginPageActivity extends Activity {
 
 			loginFlag = false;
 
-		} else {
-			// ikisi birden false gelirse, biraz bekleyip yeniden bakmaliyiz.
-		}
+		} 
 	}
 	
-	private void lockToScreen() {
-		
+	private void lockToComponents() {
 		etUsername.setVisibility(View.INVISIBLE);
 		etPassword.setVisibility(View.INVISIBLE);
-		pbLogin.setVisibility(View.VISIBLE);
 		bLogin.setVisibility(View.INVISIBLE);
+		pbLogin.setVisibility(View.VISIBLE);
 
-		
-	}
-
+	}	
 }
