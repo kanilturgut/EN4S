@@ -16,14 +16,17 @@
 package com.tobbetu.en4s;
 
 
+import java.io.IOException;
+
 import uk.co.senab.photoview.PhotoView;
-import uk.co.senab.photoview.PhotoViewAttacher.OnPhotoTapListener;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -43,7 +46,9 @@ public class DetailsActivity extends Activity {
 	private TextView tvComplaintAdress, tvComplaintTitle, tvComplaintCategory, tvReporter, tvReporterDate;
 	
 	private ViewPager mViewPager;
-	
+	private PhotoView photoView;
+	private Bitmap bmp;
+		
 	private Utils util = null;
 	
 	private GoogleMap myMap;
@@ -74,6 +79,8 @@ public class DetailsActivity extends Activity {
 		LinearLayout linearLayout = (LinearLayout) findViewById(R.id.viewPagerLayout);
 		linearLayout.addView(mViewPager);		
 		mViewPager.setAdapter(new SamplePagerAdapter());
+		
+		new ImageTask().execute(0);
 			
 		myMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.mapDetails)).getMap();		
 		myMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
@@ -98,28 +105,31 @@ public class DetailsActivity extends Activity {
 
 	class SamplePagerAdapter extends PagerAdapter {
 
-		private int[] sDrawables = { R.drawable.img1, R.drawable.img2, R.drawable.img3 };
+
+
+	//	private int[] sDrawables = { R.drawable.img1, R.drawable.img2, R.drawable.img3 };
 
 		@Override
 		public int getCount() {
-			return sDrawables.length;
+			return comp.imageCount();
 		}
 
 		@Override
 		public View instantiateItem(final ViewGroup container, final int position) {
-			PhotoView photoView = new PhotoView(container.getContext());
-			photoView.setImageResource(sDrawables[position]);
+			photoView = new PhotoView(container.getContext());
 			
-			photoView.setOnPhotoTapListener(new OnPhotoTapListener() {
-				@Override
-				public void onPhotoTap(View view, float x, float y) {
-					//Toast.makeText(container.getContext(), "týklandý", Toast.LENGTH_SHORT).show();
-					//Log.e("image", "tik");
-					Intent intent = new Intent(getApplication(), FullScreenPhotoActivity.class);
-					intent.putExtra("imageId", sDrawables[position]);
-					startActivity(intent);
-				}
-			});
+			
+			
+//			photoView.setOnPhotoTapListener(new OnPhotoTapListener() {
+//				@Override
+//				public void onPhotoTap(View view, float x, float y) {
+//					//Toast.makeText(container.getContext(), "týklandý", Toast.LENGTH_SHORT).show();
+//					//Log.e("image", "tik");
+//					Intent intent = new Intent(getApplication(), FullScreenPhotoActivity.class);
+//					intent.putExtra("imageId", sDrawables[position]);
+//					startActivity(intent);
+//				}
+//			});
 			
 //			photoView.setOnTouchListener(new OnTouchListener() {
 //				
@@ -147,5 +157,27 @@ public class DetailsActivity extends Activity {
 			return view == object;
 		}
 
+	}
+	
+	class ImageTask extends AsyncTask<Integer, String, String> {
+
+		@Override
+		protected String doInBackground(Integer... params) {
+			
+			try {				
+				Log.d("ImageTask", "istek yapildi1");
+				bmp = comp.getImage(params[0]).getBmp();
+				Log.d("ImageTask", "istek yapildi");
+				
+			} catch (IOException e) {
+				Log.e(getClass().getName(), "Image couldn't load", e);
+			}			
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(String result) {		
+			photoView.setImageBitmap(bmp);			
+		}	
 	}
 }

@@ -30,7 +30,7 @@ public class Complaint implements Serializable {
     private String address;
     private String city;
     private List<String> imageURLs = null;
-    private List<Image> images = null;
+    private List<Image> images = new ArrayList<Image>();
 
     public Complaint() {
     }
@@ -140,12 +140,13 @@ public class Complaint implements Serializable {
     public Image getImage(int index) throws IOException {
         if (index > imageURLs.size())
             throw new IndexOutOfBoundsException();
-        if (images == null)
-            images = new ArrayList<Image>(imageURLs.size());
-        if (images.get(index) == null)
-            images.set(index, Image.download(imageURLs.get(index)));
-        return images.get(index);
 
+        try {
+        	return images.get(index);
+		} catch (IndexOutOfBoundsException e) {
+			images.add(index, Image.download(imageURLs.get(index)));
+			return images.get(index);
+		}
     }
 
     public void save() throws IOException {
