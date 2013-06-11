@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.tobbetu.en4s.backend.Login;
@@ -28,6 +29,7 @@ public class LoginPageActivity extends Activity {
 
 	private Button bLogin = null;
 	private EditText etUsername, etPassword;
+	private ProgressBar pbLogin = null;
 
 	private String sharedFileName = "loginInfo";
 	protected static SharedPreferences loginPreferences;
@@ -71,12 +73,14 @@ public class LoginPageActivity extends Activity {
 
 			bLogin = (Button) findViewById(R.id.bLogin);
 			bLogin.setOnClickListener(loginButtonListener);
+			
+			pbLogin = (ProgressBar) findViewById(R.id.pbLogin);
 
 			loginPreferences = getSharedPreferences(sharedFileName,
 					MODE_PRIVATE);
 			if ((loginPreferences.getAll().size() != 0) && flag == false) {
 				flag = true;
-
+				
 				new LoginTask().execute(
 						loginPreferences.getString("username", ""),
 						loginPreferences.getString("password", ""));
@@ -110,7 +114,7 @@ public class LoginPageActivity extends Activity {
 				/* Share Share Share Preferences */
 
 				// unique bir kullanici mi ?
-
+								
 				new LoginTask().execute(etUsername.getText().toString(),
 						etPassword.getText().toString());
 			}
@@ -157,6 +161,11 @@ public class LoginPageActivity extends Activity {
 
 	class LoginTask extends AsyncTask<String, String, String> {
 
+		@Override
+		protected void onPreExecute() {
+			lockToScreen();
+		}
+		
 		@Override
 		protected String doInBackground(String... arg0) {
 			String username = arg0[0];
@@ -228,6 +237,16 @@ public class LoginPageActivity extends Activity {
 		} else {
 			// ikisi birden false gelirse, biraz bekleyip yeniden bakmaliyiz.
 		}
+	}
+	
+	private void lockToScreen() {
+		
+		etUsername.setVisibility(View.INVISIBLE);
+		etPassword.setVisibility(View.INVISIBLE);
+		pbLogin.setVisibility(View.VISIBLE);
+		bLogin.setVisibility(View.INVISIBLE);
+
+		
 	}
 
 }
