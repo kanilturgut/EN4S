@@ -14,10 +14,9 @@
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/colors"
         android:layout_below="@+id/tabs"
         tools:context=".MainActivity" />
-
+<!-- 
     <LinearLayout
         android:id="@+id/colors"
         android:layout_width="match_parent"
@@ -82,6 +81,6 @@
             android:onClick="onColorClicked"
             android:tag="#FF5161BC" />
     </LinearLayout>
-    
+     -->
     
 </RelativeLayout>

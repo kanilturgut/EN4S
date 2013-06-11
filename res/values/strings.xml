@@ -20,5 +20,6 @@
     <string name="takePictureButton">Take a Pic</string>
     <string name="etNewComplaint">Enter your complaint</string>
     <string name="tvCategories">Pick a category</string>
+    <string name="loginButton">Login</string>
 
 </resources>
