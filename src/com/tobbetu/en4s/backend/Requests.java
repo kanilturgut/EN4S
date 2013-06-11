@@ -1,17 +1,15 @@
 package com.tobbetu.en4s.backend;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URL;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
@@ -83,24 +81,35 @@ public class Requests {
         return response;
     }
 
-    public static byte[] download(String image) throws IOException {
-        URL url = null;
-        try {
-            url = new URL("http://en4s.msimav.net" + image);
-        } catch (MalformedURLException e) {
-            Log.e("Requests.download", "MalformedURLException] URL: " + image,
-                    e);
-        }
-        BufferedInputStream in = new BufferedInputStream(url.openStream());
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+    public static HttpResponse put(String uri, String data) throws IOException {
+        HttpClient httpclient = Requests.getInstance().getHttpClient();
+        HttpResponse response;
+        HttpPut putRequest = new HttpPut(uri);
+        putRequest.setHeader("Accept", "application/json");
 
-        byte[] buf = new byte[1024];
-        int n = 0;
-        while (-1 != (n = in.read(buf))) {
-            out.write(buf, 0, n);
+        if (data != null) {
+            StringEntity input = null;
+            try {
+                input = new StringEntity(data, HTTP.UTF_8);
+            } catch (UnsupportedEncodingException e) {
+                Log.e("Requests.post",
+                        "Unexpected UnsupportedEncodingException", e);
+            }
+            input.setContentType("application/json; charset=UTF-8");
+            input.setContentEncoding("UTF-8");
+            putRequest.setEntity(input);
         }
+
+        response = httpclient.execute(putRequest);
+        return response;
+    }
+
+    public static byte[] download(String image) throws IOException {
+        HttpResponse get = Requests.get("http://en4s.msimav.net" + image);
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        get.getEntity().writeTo(out);
         out.close();
-        in.close();
 
         return out.toByteArray();
     }
