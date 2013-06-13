@@ -262,6 +262,8 @@ public class NewComplaint extends Activity implements OnClickListener {
 			
 			Intent anIntent = new Intent(NewComplaint.this,
                     DetailsActivity.class);
+			anIntent.putExtra("latitude", latitude);
+			anIntent.putExtra("longitude", longitude);
             anIntent.putExtra("class", newComplaint);
             startActivity(anIntent);
 		}
