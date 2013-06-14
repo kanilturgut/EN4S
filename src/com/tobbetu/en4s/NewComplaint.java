@@ -1,15 +1,20 @@
 package com.tobbetu.en4s;
 
+import java.io.File;
 import java.io.IOException;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -56,6 +61,8 @@ public class NewComplaint extends Activity implements OnClickListener {
 	private String category;
 
 	private String TAG = "NewComplaint";
+	
+	private Uri mImageUri;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -88,22 +95,22 @@ public class NewComplaint extends Activity implements OnClickListener {
 				.createFromResource(this, R.array.categories,
 						android.R.layout.simple_spinner_item);
 		spinnerAdapter
-				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		categoriesSpinner.setAdapter(spinnerAdapter);
 		categoriesSpinner
-				.setOnItemSelectedListener(new OnItemSelectedListener() {
+		.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-					@Override
-					public void onItemSelected(AdapterView<?> arg0, View arg1,
-							int arg2, long arg3) {
-						category = arg0.getItemAtPosition(arg2).toString();
-					}
+			@Override
+			public void onItemSelected(AdapterView<?> arg0, View arg1,
+					int arg2, long arg3) {
+				category = arg0.getItemAtPosition(arg2).toString();
+			}
 
-					@Override
-					public void onNothingSelected(AdapterView<?> arg0) {
-						category = "All"; // default category
-					}
-				});
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0) {
+				category = "All"; // default category
+			}
+		});
 
 	}
 
@@ -114,12 +121,32 @@ public class NewComplaint extends Activity implements OnClickListener {
 		return true;
 	}
 
+	private File createTemporaryFile(String part, String ext) throws Exception {
+		File tempDir= Environment.getExternalStorageDirectory();
+		tempDir=new File(tempDir.getAbsolutePath() + "/.temp/");
+		if(!tempDir.exists()) {
+			tempDir.mkdir();
+		}
+		return File.createTempFile(part, ext, tempDir);
+	}
+	
 	@Override
 	public void onClick(View v) {
 
 		if (v.getId() == R.id.bTakePhoto) {
-			Intent cameraIntent = new Intent(
-					android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+			Intent cameraIntent = new Intent("android.media.action.IMAGE_CAPTURE");
+			File photo = null;
+			try {
+				photo = this.createTemporaryFile("picture", ".jpg");
+				photo.delete();
+			}
+			catch(Exception e) {
+				Log.v(TAG, "Can't create file to take picture!");
+				//		        Toast.makeText(activity, "Please check SD card! Image shot is impossible!", 10000);
+				//		        return false;
+			}
+			mImageUri = Uri.fromFile(photo);
+			cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
 			startActivityForResult(cameraIntent, 0);
 		} else {
 
@@ -150,6 +177,23 @@ public class NewComplaint extends Activity implements OnClickListener {
 
 	}
 
+	public Bitmap grabImage(){
+	    this.getContentResolver().notifyChange(mImageUri, null);
+	    ContentResolver cr = this.getContentResolver();
+	    Bitmap bitmap;
+	    try{
+	        bitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
+	        Log.e("Failed to load", bitmap.getHeight() + "");
+	        return bitmap;
+	    }
+	    catch (Exception e)
+	    {
+	        //Toast.makeText(this, "Failed to load", Toast.LENGTH_SHORT).show();
+	        Log.d(TAG, "Failed to load", e);
+	    }
+	    return null;
+	}
+	
 	@Override
 	// fotograf
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -157,11 +201,10 @@ public class NewComplaint extends Activity implements OnClickListener {
 		super.onActivityResult(requestCode, resultCode, data);
 
 		if (resultCode == RESULT_OK) {
-			Bundle extras = data.getExtras();
-			bmp = (Bitmap) extras.get("data");
-
+//			Bundle extras = data.getExtras();
+			bmp = (Bitmap) grabImage();
+		
 			img = new Image();
-
 			img.setBmp(bmp);
 
 			int height = bmp.getHeight();
@@ -171,8 +214,8 @@ public class NewComplaint extends Activity implements OnClickListener {
 
 			bTakePic.setVisibility(View.GONE);
 			ivTakenPhoto.setVisibility(View.VISIBLE);
-			ivTakenPhoto.getLayoutParams().height = height * 3;
-			ivTakenPhoto.getLayoutParams().width = width * 3;
+			ivTakenPhoto.getLayoutParams().height = height;
+			ivTakenPhoto.getLayoutParams().width = width;
 			ivTakenPhoto.setImageBitmap(bmp);
 
 		}
@@ -260,13 +303,13 @@ public class NewComplaint extends Activity implements OnClickListener {
 			Toast.makeText(getApplicationContext(),
 					"Your complaint is saved succesfully", Toast.LENGTH_SHORT)
 					.show();
-			
+
 			Intent anIntent = new Intent(NewComplaint.this,
-                    DetailsActivity.class);
+					DetailsActivity.class);
 			anIntent.putExtra("latitude", latitude);
 			anIntent.putExtra("longitude", longitude);
-            anIntent.putExtra("class", newComplaint);
-            startActivity(anIntent);
+			anIntent.putExtra("class", newComplaint);
+			startActivity(anIntent);
 		}
 
 	}
