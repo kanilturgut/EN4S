@@ -133,6 +133,12 @@ public class Complaint implements Serializable {
         this.imageURLs = images;
     }
 
+    public void addJustUploadedImage(String url) {
+        if(this.imageURLs == null)
+            this.imageURLs = new ArrayList<String>();
+        imageURLs.add(url);
+    }
+
     public int imageCount() {
         return imageURLs.size();
     }

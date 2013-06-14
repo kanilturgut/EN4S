@@ -68,20 +68,30 @@ public class Image {
         return image.toString();
     }
 
-    public void upload(String oid) throws IOException {
+    public String upload(String oid) throws IOException {
         Log.d("[JSON]", this.toJSON());
-        HttpResponse post = Requests.post("http://en4s.msimav.net/upload/" + oid,
-                this.toJSON());
+        HttpResponse post = Requests.post("http://en4s.msimav.net/upload/"
+                + oid, this.toJSON());
         if (!Requests.checkStatusCode(post, HttpStatus.SC_CREATED)) {
             // TODO throw exception
             Log.d(getClass().getName(), "Status Code in not 201");
+        } else {
+            String response = Requests.readResponse(post);
+            try {
+                JSONObject img = new JSONObject(response);
+                return img.optString("path", "");
+            } catch (JSONException e) {
+                Log.e(getClass().getName(), "JSONException throwed", e);
+            }
         }
+        return "";
     }
 
     public static Image download(String url) throws IOException {
         Image dl = new Image();
         byte[] bitmapdata = Requests.download(url);
-        dl.setBmp(BitmapFactory.decodeByteArray(bitmapdata, 0, bitmapdata .length));
+        dl.setBmp(BitmapFactory.decodeByteArray(bitmapdata, 0,
+                bitmapdata.length));
         return dl;
     }
 
