@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.tobbetu.en4s.backend.Complaint;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +27,7 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
 		this.complaints = complaints;
 	}
 
+	@SuppressLint("DefaultLocale")
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -36,15 +39,45 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
 
 		ImageView image = (ImageView) rowView.findViewById(R.id.ivImage);
 		TextView complaintTitle = (TextView) rowView.findViewById(R.id.tvItem);
-		TextView complaintDate = (TextView) rowView.findViewById(R.id.tvVoteState);
-		TextView complaintAddress = (TextView) rowView.findViewById(R.id.textView1);
-		ImageView imageArrow = (ImageView) rowView.findViewById(R.id.ivArrow);
+		//TextView complaintVote = (TextView) rowView.findViewById(R.id.tvVoteState);
+		
+		TextView complaintAddress = (TextView) rowView.findViewById(R.id.textCity);
+		TextView complaintUpVote = (TextView) rowView.findViewById(R.id.upVoteTW);
+		TextView complaintDownVote = (TextView) rowView.findViewById(R.id.downVoteTW);
+		
+		//ImageView imageArrow = (ImageView) rowView.findViewById(R.id.ivArrow);
 
-		image.setImageResource(R.drawable.ic_launcher);
-		complaintTitle.setText(complaints.get(position).getTitle());
-		complaintDate.setText(complaints.get(position).getDate());
-		complaintAddress.setText(complaints.get(position).getAddress());
-		imageArrow.setImageResource(R.drawable.right_arrow);
+		Log.e("Type -> ", complaints.get(position).getCategory());
+		if(complaints.get(position).getCategory().equals("Traffic")){
+			image.setImageResource(R.drawable.type1);
+		}
+		else if(complaints.get(position).getCategory().equals("Infrastructure")){
+			image.setImageResource(R.drawable.type2);
+		}
+		else if(complaints.get(position).getCategory().equals("Environment")){
+			image.setImageResource(R.drawable.type3);
+		}
+		else if(complaints.get(position).getCategory().equals("Disable")){
+			image.setImageResource(R.drawable.type4);
+		}
+		else{
+			image.setImageResource(R.drawable.type5);
+		}
+		
+		//image.setImageResource(R.drawable.ic_launcher);
+		if(complaints.get(position).getTitle().length() > 20){
+			complaintTitle.setText(complaints.get(position).getTitle().trim().substring(0, 20) + "...");
+		}
+		else{
+			complaintTitle.setText(complaints.get(position).getTitle().trim());
+		}
+		complaintAddress.setText("at " + complaints.get(position).getCity().toUpperCase());
+		complaintUpVote.setText("10");
+		complaintDownVote.setText("12");
+		
+		//complaintVote.setText(complaints.get(position).getDate());
+		//complaintAddress.setText(complaints.get(position).getAddress());
+		//imageArrow.setImageResource(R.drawable.right_arrow);
 		
 		return rowView;
 
