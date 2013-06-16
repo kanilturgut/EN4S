@@ -178,6 +178,24 @@ public class Complaint implements Serializable {
         }
     }
 
+    public void upvote(String location) throws IOException {
+        HttpResponse put = Requests.put(String.format(
+                "http://en4s.msimav.net/complaint/%s/upvote", this.id), location);
+        if (Requests.checkStatusCode(put, HttpStatus.SC_NOT_ACCEPTABLE)) {
+            Log.e(getClass().getName(), "Upvote Rejected");
+            // TODO throw new Exception("Upvote Rejected");
+        }
+    }
+
+    public void downvote(String location) throws IOException {
+        HttpResponse put = Requests.put(String.format(
+                "http://en4s.msimav.net/complaint/%s/downvote", this.id), location);
+        if (Requests.checkStatusCode(put, HttpStatus.SC_NOT_ACCEPTABLE)) {
+            Log.e(getClass().getName(), "Upvote Rejected");
+            // TODO throw new Exception("Upvote Rejected");
+        }
+    }
+
     public String toJSON() {
         JSONObject newObj = new JSONObject();
         try {

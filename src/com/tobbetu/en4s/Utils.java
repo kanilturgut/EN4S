@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -161,4 +164,15 @@ public class Utils {
 		return (result[0] < 5000);
 
 	}
+
+	public static String locationToJSON(double lat, double lon) {
+        JSONObject loc = new JSONObject();
+        try {
+            loc.put("latitude", lat);
+            loc.put("longitude", lon);
+        } catch (JSONException e) {
+            Log.e("Utils.locationToJSON", "JSONException throwed", e);
+        }
+        return loc.toString();
+    }
 }
