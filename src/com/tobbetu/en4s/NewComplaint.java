@@ -51,6 +51,7 @@ public class NewComplaint extends Activity implements OnClickListener {
 	// private Marker place = null;
 	private LocationManager lManager = null;
 	private LatLng position = null;
+	private LatLng temp = null;
 	private double latitude = 0;
 	private double longitude = 0;
 
@@ -217,6 +218,11 @@ public class NewComplaint extends Activity implements OnClickListener {
 			ivTakenPhoto.getLayoutParams().height = height;
 			ivTakenPhoto.getLayoutParams().width = width;
 			ivTakenPhoto.setImageBitmap(bmp);
+			
+			/*Kullanici fotograf cektiken sonra, send butonuna basmayi unutup aradan biraz zaman gectikten sonra
+			 * farkederse konum bilgisi degismis oluyor. Bize yollayinca da yanlis konum almis oluyoruz. Bu sebeple
+			 * fotograf cekildigi siradaki konumu kaydetmeli ve send butonuna basilinca o konumu yollamaliyiz*/
+			position = temp;
 
 		}
 
@@ -230,39 +236,13 @@ public class NewComplaint extends Activity implements OnClickListener {
 			latitude = loc.getLatitude();
 			longitude = loc.getLongitude();
 
-			position = new LatLng(loc.getLatitude(), loc.getLongitude());
+			temp = new LatLng(loc.getLatitude(), loc.getLongitude());
 
-			// if (place != null) //surekli yeni marker eklememek icin..
-			// place.remove();
-			//
-			// place = myMap.addMarker(new MarkerOptions().position(position));
-			// //konuma marker koyar
-			util.addAMarker(myMap, position);
-
-			// myMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position,
-			// 15)); //konumu haritada ortalayip, zoom yapar
-			util.centerAndZomm(myMap, position, 15);
-
-			// Geocoder gcd = new Geocoder(getBaseContext(),
-			// Locale.getDefault());
-			// try {
-			// List<Address> addresses = gcd.getFromLocation(latitude,
-			// longitude, 1);
-			//
-			// if (addresses.size() > 0) {
-			// for (int i=0; i<addresses.get(0).getMaxAddressLineIndex();i++) {
-			// fullAddress += addresses.get(0).getAddressLine(i) + ",";
-			// }
-			//
-			// tvNewComplaintAdress.setText(fullAddress);
-			// fullAddress = ""; //yeni bilgi geldiginde adresler arka arkaya
-			// eklenmemeli.
-			// }
-			// } catch(Exception e) {
-			// Log.e("exception", e.getMessage());
-			// }
+			util.addAMarker(myMap, temp);
+			util.centerAndZomm(myMap, temp, 15);
+			
 			tvNewComplaintAdress.setText(util.getAddress(getBaseContext(),
-					position));
+					temp));
 
 		}
 
