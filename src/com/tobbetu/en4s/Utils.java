@@ -147,9 +147,10 @@ public class Utils {
 	 * 
 	 * @param customerPosition
 	 * @param complaintPos
-	 * @return aldigi iki LatLng pozisyonu arasindaki mesafeyi metre cinsinden hesaplar ve doner.
+	 * @return iki pozisyon arasindaki mesafe 5 kilometreden az ise true,
+	 * 		   degilse false doner.
 	 */
-	public double calculateDistance(LatLng customerPosition,
+	public boolean calculateDistance(LatLng customerPosition,
 			LatLng complaintPos) {
 
 		float[] result = new float[1];
@@ -157,7 +158,7 @@ public class Utils {
 				customerPosition.longitude, complaintPos.latitude,
 				complaintPos.longitude, result);
 
-		return result[0];
+		return (result[0] < 5000);
 
 	}
 }

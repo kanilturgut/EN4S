@@ -158,6 +158,8 @@ public class TabCreator extends Fragment {
                 Intent anIntent = new Intent(getActivity(),
                         DetailsActivity.class);
                 anIntent.putExtra("class", temp);
+                anIntent.putExtra("latitude", latitude);
+                anIntent.putExtra("longitude", longitude);
                 startActivity(anIntent);
             }
 

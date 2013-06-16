@@ -21,5 +21,6 @@
     <string name="etNewComplaint">Enter your complaint</string>
     <string name="tvCategories">Pick a category</string>
     <string name="loginButton">Login</string>
+    <string name="tvYouAreNotAllowed">Your not allowed to vote this complaint, because you are not close enough</string>
 
 </resources>
