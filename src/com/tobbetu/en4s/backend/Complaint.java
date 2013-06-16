@@ -2,7 +2,10 @@ package com.tobbetu.en4s.backend;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,7 +23,7 @@ public class Complaint implements Serializable {
 
     private String id;
     private String title;
-    private String date;
+    private Date date;
     private String reporter;
     private String category;
     private int upVote;
@@ -35,7 +38,7 @@ public class Complaint implements Serializable {
     public Complaint() {
     }
 
-    public Complaint(String title, String date, String address) {
+    public Complaint(String title, Date date, String address) {
         this.title = title;
         this.date = date;
         this.address = address;
@@ -105,11 +108,11 @@ public class Complaint implements Serializable {
         this.title = title;
     }
 
-    public String getDate() {
+    public Date getDate() {
         return date;
     }
 
-    public void setDate(String date) {
+    public void setDate(Date date) {
         this.date = date;
     }
 
@@ -225,6 +228,14 @@ public class Complaint implements Serializable {
         obj.setDownVote(elem.optInt("downvote_count", 0));
         obj.setAddress(elem.optString("address"));
         obj.setCity(elem.optString("city"));
+
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
+        try {
+            obj.setDate(df.parse(elem.optString("date")));
+        } catch (ParseException e) {
+            Log.e("Complaint.fromJSON",
+                    "Date Parse Error: " + elem.optString("date"), e);
+        }
 
         JSONArray geo = elem.optJSONArray("location");
         obj.setLatitude(geo.optDouble(0, 0));

@@ -117,7 +117,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 		tvComplaintCategory.setText(comp.getCategory());
 
 		tvReporter.setText(comp.getReporter());
-		tvReporterDate.setText(comp.getDate());
+		tvReporterDate.setText(comp.getDate().toString());
 
 		/* Cakma adres yaratma biter */
 
