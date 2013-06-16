@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.location.Address;
 import android.location.Geocoder;
+import android.location.Location;
 import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -22,9 +23,12 @@ public class Utils {
 	private Marker place = null;
 
 	/**
+	 * 
+	 * @param map
+	 * @param position
+	 * 
 	 * Parametre olarak aldigi harita uzerindeki, LatLng ile gosterilen konuma
 	 * marker ekler.
-	 * 
 	 */
 	public void addAMarker(GoogleMap map, LatLng position) {
 
@@ -43,6 +47,10 @@ public class Utils {
 
 	/**
 	 * 
+	 * @param map
+	 * @param position
+	 * @param zoom
+	 * 
 	 * Harita uzerinde belirtilen konumu ekranda ortalayip, zoom yapar.
 	 */
 	public void centerAndZomm(GoogleMap map, LatLng position, int zoom) {
@@ -50,7 +58,10 @@ public class Utils {
 	}
 
 	/**
-	 * Parametre olarak aldigi konumun acik adresini doner.
+	 * 
+	 * @param context
+	 * @param position
+	 * @return Parametre olarak aldigi konumun acik adresini doner.
 	 */
 	public String getAddress(Context context, LatLng position) {
 
@@ -76,20 +87,20 @@ public class Utils {
 	public String getCity(Context context, LatLng position) {
 
 		String city = null;
-		
+
 		Geocoder gcd = new Geocoder(context, Locale.getDefault());
 		List<Address> addresses;
 		try {
 			addresses = gcd.getFromLocation(position.latitude,
 					position.longitude, 1);
-			
+
 			if (addresses.size() > 0)
 				city = addresses.get(0).getLocality();
-			
+
 		} catch (IOException e) {
 			Log.e(getClass().getName(), "Couldn't get city name", e);
 		}
-	
+
 		return city;
 	}
 
@@ -132,4 +143,21 @@ public class Utils {
 		alertDialog.show();
 	}
 
+	/**
+	 * 
+	 * @param customerPosition
+	 * @param complaintPos
+	 * @return aldigi iki LatLng pozisyonu arasindaki mesafeyi metre cinsinden hesaplar ve doner.
+	 */
+	public double calculateDistance(LatLng customerPosition,
+			LatLng complaintPos) {
+
+		float[] result = new float[1];
+		Location.distanceBetween(customerPosition.latitude,
+				customerPosition.longitude, complaintPos.latitude,
+				complaintPos.longitude, result);
+
+		return result[0];
+
+	}
 }
