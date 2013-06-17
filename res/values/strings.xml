@@ -22,5 +22,7 @@
     <string name="tvCategories">Pick a category</string>
     <string name="loginButton">Login</string>
     <string name="tvYouAreNotAllowed">Your not allowed to vote this complaint, because you are not close enough</string>
+    <string name="problem">What is the problem ?</string>
+    <string name="sendButton">Send It!</string>
 
 </resources>
