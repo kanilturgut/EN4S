@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">EN4S</string>
+    <string name="app_name">Enforce</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="username">Username</string>
@@ -24,5 +24,6 @@
     <string name="tvYouAreNotAllowed">Your not allowed to vote this complaint, because you are not close enough</string>
     <string name="problem">What is the problem ?</string>
     <string name="sendButton">Send It!</string>
+    <string name="newComplaintButton">New Complaint</string>
 
 </resources>
