@@ -3,10 +3,12 @@ package com.tobbetu.en4s;
 import java.io.File;
 import java.io.IOException;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -16,6 +18,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -26,6 +29,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +40,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.tobbetu.en4s.backend.Complaint;
 import com.tobbetu.en4s.backend.Image;
 
+@SuppressLint("NewApi")
 public class NewComplaint extends Activity implements OnClickListener {
 
 	private Button bPush;
@@ -44,6 +49,7 @@ public class NewComplaint extends Activity implements OnClickListener {
 	private EditText etComplaintTitle;
 	private TextView tvNewComplaintAdress;
 	private Spinner categoriesSpinner;
+	private LinearLayout photoButtonLL;
 
 	private Utils util = null;
 
@@ -73,6 +79,7 @@ public class NewComplaint extends Activity implements OnClickListener {
 
 		util = new Utils();
 
+		photoButtonLL = (LinearLayout) findViewById(R.id.photoButtonLL);
 		etComplaintTitle = (EditText) findViewById(R.id.etNewComplaint);
 		tvNewComplaintAdress = (TextView) findViewById(R.id.tvNewComplaintAdress);
 		ivTakenPhoto = (ImageView) findViewById(R.id.ivTakenPhoto);
@@ -89,7 +96,7 @@ public class NewComplaint extends Activity implements OnClickListener {
 
 		myMap = ((MapFragment) getFragmentManager().findFragmentById(
 				R.id.mapNewComplaint)).getMap();
-		myMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+		myMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
 		categoriesSpinner = (Spinner) findViewById(R.id.spinnerNewComplaintCategory);
 		ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter
@@ -203,10 +210,10 @@ public class NewComplaint extends Activity implements OnClickListener {
 
 		if (resultCode == RESULT_OK) {
 //			Bundle extras = data.getExtras();
-			bmp = (Bitmap) grabImage();
+			bmp = (Bitmap) grabImage(); // Resimin orjinal hali
 		
 			img = new Image();
-			img.setBmp(bmp);
+//			img.setBmp(bmp);
 
 			int height = bmp.getHeight();
 			int width = bmp.getWidth();
@@ -215,9 +222,25 @@ public class NewComplaint extends Activity implements OnClickListener {
 
 			bTakePic.setVisibility(View.GONE);
 			ivTakenPhoto.setVisibility(View.VISIBLE);
-			ivTakenPhoto.getLayoutParams().height = height;
-			ivTakenPhoto.getLayoutParams().width = width;
-			ivTakenPhoto.setImageBitmap(bmp);
+			//ivTakenPhoto.getLayoutParams().height = height;
+			//ivTakenPhoto.getLayoutParams().width = width;
+	
+			Display display = getWindowManager().getDefaultDisplay();
+			Point size = new Point();
+			display.getSize(size);
+			int tmpWidth = size.x;
+			int tmpHeight = photoButtonLL.getLayoutParams().height;
+			
+			if(tmpWidth > 600){
+				tmpWidth = bmp.getWidth();
+				tmpHeight = (int) ((double)(bmp.getWidth() / tmpWidth) * tmpHeight);
+			}
+			
+			Bitmap resized = Bitmap.createScaledBitmap(bmp, 600, 800, true); // 600 x 800 olarak resize edilmiþ resim
+			Bitmap cropped = Bitmap.createBitmap(resized, 0, 150, tmpWidth, tmpHeight); // Resized resim üzerinden crop edilmiþ resim
+			ivTakenPhoto.setImageBitmap(cropped);
+			
+			img.setBmp(resized);
 			
 			/*Kullanici fotograf cektiken sonra, send butonuna basmayi unutup aradan biraz zaman gectikten sonra
 			 * farkederse konum bilgisi degismis oluyor. Bize yollayinca da yanlis konum almis oluyoruz. Bu sebeple
