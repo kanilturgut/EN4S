@@ -16,88 +16,97 @@ import android.widget.TextView;
 
 public class BugListAdapter extends ArrayAdapter<Complaint> {
 
-	private Context context;
-	private List<Complaint> complaints;
-	private int tabPosition;
+    private Context context;
+    private List<Complaint> complaints;
+    private int tabPosition;
+    private double latitude;
+    private double longitude;
 
-	public BugListAdapter(Context context, List<Complaint> complaints, int pos) {
-		//super(c, R.layout.bug_list_item, complaints);
-		super(context, R.layout.bug_list_item, complaints);
-		
-		this.context = context;
-		this.complaints = complaints;
-		this.tabPosition = pos;
-	}
+    public BugListAdapter(Context context, List<Complaint> complaints, int pos,
+            double lat, double lon) {
+        // super(c, R.layout.bug_list_item, complaints);
+        super(context, R.layout.bug_list_item, complaints);
 
-	@SuppressLint("DefaultLocale")
-	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+        this.context = context;
+        this.complaints = complaints;
+        this.tabPosition = pos;
+        this.latitude = lat;
+        this.longitude = lon;
+    }
 
-		LayoutInflater inflater = (LayoutInflater) context
-				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    @SuppressLint("DefaultLocale")
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
 
-		View rowView = inflater
-				.inflate(R.layout.bug_list_item, parent, false);
+        LayoutInflater inflater = (LayoutInflater) context
+                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-		ImageView image = (ImageView) rowView.findViewById(R.id.ivImage);
-		TextView complaintTitle = (TextView) rowView.findViewById(R.id.tvItem);
-		//TextView complaintVote = (TextView) rowView.findViewById(R.id.tvVoteState);
-		
-		TextView complaintAddress = (TextView) rowView.findViewById(R.id.tvComplaintAddress);
-		TextView complaintUpVote = (TextView) rowView.findViewById(R.id.upVoteTW);
-		TextView complaintDownVote = (TextView) rowView.findViewById(R.id.downVoteTW);
-		
-		TextView tvAdditionalInfo = (TextView) rowView.findViewById(R.id.tvAdditionalInfo);
-		
-		//ImageView imageArrow = (ImageView) rowView.findViewById(R.id.ivArrow);
+        View rowView = inflater.inflate(R.layout.bug_list_item, parent, false);
 
-		Log.e("Type -> ", complaints.get(position).getCategory());
-		if(complaints.get(position).getCategory().equals("Traffic")){
-			image.setImageResource(R.drawable.type1);
-		}
-		else if(complaints.get(position).getCategory().equals("Infrastructure")){
-			image.setImageResource(R.drawable.type2);
-		}
-		else if(complaints.get(position).getCategory().equals("Environment")){
-			image.setImageResource(R.drawable.type3);
-		}
-		else if(complaints.get(position).getCategory().equals("Disable")){
-			image.setImageResource(R.drawable.type4);
-		}
-		else{
-			image.setImageResource(R.drawable.type5);
-		}
-		
-		//image.setImageResource(R.drawable.ic_launcher);
-		if(complaints.get(position).getTitle().length() > 20){
-			complaintTitle.setText(complaints.get(position).getTitle().trim().substring(0, 20) + "...");
-		}
-		else{
-			complaintTitle.setText(complaints.get(position).getTitle().trim());
-		}
-		complaintAddress.setText("at " + complaints.get(position).getCity().toUpperCase());
-		complaintUpVote.setText("10");
-		complaintDownVote.setText("12");
-		
-		
-		//position
-		if(tabPosition == 0) {
-			tvAdditionalInfo.setText("Hot ile ilgili bilgi");
-		} else if (tabPosition == 1) {
-			tvAdditionalInfo.setText("New ile ilgili bilgi");
-		} else if (tabPosition == 2) {
-			tvAdditionalInfo.setText("Near ile ilgili bilgi");
-		} else {
-			tvAdditionalInfo.setText("Top ile ilgili bilgi");
-		}
-		
-		
-		//complaintVote.setText(complaints.get(position).getDate());
-		//complaintAddress.setText(complaints.get(position).getAddress());
-		//imageArrow.setImageResource(R.drawable.right_arrow);
-		
-		return rowView;
+        ImageView image = (ImageView) rowView.findViewById(R.id.ivImage);
+        TextView complaintTitle = (TextView) rowView.findViewById(R.id.tvItem);
+        // TextView complaintVote = (TextView)
+        // rowView.findViewById(R.id.tvVoteState);
 
-	}
+        TextView complaintAddress = (TextView) rowView
+                .findViewById(R.id.tvComplaintAddress);
+        TextView complaintUpVote = (TextView) rowView
+                .findViewById(R.id.upVoteTW);
+        TextView complaintDownVote = (TextView) rowView
+                .findViewById(R.id.downVoteTW);
+
+        TextView tvAdditionalInfo = (TextView) rowView
+                .findViewById(R.id.tvAdditionalInfo);
+
+        // ImageView imageArrow = (ImageView)
+        // rowView.findViewById(R.id.ivArrow);
+
+        Complaint complaint = complaints.get(position);
+        Log.e("Type -> ", complaint.getCategory());
+        if (complaint.getCategory().equals("Traffic")) {
+            image.setImageResource(R.drawable.type1);
+        } else if (complaint.getCategory()
+                .equals("Infrastructure")) {
+            image.setImageResource(R.drawable.type2);
+        } else if (complaint.getCategory().equals("Environment")) {
+            image.setImageResource(R.drawable.type3);
+        } else if (complaint.getCategory().equals("Disable")) {
+            image.setImageResource(R.drawable.type4);
+        } else {
+            image.setImageResource(R.drawable.type5);
+        }
+
+        // image.setImageResource(R.drawable.ic_launcher);
+        if (complaint.getTitle().length() > 20) {
+            complaintTitle.setText(complaint.getTitle().trim()
+                    .substring(0, 20)
+                    + "...");
+        } else {
+            complaintTitle.setText(complaint.getTitle().trim());
+        }
+        complaintAddress.setText("at "
+                + complaint.getCity().toUpperCase());
+        complaintUpVote.setText("" + complaint.getUpVote());
+        complaintDownVote.setText("" + complaint.getDownVote());
+
+        // position
+        if (tabPosition == 0) {
+            tvAdditionalInfo.setText("Hot ile ilgili bilgi");
+        } else if (tabPosition == 1) {
+            tvAdditionalInfo.setText(complaint.getDateAsString());
+        } else if (tabPosition == 2) {
+            tvAdditionalInfo.setText(complaint.getDistance(latitude, longitude));
+        } else {
+            tvAdditionalInfo.setText("Top ile ilgili bilgi");
+        }
+
+
+        // complaintVote.setText(complaints.get(position).getDate());
+        // complaintAddress.setText(complaints.get(position).getAddress());
+        // imageArrow.setImageResource(R.drawable.right_arrow);
+
+        return rowView;
+
+    }
 
 }

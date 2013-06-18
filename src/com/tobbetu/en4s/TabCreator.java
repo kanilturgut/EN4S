@@ -19,7 +19,9 @@ package com.tobbetu.en4s;
 import java.io.IOException;
 import java.util.List;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -35,7 +37,6 @@ import android.widget.ListView;
 
 import com.tobbetu.en4s.backend.Complaint;
 import com.tobbetu.en4s.helpers.ContentProviderFunction;
-import com.tobbetu.en4s.helpers.ListAsyncTask;
 
 public class TabCreator extends Fragment {
 
@@ -44,8 +45,8 @@ public class TabCreator extends Fragment {
     private int position;
     private String TAG = "TabCreator";
 
-	private double latitude = 0;
-	private double longitude = 0;
+    private double latitude = 0;
+    private double longitude = 0;
 
     public static TabCreator newInstance(int position) {
         TabCreator f = new TabCreator();
@@ -61,9 +62,9 @@ public class TabCreator extends Fragment {
 
         latitude = getActivity().getIntent().getDoubleExtra("latitude", 0);
         longitude = getActivity().getIntent().getDoubleExtra("longitude", 0);
-        
+
         Log.d(TAG, "latitude : " + latitude + ", longitude : " + longitude);
-        
+
         position = getArguments().getInt(ARG_POSITION);
     }
 
@@ -137,7 +138,7 @@ public class TabCreator extends Fragment {
         params.setMargins(margin, margin, margin, margin);
         bugList.setLayoutParams(params);
 
-        ListAsyncTask hotTask = new ListAsyncTask(getActivity(), bugList, func, position);
+        ListAsyncTask hotTask = new ListAsyncTask(getActivity(), func, position);
         hotTask.execute();
         frameLayout.addView(bugList);
 
@@ -166,11 +167,39 @@ public class TabCreator extends Fragment {
         });
 
     }
-    
+
     @Override
     public void onPause() {
-    	super.onPause();
-    	
-    	//TODO kanil will implement here   	
+        super.onPause();
+
+        // TODO kanil will implement here
+    }
+
+    private class ListAsyncTask extends
+            AsyncTask<String, String, List<Complaint>> {
+
+        private Activity activity;
+        private ContentProviderFunction<Complaint> fn;
+        private int position;
+
+        public ListAsyncTask(Activity activity,
+                ContentProviderFunction<Complaint> fn, int pos) {
+            this.activity = activity;
+            this.fn = fn;
+            this.position = pos;
+        }
+
+        @Override
+        protected List<Complaint> doInBackground(String... arg0) {
+            return fn.getContent();
+        }
+
+        @Override
+        protected void onPostExecute(List<Complaint> result) {
+            super.onPostExecute(result);
+            bugList.setAdapter(new BugListAdapter(activity, result, position,
+                    latitude, longitude));
+        }
+
     }
 }

@@ -90,7 +90,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 		compPos = new LatLng(comp.getLatitude(), comp.getLongitude());
 		LatLng myPosition = new LatLng(getIntent().getDoubleExtra(
 				"latitude", 0), getIntent().getDoubleExtra("longitude", 0));
-		if (!util.calculateDistance(myPosition, compPos)) {
+		if (!util.isNear(myPosition, compPos)) {
 			bUpVote.setVisibility(View.GONE);
 			bDownVote.setVisibility(View.GONE);
 
@@ -138,7 +138,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 			//			photoView.setOnPhotoTapListener(new OnPhotoTapListener() {
 			//				@Override
 			//				public void onPhotoTap(View view, float x, float y) {
-			//					Toast.makeText(container.getContext(), "týklandý",
+			//					Toast.makeText(container.getContext(), "tï¿½klandï¿½",
 			//							Toast.LENGTH_SHORT).show();
 			//					//Log.e("image", "tik");
 			//					Intent intent = new Intent(getApplication(),

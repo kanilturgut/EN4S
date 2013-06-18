@@ -17,6 +17,8 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
+import com.tobbetu.en4s.Utils;
+
 public class Complaint implements Serializable {
 
     private static final long serialVersionUID = -4700299102770387240L;
@@ -137,7 +139,7 @@ public class Complaint implements Serializable {
     }
 
     public void addJustUploadedImage(String url) {
-        if(this.imageURLs == null)
+        if (this.imageURLs == null)
             this.imageURLs = new ArrayList<String>();
         imageURLs.add(url);
     }
@@ -158,14 +160,22 @@ public class Complaint implements Serializable {
         } else if (now - 24 * 60 * 60 * 1000 < unixtime) { // fucking day
             return ((now - unixtime) / 60 / 60 / 1000) + " hours ago";
         } else if (now - 7 * 24 * 60 * 60 * 1000 < unixtime) { // fucking week
-            return ((now - unixtime) / 24 /60 / 60 / 1000) + " days ago";
+            return ((now - unixtime) / 24 / 60 / 60 / 1000) + " days ago";
         } else {
             return this.date.toString();
         }
     }
 
     public String getDistance(double lat, double lon) {
-        return "";
+        float distance = Utils.calculateDistance(lat, lon, this.latitude,
+                this.longitude);
+        if (distance < 0.0001) {
+            return "Just Here!";
+        } else if (distance < 10000) {
+            return String.format("%.0f meters", distance);
+        } else {
+            return String.format("%.0f kilometers", distance / 1000);
+        }
     }
 
     public Image getImage(int index) throws IOException {
@@ -173,11 +183,11 @@ public class Complaint implements Serializable {
             throw new IndexOutOfBoundsException();
 
         try {
-        	return images.get(index);
-		} catch (IndexOutOfBoundsException e) {
-			images.add(index, Image.download(imageURLs.get(index)));
-			return images.get(index);
-		}
+            return images.get(index);
+        } catch (IndexOutOfBoundsException e) {
+            images.add(index, Image.download(imageURLs.get(index)));
+            return images.get(index);
+        }
     }
 
     public void save() throws IOException {
@@ -205,7 +215,8 @@ public class Complaint implements Serializable {
 
     public void upvote(String location) throws IOException {
         HttpResponse put = Requests.put(String.format(
-                "http://en4s.msimav.net/complaint/%s/upvote", this.id), location);
+                "http://en4s.msimav.net/complaint/%s/upvote", this.id),
+                location);
         if (Requests.checkStatusCode(put, HttpStatus.SC_NOT_ACCEPTABLE)) {
             Log.e(getClass().getName(), "Upvote Rejected");
             // TODO throw new Exception("Upvote Rejected");
@@ -214,7 +225,8 @@ public class Complaint implements Serializable {
 
     public void downvote(String location) throws IOException {
         HttpResponse put = Requests.put(String.format(
-                "http://en4s.msimav.net/complaint/%s/downvote", this.id), location);
+                "http://en4s.msimav.net/complaint/%s/downvote", this.id),
+                location);
         if (Requests.checkStatusCode(put, HttpStatus.SC_NOT_ACCEPTABLE)) {
             Log.e(getClass().getName(), "Upvote Rejected");
             // TODO throw new Exception("Upvote Rejected");
