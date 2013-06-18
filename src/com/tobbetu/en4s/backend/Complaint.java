@@ -146,6 +146,28 @@ public class Complaint implements Serializable {
         return imageURLs.size();
     }
 
+    public String getDateAsString() {
+        // WARNING this is going to be fucking ugly
+        long now = System.currentTimeMillis();
+        long unixtime = this.date.getTime();
+
+        if (now - 60 * 1000 < unixtime) { // in fucking min
+            return ((now - unixtime) / 1000) + " second ago";
+        } else if (now - 60 * 60 * 1000 < unixtime) { // fucking hour
+            return ((now - unixtime) / 60 / 1000) + " minutes ago";
+        } else if (now - 24 * 60 * 60 * 1000 < unixtime) { // fucking day
+            return ((now - unixtime) / 60 / 60 / 1000) + " hours ago";
+        } else if (now - 7 * 24 * 60 * 60 * 1000 < unixtime) { // fucking week
+            return ((now - unixtime) / 24 /60 / 60 / 1000) + " days ago";
+        } else {
+            return this.date.toString();
+        }
+    }
+
+    public String getDistance(double lat, double lon) {
+        return "";
+    }
+
     public Image getImage(int index) throws IOException {
         if (index > imageURLs.size())
             throw new IndexOutOfBoundsException();
