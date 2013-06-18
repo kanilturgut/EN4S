@@ -137,7 +137,7 @@ public class TabCreator extends Fragment {
         params.setMargins(margin, margin, margin, margin);
         bugList.setLayoutParams(params);
 
-        ListAsyncTask hotTask = new ListAsyncTask(getActivity(), bugList, func);
+        ListAsyncTask hotTask = new ListAsyncTask(getActivity(), bugList, func, position);
         hotTask.execute();
         frameLayout.addView(bugList);
 

@@ -18,13 +18,15 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
 
 	private Context context;
 	private List<Complaint> complaints;
+	private int tabPosition;
 
-	public BugListAdapter(Context context, List<Complaint> complaints) {
+	public BugListAdapter(Context context, List<Complaint> complaints, int pos) {
 		//super(c, R.layout.bug_list_item, complaints);
 		super(context, R.layout.bug_list_item, complaints);
 		
 		this.context = context;
 		this.complaints = complaints;
+		this.tabPosition = pos;
 	}
 
 	@SuppressLint("DefaultLocale")
@@ -41,9 +43,11 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
 		TextView complaintTitle = (TextView) rowView.findViewById(R.id.tvItem);
 		//TextView complaintVote = (TextView) rowView.findViewById(R.id.tvVoteState);
 		
-		TextView complaintAddress = (TextView) rowView.findViewById(R.id.textCity);
+		TextView complaintAddress = (TextView) rowView.findViewById(R.id.tvComplaintAddress);
 		TextView complaintUpVote = (TextView) rowView.findViewById(R.id.upVoteTW);
 		TextView complaintDownVote = (TextView) rowView.findViewById(R.id.downVoteTW);
+		
+		TextView tvAdditionalInfo = (TextView) rowView.findViewById(R.id.tvAdditionalInfo);
 		
 		//ImageView imageArrow = (ImageView) rowView.findViewById(R.id.ivArrow);
 
@@ -74,6 +78,19 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
 		complaintAddress.setText("at " + complaints.get(position).getCity().toUpperCase());
 		complaintUpVote.setText("10");
 		complaintDownVote.setText("12");
+		
+		
+		//position
+		if(tabPosition == 0) {
+			tvAdditionalInfo.setText("Hot ile ilgili bilgi");
+		} else if (tabPosition == 1) {
+			tvAdditionalInfo.setText("New ile ilgili bilgi");
+		} else if (tabPosition == 2) {
+			tvAdditionalInfo.setText("Near ile ilgili bilgi");
+		} else {
+			tvAdditionalInfo.setText("Top ile ilgili bilgi");
+		}
+		
 		
 		//complaintVote.setText(complaints.get(position).getDate());
 		//complaintAddress.setText(complaints.get(position).getAddress());

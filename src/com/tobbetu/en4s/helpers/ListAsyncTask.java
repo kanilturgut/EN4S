@@ -15,13 +15,14 @@ public class ListAsyncTask extends
     private ListView lw;
     private Activity activity;
     private ContentProviderFunction<Complaint> fn;
-    
+    private int position;
 
     public ListAsyncTask(Activity activity, ListView lw,
-            ContentProviderFunction<Complaint> fn) {
+            ContentProviderFunction<Complaint> fn, int pos) {
         this.lw = lw;
         this.activity = activity;
         this.fn = fn;
+        this.position = pos;
     }
 
     @Override
@@ -32,7 +33,7 @@ public class ListAsyncTask extends
     @Override
     protected void onPostExecute(List<Complaint> result) {
         super.onPostExecute(result);
-        lw.setAdapter(new BugListAdapter(activity, result));
+        lw.setAdapter(new BugListAdapter(activity, result, position));
     }
 
 }
