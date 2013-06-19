@@ -52,11 +52,10 @@ public class NewComplaint extends Activity implements OnClickListener {
 	private Spinner categoriesSpinner;
 	private LinearLayout photoButtonLL;
 	private ProgressDialog progressDialog = null;
-	
+
 	private Utils util = null;
 
 	private GoogleMap myMap;
-	// private Marker place = null;
 	private LocationManager lManager = null;
 	private LatLng position = null;
 	private LatLng temp = null;
@@ -70,7 +69,7 @@ public class NewComplaint extends Activity implements OnClickListener {
 	private String category;
 
 	private String TAG = "NewComplaint";
-	
+
 	private Uri mImageUri;
 
 	@Override
@@ -105,22 +104,22 @@ public class NewComplaint extends Activity implements OnClickListener {
 				.createFromResource(this, R.array.categories,
 						android.R.layout.simple_spinner_item);
 		spinnerAdapter
-		.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		categoriesSpinner.setAdapter(spinnerAdapter);
 		categoriesSpinner
-		.setOnItemSelectedListener(new OnItemSelectedListener() {
+				.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-			@Override
-			public void onItemSelected(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3) {
-				category = arg0.getItemAtPosition(arg2).toString();
-			}
+					@Override
+					public void onItemSelected(AdapterView<?> arg0, View arg1,
+							int arg2, long arg3) {
+						category = arg0.getItemAtPosition(arg2).toString();
+					}
 
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {
-				category = "All"; // default category
-			}
-		});
+					@Override
+					public void onNothingSelected(AdapterView<?> arg0) {
+						category = "All"; // default category
+					}
+				});
 
 	}
 
@@ -132,28 +131,26 @@ public class NewComplaint extends Activity implements OnClickListener {
 	}
 
 	private File createTemporaryFile(String part, String ext) throws Exception {
-		File tempDir= Environment.getExternalStorageDirectory();
-		tempDir=new File(tempDir.getAbsolutePath() + "/.temp/");
-		if(!tempDir.exists()) {
+		File tempDir = Environment.getExternalStorageDirectory();
+		tempDir = new File(tempDir.getAbsolutePath() + "/.temp/");
+		if (!tempDir.exists()) {
 			tempDir.mkdir();
 		}
 		return File.createTempFile(part, ext, tempDir);
 	}
-	
+
 	@Override
 	public void onClick(View v) {
 
 		if (v.getId() == R.id.bTakePhoto) {
-			Intent cameraIntent = new Intent("android.media.action.IMAGE_CAPTURE");
+			Intent cameraIntent = new Intent(
+					"android.media.action.IMAGE_CAPTURE");
 			File photo = null;
 			try {
 				photo = this.createTemporaryFile("picture", ".jpg");
 				photo.delete();
-			}
-			catch(Exception e) {
+			} catch (Exception e) {
 				Log.v(TAG, "Can't create file to take picture!");
-				//		        Toast.makeText(activity, "Please check SD card! Image shot is impossible!", 10000);
-				//		        return false;
 			}
 			mImageUri = Uri.fromFile(photo);
 			cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
@@ -187,23 +184,21 @@ public class NewComplaint extends Activity implements OnClickListener {
 
 	}
 
-	public Bitmap grabImage(){
-	    this.getContentResolver().notifyChange(mImageUri, null);
-	    ContentResolver cr = this.getContentResolver();
-	    Bitmap bitmap;
-	    try{
-	        bitmap = android.provider.MediaStore.Images.Media.getBitmap(cr, mImageUri);
-	        Log.e("Failed to load", bitmap.getHeight() + "");
-	        return bitmap;
-	    }
-	    catch (Exception e)
-	    {
-	        //Toast.makeText(this, "Failed to load", Toast.LENGTH_SHORT).show();
-	        Log.d(TAG, "Failed to load", e);
-	    }
-	    return null;
+	public Bitmap grabImage() {
+		this.getContentResolver().notifyChange(mImageUri, null);
+		ContentResolver cr = this.getContentResolver();
+		Bitmap bitmap;
+		try {
+			bitmap = android.provider.MediaStore.Images.Media.getBitmap(cr,
+					mImageUri);
+			Log.e("Failed to load", bitmap.getHeight() + "");
+			return bitmap;
+		} catch (Exception e) {
+			Log.d(TAG, "Failed to load", e);
+		}
+		return null;
 	}
-	
+
 	@Override
 	// fotograf
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -211,11 +206,10 @@ public class NewComplaint extends Activity implements OnClickListener {
 		super.onActivityResult(requestCode, resultCode, data);
 
 		if (resultCode == RESULT_OK) {
-//			Bundle extras = data.getExtras();
+
 			bmp = (Bitmap) grabImage(); // Resimin orjinal hali
-		
+
 			img = new Image();
-//			img.setBmp(bmp);
 
 			int height = bmp.getHeight();
 			int width = bmp.getWidth();
@@ -224,29 +218,36 @@ public class NewComplaint extends Activity implements OnClickListener {
 
 			bTakePic.setVisibility(View.GONE);
 			ivTakenPhoto.setVisibility(View.VISIBLE);
-			//ivTakenPhoto.getLayoutParams().height = height;
-			//ivTakenPhoto.getLayoutParams().width = width;
-	
+
 			Display display = getWindowManager().getDefaultDisplay();
 			Point size = new Point();
 			display.getSize(size);
 			int tmpWidth = size.x;
 			int tmpHeight = photoButtonLL.getLayoutParams().height;
-			
-			if(tmpWidth > 600){
-				tmpWidth = bmp.getWidth();
-				tmpHeight = (int) ((double)(bmp.getWidth() / tmpWidth) * tmpHeight);
+
+			if (tmpWidth > 600) {
+				tmpWidth = 600;
+				tmpHeight = (int) ((double) (600 / tmpWidth) * tmpHeight);
 			}
+
+			Log.e(TAG, "height : " + tmpHeight + ", width : " + tmpWidth);
 			
 			Bitmap resized = Bitmap.createScaledBitmap(bmp, 600, 800, true); // 600 x 800 olarak resize edilmiþ resim
+			
+			Log.e(TAG, "height : " + resized.getHeight() + ", width : " + resized.getWidth());
+			
 			Bitmap cropped = Bitmap.createBitmap(resized, 0, 150, tmpWidth, tmpHeight); // Resized resim üzerinden crop edilmiþ resim
 			ivTakenPhoto.setImageBitmap(cropped);
-			
+
 			img.setBmp(resized);
-			
-			/*Kullanici fotograf cektiken sonra, send butonuna basmayi unutup aradan biraz zaman gectikten sonra
-			 * farkederse konum bilgisi degismis oluyor. Bize yollayinca da yanlis konum almis oluyoruz. Bu sebeple
-			 * fotograf cekildigi siradaki konumu kaydetmeli ve send butonuna basilinca o konumu yollamaliyiz*/
+
+			/*
+			 * Kullanici fotograf cektiken sonra, send butonuna basmayi unutup
+			 * aradan biraz zaman gectikten sonra farkederse konum bilgisi
+			 * degismis oluyor. Bize yollayinca da yanlis konum almis oluyoruz.
+			 * Bu sebeple fotograf cekildigi siradaki konumu kaydetmeli ve send
+			 * butonuna basilinca o konumu yollamaliyiz
+			 */
 			position = temp;
 
 		}
@@ -265,9 +266,9 @@ public class NewComplaint extends Activity implements OnClickListener {
 
 			util.addAMarker(myMap, temp);
 			util.centerAndZomm(myMap, temp, 15);
-			
-			tvNewComplaintAdress.setText(util.getAddress(getBaseContext(),
-					temp));
+
+			tvNewComplaintAdress.setText(util
+					.getAddress(getBaseContext(), temp));
 
 		}
 
@@ -291,9 +292,10 @@ public class NewComplaint extends Activity implements OnClickListener {
 
 		@Override
 		protected void onPreExecute() {
-			progressDialog = ProgressDialog.show(NewComplaint.this, "Loading", "Your complaint is sending. Thank you for your patience");
+			progressDialog = ProgressDialog.show(NewComplaint.this, "Loading",
+					"Your complaint is sending. Thank you for your patience");
 		}
-		
+
 		@Override
 		protected String doInBackground(String... params) {
 			try {
@@ -311,7 +313,7 @@ public class NewComplaint extends Activity implements OnClickListener {
 			super.onPostExecute(result);
 
 			progressDialog.dismiss();
-			
+
 			Toast.makeText(getApplicationContext(),
 					"Your complaint is saved succesfully", Toast.LENGTH_SHORT)
 					.show();
