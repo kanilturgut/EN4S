@@ -174,8 +174,8 @@ public class Utils {
         JSONObject loc = new JSONObject();
         JSONArray arr = new JSONArray();
         try {
-            arr.put(0, lat);
-            arr.put(1, lon);
+            arr.put(lat);
+            arr.put(lon);
             loc.put("location", arr);
             Log.d("Utils.locationTOJSON", loc.toString());
         } catch (JSONException e) {

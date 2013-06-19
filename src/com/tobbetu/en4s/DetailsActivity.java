@@ -36,6 +36,7 @@ import android.widget.Button;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -60,6 +61,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
 	private Complaint comp = null;
 	private LatLng compPos = null;
+	LatLng myPosition = null;
 	private Bitmap cropped = null;
 
 	@Override
@@ -88,7 +90,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 		bDownVote.setOnClickListener(this);
 
 		compPos = new LatLng(comp.getLatitude(), comp.getLongitude());
-		LatLng myPosition = new LatLng(getIntent().getDoubleExtra(
+		myPosition = new LatLng(getIntent().getDoubleExtra(
 				"latitude", 0), getIntent().getDoubleExtra("longitude", 0));
 		if (!util.isNear(myPosition, compPos)) {
 			bUpVote.setVisibility(View.GONE);
@@ -224,13 +226,57 @@ public class DetailsActivity extends Activity implements OnClickListener {
 	public void onClick(View v) {
 
 		if (v.getId() == R.id.bUpVote) {
-
-			
-			
+			new UpVoteTask().execute();
 		} else {
-
+			new DownVoteTask().execute();
 		}
 
+	}
+	
+	class UpVoteTask extends AsyncTask<String, String, String> {
+
+		@Override
+		protected String doInBackground(String... params) {
+			
+			try {
+				Log.d(getClass().getName(), "In UpVoteTask doInbackground");
+				comp.upvote(Utils.locationToJSON(myPosition.latitude, myPosition.longitude));
+			} catch (IOException e) {
+				Log.e(getClass().getName(), "UpVoteTask failed", e);
+			}
+			
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(String result) {
+			Log.d(getClass().getName(), "In UpVoteTask onPostExecute");
+			Toast.makeText(getApplicationContext(), "Thanks for your upvote", Toast.LENGTH_SHORT).show();
+		}
+		
+	}
+	
+	class DownVoteTask extends AsyncTask<String, String, String> {
+
+		@Override
+		protected String doInBackground(String... params) {
+			
+			try {
+				Log.d(getClass().getName(), "In DownVoteTask doInbackground");
+				comp.downvote(Utils.locationToJSON(myPosition.latitude, myPosition.longitude));
+			} catch (IOException e) {
+				Log.e(getClass().getName(), "DownVoteTask failed", e);
+			}
+			
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(String result) {
+			Log.d(getClass().getName(), "In DownVoteTask onPostExecute");
+			Toast.makeText(getApplicationContext(), "Thanks for your downvote", Toast.LENGTH_SHORT).show();
+		}
+		
 	}
 	
 }
