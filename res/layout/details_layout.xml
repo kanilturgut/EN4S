@@ -2,10 +2,11 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scroller"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:fillViewport="true"
-    android:scrollY="0dp" >
+    android:scrollY="0dp"
+    android:background="#DDDDDD" >
 
     <LinearLayout
         android:id="@+id/mainLinear"
@@ -30,7 +31,7 @@
                 android:id="@+id/complaintInfoLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="15dp"
+                android:layout_margin="16dp"
                 android:orientation="vertical" >
 
                 <TextView
@@ -38,34 +39,36 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
-                    android:text="@string/cName"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                    android:text="Problem Nedir Gardaş?"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="#000000" />
 
                 <TextView
                     android:id="@+id/tvComplaintCategory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/cCategory"
-                    android:textSize="15sp" />
+                    android:text="Problemin Kategorisi"
+                    android:textSize="14sp"
+                    android:textColor="#808080" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/complaintButtonsLayout"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:orientation="horizontal" >
 
                 <Button
                     android:id="@+id/bUpVote"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="2dp"
+                    android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/up_button_style"
-                    android:text="@string/voteUp"
+                    android:text="Like!"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold"
                     tools:ignore="ButtonStyle" />
@@ -74,10 +77,10 @@
                     android:id="@+id/bDownVote"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_margin="2dp"
+                    android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/down_button_style"
-                    android:text="@string/voteDown"
+                    android:text="Dislike!"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold"
                     tools:ignore="ButtonStyle" />
@@ -92,20 +95,11 @@
                     android:visibility="gone" />
             </LinearLayout>
 
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="2dp"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="15dp"
-                android:background="#AAAAAA" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="75dp"
-                android:layout_margin="10dp"
-                android:background="#FFFFFF"
+                android:layout_margin="15dp"
+                android:background="#DDDDDD"
                 android:orientation="horizontal" >
 
                 <ImageView
@@ -113,59 +107,64 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:contentDescription="@string/photoDescription"
-                    android:src="@drawable/profile" />
+                    android:contentDescription="User's Profile Picture"
+                    android:src="@drawable/user" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:orientation="vertical" >
-
+	                    
                     <TextView
                         android:id="@+id/tvReporter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
-                        android:text="@string/cName" />
+                        android:text="Created By 'Bu Arkadaş'"
+                        android:textColor="#808080"
+                        android:drawableLeft="@drawable/leaf"
+                        android:drawablePadding="10dp"
+                        android:textSize="14sp"
+                        android:textAlignment="center" />
 
                     <TextView
                         android:id="@+id/tvReporterDate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/cCategory" />
+                        android:text="30 Gün Önce Oluşturulmuş..."
+                        android:textColor="#808080"
+                        android:textSize="14sp" />
+                    
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="2dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="15dp"
-            android:background="#AAAAAA" />
-
         <LinearLayout
+            android:id="@+id/newComplaintMapLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_margin="15dp"
             android:background="#FFFFFF"
             android:orientation="vertical" >
-
+            
             <fragment
                 android:id="@+id/mapDetails"
                 android:layout_width="wrap_content"
-                android:layout_height="150dp"
+                android:layout_height="220dp"
+                android:layout_gravity="center"
+                android:layout_margin="5dp"
                 class="com.google.android.gms.maps.MapFragment" />
 
             <TextView
-                android:id="@+id/tvComplaintAdress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/adressName" />
+		        android:id="@+id/tvComplaintAdress"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:textSize="12sp"
+		        android:textColor="#777777"
+		        android:layout_margin="8dp"
+		        android:gravity="center"
+		        android:text="Şair Baki Sokak 12/7 Yukarıayrancı / ANKARA" />
         </LinearLayout>
-
     </LinearLayout>
-
 </ScrollView>

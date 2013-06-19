@@ -12,7 +12,7 @@
                 android:width="3dp"
                 android:color="@color/grey05" />
             <corners
-                android:radius="3dp" />
+                android:radius="0dp" />
             <padding
                 android:left="10dp"
                 android:top="10dp"
@@ -31,7 +31,7 @@
                 android:width="3dp"
                 android:color="@color/grey05" />
             <corners
-                android:radius="3dp" />
+                android:radius="0dp" />
             <padding
                 android:left="10dp"
                 android:top="10dp"
@@ -50,7 +50,7 @@
                 android:width="3dp"
                 android:color="@color/downRed" />
             <corners
-                android:radius="3dp" />
+                android:radius="0dp" />
             <padding
                 android:left="10dp"
                 android:top="10dp"
