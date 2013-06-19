@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -50,7 +51,8 @@ public class NewComplaint extends Activity implements OnClickListener {
 	private TextView tvNewComplaintAdress;
 	private Spinner categoriesSpinner;
 	private LinearLayout photoButtonLL;
-
+	private ProgressDialog progressDialog = null;
+	
 	private Utils util = null;
 
 	private GoogleMap myMap;
@@ -288,6 +290,11 @@ public class NewComplaint extends Activity implements OnClickListener {
 	private class SaveTask extends AsyncTask<String, String, String> {
 
 		@Override
+		protected void onPreExecute() {
+			progressDialog = ProgressDialog.show(NewComplaint.this, "Loading", "Your complaint is sending. Thank you for your patience");
+		}
+		
+		@Override
 		protected String doInBackground(String... params) {
 			try {
 				newComplaint.save();
@@ -303,6 +310,8 @@ public class NewComplaint extends Activity implements OnClickListener {
 		protected void onPostExecute(String result) {
 			super.onPostExecute(result);
 
+			progressDialog.dismiss();
+			
 			Toast.makeText(getApplicationContext(),
 					"Your complaint is saved succesfully", Toast.LENGTH_SHORT)
 					.show();
