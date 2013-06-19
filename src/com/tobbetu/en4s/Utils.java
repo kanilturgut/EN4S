@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -171,9 +172,12 @@ public class Utils {
 
     public static String locationToJSON(double lat, double lon) {
         JSONObject loc = new JSONObject();
+        JSONArray arr = new JSONArray();
         try {
-            loc.put("latitude", lat);
-            loc.put("longitude", lon);
+            arr.put(0, lat);
+            arr.put(1, lon);
+            loc.put("location", arr);
+            Log.d("Utils.locationTOJSON", loc.toString());
         } catch (JSONException e) {
             Log.e("Utils.locationToJSON", "JSONException throwed", e);
         }
