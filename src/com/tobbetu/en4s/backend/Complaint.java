@@ -153,7 +153,9 @@ public class Complaint implements Serializable {
         long now = System.currentTimeMillis();
         long unixtime = this.date.getTime();
 
-        if (now - 60 * 1000 < unixtime) { // in fucking min
+        if (now - unixtime < 0) {
+        	return "Just Now";
+        } else if (now - 60 * 1000 < unixtime) { // in fucking min
             return ((now - unixtime) / 1000) + " second ago";
         } else if (now - 60 * 60 * 1000 < unixtime) { // fucking hour
             return ((now - unixtime) / 60 / 1000) + " minutes ago";
