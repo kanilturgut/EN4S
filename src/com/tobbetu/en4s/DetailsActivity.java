@@ -80,7 +80,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 		tvComplaintCategory = (TextView) findViewById(R.id.tvComplaintCategory);
 
 		tvReporter = (TextView) findViewById(R.id.tvReporter);
-//		tvReporterDate = (TextView) findViewById(R.id.tvReporterDate);
+		tvReporterDate = (TextView) findViewById(R.id.tvReporterDate);
 
 		bUpVote = (Button) findViewById(R.id.bUpVote);
 		bDownVote = (Button) findViewById(R.id.bDownVote);
@@ -116,7 +116,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 		tvComplaintCategory.setText(comp.getCategory());
 
 		tvReporter.setText(comp.getReporter());
-//		tvReporterDate.setText(comp.getDate().toString());
+		tvReporterDate.setText(comp.getDateAsString());
 
 	}
 
