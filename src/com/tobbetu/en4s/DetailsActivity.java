@@ -166,6 +166,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 			photoView.setScaleType(ScaleType.FIT_XY);
 			container.addView(photoView, LayoutParams.MATCH_PARENT,
 					LayoutParams.MATCH_PARENT);
+			photoView.setImageResource(R.drawable.content_picture);
 			return photoView;
 		}
 
@@ -182,7 +183,6 @@ public class DetailsActivity extends Activity implements OnClickListener {
 	}
 
 	class ImageTask extends AsyncTask<Integer, String, String> {
-
 
 		@Override
 		protected String doInBackground(Integer... params) {
@@ -225,12 +225,12 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
 		if (v.getId() == R.id.bUpVote) {
 
-
-
-
+			
+			
 		} else {
 
 		}
 
 	}
+	
 }

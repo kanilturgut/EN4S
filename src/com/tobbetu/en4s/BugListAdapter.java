@@ -69,7 +69,7 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
 			image.setImageResource(R.drawable.type2);
 		} else if (complaint.getCategory().equals("Environment")) {
 			image.setImageResource(R.drawable.type3);
-		} else if (complaint.getCategory().equals("Disable")) {
+		} else if (complaint.getCategory().equals("Disability Rights")) {
 			image.setImageResource(R.drawable.type4);
 		} else {
 			image.setImageResource(R.drawable.type5);
