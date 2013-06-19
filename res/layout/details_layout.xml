@@ -39,7 +39,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
-                    android:text="Problem Nedir Gardaş?"
+                    android:text="@string/cName"
                     android:textSize="18sp"
                     android:textStyle="bold"
                     android:textColor="#000000" />
@@ -48,7 +48,7 @@
                     android:id="@+id/tvComplaintCategory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Problemin Kategorisi"
+                    android:text="@string/cCategory"
                     android:textSize="14sp"
                     android:textColor="#808080" />
             </LinearLayout>
@@ -68,7 +68,7 @@
                     android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/up_button_style"
-                    android:text="Like!"
+                    android:text="@string/likeButton"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold"
                     tools:ignore="ButtonStyle" />
@@ -80,7 +80,7 @@
                     android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/down_button_style"
-                    android:text="Dislike!"
+                    android:text="@string/dislikeButton"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold"
                     tools:ignore="ButtonStyle" />
@@ -107,7 +107,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:contentDescription="User's Profile Picture"
+                    android:contentDescription="@string/photoDescription"
                     android:src="@drawable/user" />
 
                 <LinearLayout
@@ -121,7 +121,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
-                        android:text="Created By 'Bu Arkadaş'"
+                        android:text="@string/reporterName"
                         android:textColor="#808080"
                         android:drawableLeft="@drawable/leaf"
                         android:drawablePadding="10dp"
@@ -132,7 +132,7 @@
                         android:id="@+id/tvReporterDate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="30 Gün Önce Oluşturulmuş..."
+                        android:text="@string/reportDate"
                         android:textColor="#808080"
                         android:textSize="14sp" />
                     
@@ -164,7 +164,7 @@
 		        android:textColor="#777777"
 		        android:layout_margin="8dp"
 		        android:gravity="center"
-		        android:text="Şair Baki Sokak 12/7 Yukarıayrancı / ANKARA" />
+		        android:text="@string/adressName" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
