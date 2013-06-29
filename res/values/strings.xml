@@ -26,10 +26,13 @@
     <string name="sendButton">Send It!</string>
     <string name="newComplaintButton">New Complaint</string>
     <string name="appNameUppercase">ENFORCE</string>
-	<string name="signIn">Sign In!</string>
-	<string name="likeButton">Approve</string>
-	<string name="dislikeButton">Disapprove</string>
-	<string name="reporterName">Resporter Name</string>
-	<string name="reportDate">Report Date</string>
-    
+    <string name="signIn">Sign In!</string>
+    <string name="likeButton">Approve</string>
+    <string name="dislikeButton">Disapprove</string>
+    <string name="reporterName">Resporter Name</string>
+    <string name="reportDate">Report Date</string>
+    <string name="title_activity_bigger_map">Enforce</string>
+    <string name="biggerMapSendButton">Select</string>
+    <string name="biggerMapInfo">You can drag and drop the marker</string>
+
 </resources>

@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,13 +34,22 @@ public class MainActivity extends FragmentActivity {
 
 	private Drawable oldBackground = null;
 	private int currentColor = 0xFF666666;
+	
+    private double latitude = 0;
+    private double longitude = 0;
 
+    private final String TAG = "MainActivity";
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 //		getActionBar().hide();
 
+        latitude = getIntent().getDoubleExtra("latitude", 0);
+        longitude = getIntent().getDoubleExtra("longitude", 0);
+        Log.e(TAG, "latitude : " + latitude + ", longitude : " + longitude);
+		
 		tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
 		pager = (ViewPager) findViewById(R.id.pager);
 		adapter = new MyPagerAdapter(getSupportFragmentManager());
@@ -72,6 +82,8 @@ public class MainActivity extends FragmentActivity {
 //			return true;
 			
 			Intent i = new Intent(MainActivity.this, NewComplaint.class);
+			i.putExtra("user_lat", latitude);
+			i.putExtra("user_lng", longitude);
 			startActivity(i);
 			
 			break;

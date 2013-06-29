@@ -34,12 +34,14 @@ public class Utils {
      *            Parametre olarak aldigi harita uzerindeki, LatLng ile
      *            gosterilen konuma marker ekler.
      */
-    public void addAMarker(GoogleMap map, LatLng position) {
+    public void addAMarker(GoogleMap map, LatLng position, boolean draggable) {
 
         if (place != null)
             place.remove();
 
-        place = map.addMarker(new MarkerOptions().position(position));
+        place = map.addMarker(new MarkerOptions()
+        .position(position)
+        .draggable(draggable));
 
         // map.addMarker(new MarkerOptions()
         // .position(myPos)

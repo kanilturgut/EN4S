@@ -111,7 +111,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 				R.id.mapDetails)).getMap();
 		myMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-		util.addAMarker(myMap, compPos);
+		util.addAMarker(myMap, compPos, false);
 		util.centerAndZomm(myMap, compPos, 15);
 		tvComplaintAdress.setText(comp.getAddress());
 		tvComplaintTitle.setText(comp.getTitle());
