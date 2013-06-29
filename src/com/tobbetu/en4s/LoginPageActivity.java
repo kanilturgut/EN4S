@@ -35,6 +35,7 @@ public class LoginPageActivity extends Activity {
 	protected static SharedPreferences loginPreferences;
 
 	private LocationManager lManager = null;
+	private LocationListener mlocListener = null;
 	private double latitude = 0;
 	private double longitude = 0;
 
@@ -55,7 +56,7 @@ public class LoginPageActivity extends Activity {
 			// startService(new Intent(this, EN4SService.class));
 
 			lManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-			LocationListener mlocListener = new LoginPageLocationListener();
+			mlocListener = new LoginPageLocationListener();
 			lManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
 					0, 0, mlocListener);
 
@@ -116,6 +117,16 @@ public class LoginPageActivity extends Activity {
 
 	protected void onPause() {
 		super.onPause();
+		/*LoginPageActivity onPause durumuna girdigi zaman location manager konum degisikliklerini
+		 * dinlemeye devam etmemeli, cunku zaten login olmus kullanici icin ardi ardina konum arama
+		 * islemlerine gerek yok. Asagidaki kod ile hem tekrar tekrar konum arama derdinden kurtuluyoruz
+		 * hem de guc tuketimini azaltiyoruz*/
+		if (lManager != null)
+			lManager.removeUpdates(mlocListener);
+		
+		lManager = null;
+		mlocListener = null;
+		
 		finish();
 	};
 
@@ -131,6 +142,8 @@ public class LoginPageActivity extends Activity {
 		@Override
 		public void onLocationChanged(Location loc) {
 
+			Log.d("LoginPageActivity", "onLocationChanged started");
+			
 			latitude = loc.getLatitude();
 			longitude = loc.getLongitude();
 
