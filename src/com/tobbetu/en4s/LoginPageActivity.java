@@ -50,7 +50,7 @@ public class LoginPageActivity extends Activity {
 		if (!isNetworkAvailable()) {
 			Toast.makeText(getApplicationContext(),
 					"You have no internet access, please open your network",
-					Toast.LENGTH_SHORT).show();
+					Toast.LENGTH_LONG).show();
 			finish();
 		} else {
 			// startService(new Intent(this, EN4SService.class));
@@ -99,11 +99,6 @@ public class LoginPageActivity extends Activity {
 						.toString());
 				preferencesEditor.putString("password", etPassword.getText()
 						.toString());
-				// =======Session ID
-				// ==================================================================
-				preferencesEditor.putString("sessionID", "sessionID");
-				// =======Session ID
-				// ==================================================================
 				preferencesEditor.apply();
 				/* Share Share Share Preferences */
 
