@@ -18,6 +18,11 @@ import android.util.Log;
 
 public class Image {
 
+    public static final String SIZE_ORIG = "";
+    public static final String SIZE_512 = ".512";
+    public static final String SIZE_256 = ".256";
+    public static final String SIZE_128 = ".128";
+
     private Bitmap bmp;
 
     public Bitmap getBmp() {
@@ -87,12 +92,18 @@ public class Image {
         return "";
     }
 
-    public static Image download(String url) throws IOException {
+    public static Image download(String url, String size) throws IOException {
         Image dl = new Image();
-        byte[] bitmapdata = Requests.download(url);
+        byte[] bitmapdata = Requests.download(getSmallImage(url, size));
         dl.setBmp(BitmapFactory.decodeByteArray(bitmapdata, 0,
                 bitmapdata.length));
         return dl;
+    }
+
+    private static String getSmallImage(String url, String size) {
+        String newUrl = String.format("%s%s.jpeg", url.substring(0, url.lastIndexOf('.')), size);
+        Log.d("Image.getSmallImage", newUrl);
+        return newUrl;
     }
 
 }

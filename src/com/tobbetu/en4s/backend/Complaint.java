@@ -187,7 +187,7 @@ public class Complaint implements Serializable {
         try {
             return images.get(index);
         } catch (IndexOutOfBoundsException e) {
-            images.add(index, Image.download(imageURLs.get(index)));
+            images.add(index, Image.download(imageURLs.get(index), Image.SIZE_512));
             return images.get(index);
         }
     }
