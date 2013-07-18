@@ -174,6 +174,13 @@ public class NewComplaint extends Activity implements OnClickListener {
 	}
 
 	@Override
+	protected void onStop() {
+		super.onStop();
+		finish();
+		Log.d(TAG, "in onStop");
+	}
+	
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.new_complaint, menu);
@@ -295,6 +302,10 @@ public class NewComplaint extends Activity implements OnClickListener {
 				tmpHeight = (int) ((double) (600 / tmpWidth) * tmpHeight);
 			}
 
+			int difference = 0;
+			if (size.x > size.y)
+				difference = (size.x - size.y)/2;
+			
 			Log.e(TAG, "height : " + tmpHeight + ", width : " + tmpWidth);
 
 			Bitmap resized = Bitmap.createScaledBitmap(bmp, 600, 800, true); // 600 x 800 olarak resize edilmiþ resim

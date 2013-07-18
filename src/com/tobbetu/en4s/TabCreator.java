@@ -67,7 +67,7 @@ public class TabCreator extends Fragment {
 
         position = getArguments().getInt(ARG_POSITION);
     }
-
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {

@@ -20,6 +20,7 @@ import java.io.IOException;
 import uk.co.senab.photoview.PhotoView;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.AsyncTask;
@@ -63,6 +64,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 	private LatLng compPos = null;
 	LatLng myPosition = null;
 	private Bitmap cropped = null;
+	private ImageTask imageTask = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -105,7 +107,8 @@ public class DetailsActivity extends Activity implements OnClickListener {
 		viewPagerLayout.addView(mViewPager);
 		mViewPager.setAdapter(new SamplePagerAdapter());
 
-		new ImageTask().execute(0);
+		imageTask = new ImageTask();
+		imageTask.execute(0);
 
 		myMap = ((MapFragment) getFragmentManager().findFragmentById(
 				R.id.mapDetails)).getMap();
@@ -122,6 +125,25 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
 	}
 
+	@Override
+	protected void onStop() {
+		super.onStop();
+		/*Bu sekilde detay sayfasina girilmis olan bir sikayetin, resmi yuklenmeden detay sayfasindan cikinca
+		 * arka plan da calisan resmi indirme gorevi iptal ediliyor. Boylece kapanma hatasi almiyoruz.*/
+		imageTask.cancel(true);
+	}
+	
+//	@Override
+//	public void onBackPressed() {
+//		super.onBackPressed();
+//		
+//		/**/
+//		Intent i = new Intent(this, MainActivity.class);
+//		i.putExtra("latitude", myPosition.latitude);
+//		i.putExtra("longitude", myPosition.longitude);
+//		startActivity(i);
+//	}
+	
 	class SamplePagerAdapter extends PagerAdapter {
 
 		// private int[] sDrawables = { R.drawable.img1, R.drawable.img2,

@@ -129,7 +129,12 @@ public class Utils {
                         public void onClick(DialogInterface dialog, int id) {
                             // if this button is clicked, close
                             // current activity
-                            dialog.cancel();
+                            try {
+								finalize();
+							} catch (Throwable e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
                         }
                     });
         }
@@ -139,7 +144,7 @@ public class Utils {
                         public void onClick(DialogInterface dialog, int id) {
                             // if this button is clicked, just close
                             // the dialog box and do nothing
-                            dialog.cancel();
+                            dialog.dismiss();
                         }
                     });
         }

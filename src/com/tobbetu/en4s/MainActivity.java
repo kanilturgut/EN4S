@@ -1,6 +1,9 @@
 package com.tobbetu.en4s;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -38,6 +41,9 @@ public class MainActivity extends FragmentActivity {
     private double latitude = 0;
     private double longitude = 0;
 
+    private AlertDialog alertDialog = null;
+    private boolean closeFlag = false;
+    
     private final String TAG = "MainActivity";
     
 	@Override
@@ -69,6 +75,59 @@ public class MainActivity extends FragmentActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
+	}
+
+	@Override
+	public void onBackPressed() {
+		Log.e(TAG, "in onBackPressed");
+		createAlert();
+	}
+	
+	@Override
+	protected void onStop() {
+		super.onStop();
+		
+		Log.d(TAG, closeFlag + "");
+		
+		if (alertDialog != null)
+			alertDialog.dismiss();
+	}
+	
+	private void createAlert() {
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Exit ?");
+		builder.setMessage("Do you really want to quit ?");
+		builder.setCancelable(true);
+		builder.setPositiveButton("OK", 
+				new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+
+                try {
+                	closeFlag = true;
+					System.exit(0);
+				} catch (Throwable e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
+        });
+		builder.setNegativeButton("Cancel", 
+				new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+
+                try {
+                	closeFlag = true;
+					dialog.dismiss();
+				} catch (Throwable e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+            }
+        });
+		
+		alertDialog = builder.create();
+		alertDialog.show();
 	}
 
 	@Override

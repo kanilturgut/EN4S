@@ -101,7 +101,7 @@ public class Image {
     }
 
     private static String getSmallImage(String url, String size) {
-        String newUrl = String.format("%s%s.jpeg", url.substring(0, url.lastIndexOf('.')), size);
+        String newUrl = String.format("http://en4s.msimav.net%s%s.jpeg", url.substring(0, url.lastIndexOf('.')), size);
         Log.d("Image.getSmallImage", newUrl);
         return newUrl;
     }

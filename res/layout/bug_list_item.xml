@@ -1,113 +1,94 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:background="#DDDDDD"
-    android:orientation="horizontal"
-    android:padding="5dp" >
+    android:orientation="vertical"
+    android:padding="5dp"
+    android:background="#DDDDDD">
 
     <LinearLayout
-        android:id="@+id/llImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" >
-
-        <ImageView
-            android:id="@+id/ivImage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="5dp"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/ic_launcher" />
-    </LinearLayout>
-
+	    android:id="@+id/newComplaintTitleLayout"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="horizontal"
+	    android:background="#FFFFFF" >
+	    
+	    <TextView
+	        android:id="@+id/tvItem"
+	        android:layout_width="wrap_content"
+	        android:layout_height="match_parent"
+	        android:gravity="left"
+	        android:textColor="#222222"
+	        android:textSize="14sp"
+	        android:layout_marginTop="5dp"
+	        android:layout_marginLeft="10dp"
+	        android:text="Baslik" />
+	    
+	    <TextView
+	        android:id="@+id/tvDate"
+	        android:layout_width="wrap_content"
+	        android:layout_height="match_parent"
+	        android:gravity="right"
+	        android:textColor="#222222"
+	        android:textSize="12sp"
+	        android:layout_marginTop="8dp"
+	        android:layout_marginLeft="85dp"
+	        android:text="06.07.2013" />
+	</LinearLayout>
+    
     <LinearLayout
-        android:id="@+id/llText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/llImage"
-        android:layout_toRightOf="@+id/llImage"
-        android:orientation="vertical" >
-
-        <TextView
-            android:id="@+id/tvItem"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:text="Başlık"
-            android:textColor="#000000"
-            android:textSize="15sp" />
-
-        <TextView
-            android:id="@+id/tvComplaintAddress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Complaint Adress"
-            android:textColor="#808080"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/tvAdditionalInfo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Additional Info"
-            android:textColor="#808080"
-            android:textSize="12sp" />
-
-        <LinearLayout
-            android:id="@+id/llText2"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="horizontal" >
-
-            <TextView
-                android:id="@+id/upVoteTW"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="#99CC99"
-                android:paddingBottom="3dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="3dp"
-                android:textColor="#FFFFFF"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/downVoteTW"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:background="#E77D8B"
-                android:paddingBottom="3dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
-                android:paddingTop="3dp"
-                android:textColor="#FFFFFF"
-                android:textSize="12sp" />
-        </LinearLayout>
+	    android:id="@+id/complaintImage"
+	    android:layout_width="match_parent"
+	    android:layout_height="300dp"
+	    android:orientation="vertical"
+	    android:background="#FFFFFF" >
+	    
+	    <ImageView
+	        android:id="@+id/ivProblemImage"
+	        android:layout_width="match_parent"
+	        android:layout_height="match_parent"
+	        android:padding="5dp"
+	        android:layout_gravity="center" />
+	</LinearLayout>
+	
+	<LinearLayout
+	    android:id="@+id/llSecenekler"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:orientation="horizontal"
+	    android:background="#FFFFFF" >
+    
+	    <ImageView
+	        android:id="@+id/ivUp"
+	        android:layout_width="wrap_content"
+	        android:layout_height="match_parent"
+	        android:padding="5dp"
+	        android:src="@drawable/up" />
+	    
+	    <ImageView
+	        android:id="@+id/ivDown"
+	        android:layout_width="wrap_content"
+	        android:layout_height="match_parent"
+	        android:padding="5dp"
+	        android:src="@drawable/down" />
+	    
+	    <ImageView
+	        android:id="@+id/ivComment"
+	        android:layout_width="wrap_content"
+	        android:layout_height="40dp"
+	        android:padding="5dp"
+	        android:gravity="left"
+	        android:src="@drawable/yorum" />
+	    
+	     <ImageView
+	        android:id="@+id/ivMore"
+	        android:layout_width="60dp"
+	        android:layout_height="wrap_content"
+	        android:padding="5dp"
+	        android:gravity="right"
+	        android:layout_marginTop="8dp"
+	        android:layout_marginLeft="85dp"
+	        android:src="@drawable/threedots" />
     </LinearLayout>
-
-    <!--
-    <LinearLayout
-    android:layout_marginLeft="15dp"
-        android:id="@+id/llArrow"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/llText"
-        android:layout_marginRight="5dp"
-        android:layout_marginTop="14dp"
-        android:gravity="right"
-        android:orientation="vertical" >
-
-        <ImageView
-            android:id="@+id/ivArrow"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/app_name"
-            android:src="@android:drawable/arrow_up_float" />
-    </LinearLayout>
-    -->
-
-</RelativeLayout>
+	
+</LinearLayout>
