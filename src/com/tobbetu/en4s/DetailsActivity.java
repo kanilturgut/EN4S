@@ -64,7 +64,6 @@ public class DetailsActivity extends Activity implements OnClickListener {
 	private LatLng compPos = null;
 	LatLng myPosition = null;
 	private Bitmap cropped = null;
-	private ImageTask imageTask = null;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -107,9 +106,6 @@ public class DetailsActivity extends Activity implements OnClickListener {
 		viewPagerLayout.addView(mViewPager);
 		mViewPager.setAdapter(new SamplePagerAdapter());
 
-		imageTask = new ImageTask();
-		imageTask.execute(0);
-
 		myMap = ((MapFragment) getFragmentManager().findFragmentById(
 				R.id.mapDetails)).getMap();
 		myMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
@@ -130,7 +126,6 @@ public class DetailsActivity extends Activity implements OnClickListener {
 		super.onStop();
 		/*Bu sekilde detay sayfasina girilmis olan bir sikayetin, resmi yuklenmeden detay sayfasindan cikinca
 		 * arka plan da calisan resmi indirme gorevi iptal ediliyor. Boylece kapanma hatasi almiyoruz.*/
-		imageTask.cancel(true);
 	}
 	
 //	@Override
@@ -206,42 +201,42 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
 	}
 
-	class ImageTask extends AsyncTask<Integer, String, String> {
-
-		@Override
-		protected String doInBackground(Integer... params) {
-
-			try {
-				Log.d("ImageTask", "istek yapildi1");
-				bmp = comp.getImage(params[0]).getBmp();
-				Log.d("ImageTask", "istek yapildi");
-
-			} catch (IOException e) {
-				Log.e(getClass().getName(), "Image couldn't load", e);
-			}
-			return null;
-		}
-
-		@Override
-		protected void onPostExecute(String result) {
-
-			Display display = getWindowManager().getDefaultDisplay();
-			Point size = new Point();
-			display.getSize(size);
-			int tmpWidth = size.x;
-			int tmpHeight = viewPagerLayout.getLayoutParams().height;
-
-			if(tmpWidth > 600){
-				tmpWidth = bmp.getWidth();
-				tmpHeight = (int) ((double)(bmp.getWidth() / tmpWidth) * tmpHeight);
-			}
-
-			Log.e(getClass().getName(), "tmp.width:" + tmpWidth + " , tmpheight : " + tmpHeight + "...." + "bmpW: " + bmp.getWidth() + " , bmpH : " + bmp.getHeight());
-			cropped = Bitmap.createBitmap(bmp, 0, 150, tmpWidth, tmpHeight);
-			Log.e("burasi", "croppe width : " + cropped.getWidth() + " cropped height : " + cropped.getHeight());
-			photoView.setImageBitmap(cropped);
-		}
-	}
+//	class ImageTask extends AsyncTask<Integer, String, String> {
+//
+//		@Override
+//		protected String doInBackground(Integer... params) {
+//
+//			try {
+//				Log.d("ImageTask", "istek yapildi1");
+//				bmp = comp.getImage(params[0]).getBmp();
+//				Log.d("ImageTask", "istek yapildi");
+//
+//			} catch (IOException e) {
+//				Log.e(getClass().getName(), "Image couldn't load", e);
+//			}
+//			return null;
+//		}
+//
+//		@Override
+//		protected void onPostExecute(String result) {
+//
+//			Display display = getWindowManager().getDefaultDisplay();
+//			Point size = new Point();
+//			display.getSize(size);
+//			int tmpWidth = size.x;
+//			int tmpHeight = viewPagerLayout.getLayoutParams().height;
+//
+//			if(tmpWidth > 600){
+//				tmpWidth = bmp.getWidth();
+//				tmpHeight = (int) ((double)(bmp.getWidth() / tmpWidth) * tmpHeight);
+//			}
+//
+//			Log.e(getClass().getName(), "tmp.width:" + tmpWidth + " , tmpheight : " + tmpHeight + "...." + "bmpW: " + bmp.getWidth() + " , bmpH : " + bmp.getHeight());
+//			cropped = Bitmap.createBitmap(bmp, 0, 150, tmpWidth, tmpHeight);
+//			Log.e("burasi", "croppe width : " + cropped.getWidth() + " cropped height : " + cropped.getHeight());
+//			photoView.setImageBitmap(cropped);
+//		}
+//	}
 
 	// Buttons onClickListener
 	@Override

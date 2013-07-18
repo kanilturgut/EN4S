@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import com.tobbetu.en4s.backend.Complaint;
+import com.tobbetu.en4s.backend.Image;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -73,6 +74,7 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
 //		}
 		
 		problemImage.setImageResource(R.drawable.resim1);
+		complaint.getImage(0, Image.SIZE_512, problemImage);
 //		new ImageTask().execute(complaint, problemImage);
 
 
@@ -100,31 +102,6 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
 
 		return rowView;
 
-	}
-	
-	private class ImageTask extends AsyncTask<Object, Bitmap, Bitmap> {
-		
-		private ImageView v;
-		
-		@Override
-		protected Bitmap doInBackground(Object... arg0) {
-			Complaint complaint = (Complaint) arg0[0];
-			v = (ImageView) arg0[1];
-			Bitmap tmp;
-			try {
-				tmp =  complaint.getImage(0).getBmp();
-			} catch (IOException e) {
-				tmp = null;
-			}
-			// TODO Auto-generated method stub
-			return tmp;
-		}
-		
-		@Override
-		protected void onPostExecute(Bitmap result) {
-			v.setImageBitmap(result);
-		}
-		
 	}
 
 }

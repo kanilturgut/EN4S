@@ -16,8 +16,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.tobbetu.en4s.Utils;
+import com.tobbetu.en4s.cache.Cache;
 
 public class Complaint implements Serializable {
 
@@ -180,16 +182,12 @@ public class Complaint implements Serializable {
         }
     }
 
-    public Image getImage(int index) throws IOException {
+    public void getImage(int index, String size, ImageView iv) {
         if (index > imageURLs.size())
             throw new IndexOutOfBoundsException();
 
-        try {
-            return images.get(index);
-        } catch (IndexOutOfBoundsException e) {
-            images.add(index, Image.download(imageURLs.get(index), Image.SIZE_512));
-            return images.get(index);
-        }
+        String url = imageURLs.get(index);
+        Cache.getInstance().getImage(Image.getImageURL(url, size), iv);
     }
 
     public void save() throws IOException {

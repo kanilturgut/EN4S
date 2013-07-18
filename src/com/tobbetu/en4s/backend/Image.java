@@ -92,16 +92,16 @@ public class Image {
         return "";
     }
 
-    public static Image download(String url, String size) throws IOException {
+    public static Image download(String url) throws IOException {
         Image dl = new Image();
-        byte[] bitmapdata = Requests.download(getSmallImage(url, size));
+        byte[] bitmapdata = Requests.download(url);
         dl.setBmp(BitmapFactory.decodeByteArray(bitmapdata, 0,
                 bitmapdata.length));
         return dl;
     }
 
-    private static String getSmallImage(String url, String size) {
-        String newUrl = String.format("http://en4s.msimav.net%s%s.jpeg", url.substring(0, url.lastIndexOf('.')), size);
+    public static String getImageURL(String url, String size) {
+        String newUrl = String.format("http://en4s.msimav.net%s%s.jpg", url.substring(0, url.lastIndexOf('.')), size);
         Log.d("Image.getSmallImage", newUrl);
         return newUrl;
     }

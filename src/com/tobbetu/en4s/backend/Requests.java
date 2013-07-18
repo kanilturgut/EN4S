@@ -105,7 +105,7 @@ public class Requests {
     }
 
     public static byte[] download(String image) throws IOException {
-        HttpResponse get = Requests.get("http://en4s.msimav.net" + image);
+        HttpResponse get = Requests.get(image);
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         get.getEntity().writeTo(out);
