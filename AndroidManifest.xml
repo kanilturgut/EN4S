@@ -67,6 +67,10 @@
             android:name="com.tobbetu.en4s.BiggerMap"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name="com.tobbetu.en4s.MoreCommentsActivity"
+            android:label="@string/title_activity_more_comments" >
+        </activity>
     </application>
 
 </manifest>

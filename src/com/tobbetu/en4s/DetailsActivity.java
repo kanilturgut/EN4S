@@ -33,9 +33,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,7 +52,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
 	private TextView tvComplaintAdress, tvComplaintTitle, tvComplaintCategory,
 	tvReporter, tvReporterDate, tvYouAreNotAllowed;
-	private Button bUpVote, bDownVote;
+	private Button bUpVote, bDownVote, bMoreComment;
 	private LinearLayout viewPagerLayout;
 
 	private ViewPager mViewPager;
@@ -87,8 +90,10 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
 		bUpVote = (Button) findViewById(R.id.bUpVote);
 		bDownVote = (Button) findViewById(R.id.bDownVote);
+		bMoreComment = (Button) findViewById(R.id.bMoreComment);
 		bUpVote.setOnClickListener(this);
 		bDownVote.setOnClickListener(this);
+		bMoreComment.setOnClickListener(this);
 
 		compPos = new LatLng(comp.getLatitude(), comp.getLongitude());
 		myPosition = new LatLng(getIntent().getDoubleExtra(
@@ -118,14 +123,20 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
 		tvReporter.setText(comp.getReporter());
 		tvReporterDate.setText(comp.getDateAsString());
-
+		
+		String sporDallari[] = {"Basketbol", "Futbol", "Tenis", "Voleybol",
+	            "Hentbol", "Yüzme", "Golf"};
+		ListView lvComments = (ListView) findViewById(R.id.lvCommentOnDetails);
+		lvComments.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,sporDallari));
+		
 	}
-
+	
 	@Override
 	protected void onStop() {
 		super.onStop();
 		/*Bu sekilde detay sayfasina girilmis olan bir sikayetin, resmi yuklenmeden detay sayfasindan cikinca
 		 * arka plan da calisan resmi indirme gorevi iptal ediliyor. Boylece kapanma hatasi almiyoruz.*/
+		
 	}
 	
 //	@Override
@@ -244,8 +255,15 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
 		if (v.getId() == R.id.bUpVote) {
 			new UpVoteTask().execute();
-		} else {
+		} else if (v.getId() == R.id.bDownVote) {
 			new DownVoteTask().execute();
+		} else { //bMoreComment
+			Intent i = new Intent(this, MoreCommentsActivity.class);
+			i.putExtra("class", comp);
+			i.putExtra("latitude", comp.getLatitude());
+			i.putExtra("longitude", comp.getLongitude());
+			// ayrica burada liste icerigini de intent icine yerlestirmeliyiz yada baska bir yontem
+			startActivity(i);
 		}
 
 	}

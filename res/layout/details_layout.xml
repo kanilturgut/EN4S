@@ -4,9 +4,9 @@
     android:id="@+id/scroller"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#DDDDDD"
     android:fillViewport="true"
-    android:scrollY="0dp"
-    android:background="#DDDDDD" >
+    android:scrollY="0dp" >
 
     <LinearLayout
         android:id="@+id/mainLinear"
@@ -40,17 +40,17 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="5dp"
                     android:text="@string/cName"
+                    android:textColor="#000000"
                     android:textSize="18sp"
-                    android:textStyle="bold"
-                    android:textColor="#000000" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvComplaintCategory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/cCategory"
-                    android:textSize="14sp"
-                    android:textColor="#808080" />
+                    android:textColor="#808080"
+                    android:textSize="14sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -115,18 +115,18 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:orientation="vertical" >
-	                    
+
                     <TextView
                         android:id="@+id/tvReporter"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="5dp"
-                        android:text="@string/reporterName"
-                        android:textColor="#808080"
                         android:drawableLeft="@drawable/leaf"
                         android:drawablePadding="10dp"
-                        android:textSize="14sp"
-                        android:textAlignment="center" />
+                        android:text="@string/reporterName"
+                        android:textAlignment="center"
+                        android:textColor="#808080"
+                        android:textSize="14sp" />
 
                     <TextView
                         android:id="@+id/tvReporterDate"
@@ -135,7 +135,6 @@
                         android:text="@string/reportDate"
                         android:textColor="#808080"
                         android:textSize="14sp" />
-                    
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
@@ -147,7 +146,7 @@
             android:layout_margin="15dp"
             android:background="#FFFFFF"
             android:orientation="vertical" >
-            
+
             <fragment
                 android:id="@+id/mapDetails"
                 android:layout_width="wrap_content"
@@ -157,14 +156,36 @@
                 class="com.google.android.gms.maps.MapFragment" />
 
             <TextView
-		        android:id="@+id/tvComplaintAdress"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:textSize="12sp"
-		        android:textColor="#777777"
-		        android:layout_margin="8dp"
-		        android:gravity="center"
-		        android:text="@string/adressName" />
+                android:id="@+id/tvComplaintAdress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:gravity="center"
+                android:text="@string/adressName"
+                android:textColor="#777777"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/newComplaintCommentLayout"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_margin="15dp"
+            android:background="#FFFFFF"
+            android:orientation="vertical" >
+
+            <ListView
+                android:id="@+id/lvCommentOnDetails"
+                android:layout_width="match_parent"
+                android:layout_height="100dp" >
+            </ListView>
+
+            <Button
+                android:id="@+id/bMoreComment"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="More" />
         </LinearLayout>
     </LinearLayout>
+
 </ScrollView>
