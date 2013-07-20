@@ -1,18 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/login_background"
     android:orientation="vertical" >
-
-    <ImageView
-        android:id="@+id/logoImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="25dp"
-        android:background="@drawable/logo"
-        android:contentDescription="@string/photoDescription" />
 
     <LinearLayout
         android:id="@+id/appInfo"
@@ -30,25 +21,13 @@
             android:textColor="#FFFFFF"
             android:textSize="40sp"
             android:textStyle="bold" />
-
-        <!--
-             <TextView 
-            android:id="@+id/appTagLine"
-            android:textColor="#FFFFFF"
-            android:textSize="25sp"
-            android:layout_width="wrap_content"
-        	android:layout_height="wrap_content"
-        	android:gravity="center"
-        	android:textStyle="bold"
-            android:text="LET'S CREATE BETTER CITIES" />
-        -->
-
     </LinearLayout>
 
     <LinearLayout
         android:id="@+id/userInfo"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_margin="25dp"
         android:orientation="vertical" >
 
@@ -56,45 +35,62 @@
             android:id="@+id/etUsername"
             android:layout_width="match_parent"
             android:layout_height="40dp"
+            android:layout_marginTop="60dp"
             android:background="#FFFFFF"
             android:hint="@string/username"
             android:inputType="text"
             android:paddingLeft="15dp"
-            android:layout_marginTop="60dp"
             android:textColor="#000000" >
+
             <requestFocus />
         </EditText>
-        
+
         <EditText
             android:id="@+id/etPassword"
             android:layout_width="match_parent"
             android:layout_height="40dp"
+            android:layout_marginTop="15dp"
             android:background="#FFFFFF"
             android:hint="@string/password"
             android:inputType="textPassword"
             android:paddingLeft="15dp"
-            android:layout_marginTop="15dp"
             android:textColor="#000000" >
         </EditText>
-        
+
         <Button
-	        android:id="@+id/bLogin"
-			android:layout_width="fill_parent"
+            android:id="@+id/bLogin"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
-            android:layout_marginBottom="10dp"
             android:background="@drawable/login_button_style"
-            android:textColor="#FFFFFF"
-	        android:text="@string/signIn" />
-	
-	    <ProgressBar
-	        android:id="@+id/pbLogin"
-	        style="?android:attr/progressBarStyleLarge"
-	        android:visibility="invisible"
-	        android:layout_gravity="center"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:layout_marginBottom="21dp" />
+            android:text="@string/signIn"
+            android:textColor="#FFFFFF" />
+
+        <com.facebook.widget.LoginButton
+            android:id="@+id/faceButton"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="15dp" />
+
+        <ProgressBar
+            android:id="@+id/pbLogin"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="21dp"
+            android:visibility="gone" />
     </LinearLayout>
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/logoImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/appInfo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="35dp"
+        android:background="@drawable/logo"
+        android:contentDescription="@string/photoDescription" />
+
+</RelativeLayout>

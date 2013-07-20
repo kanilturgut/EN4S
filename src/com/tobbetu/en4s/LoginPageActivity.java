@@ -1,6 +1,7 @@
 package com.tobbetu.en4s;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import android.app.Activity;
 import android.content.Context;
@@ -22,14 +23,29 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.facebook.FacebookException;
+import com.facebook.Request;
+import com.facebook.Request.GraphUserCallback;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.Session.StatusCallback;
+import com.facebook.SessionState;
+import com.facebook.model.GraphUser;
+import com.facebook.widget.LoginButton;
+import com.facebook.widget.LoginButton.OnErrorListener;
 import com.tobbetu.en4s.backend.Login;
 import com.tobbetu.en4s.backend.Login.LoginFailedException;
 
 public class LoginPageActivity extends Activity {
 
+	private String TAG = "LoginPageActivity";
+	
 	private Button bLogin = null;
 	private EditText etUsername, etPassword;
 	private ProgressBar pbLogin = null;
+	
+	private LoginButton faceButton = null;
+	private String faceAccessToken = null;
 
 	private String sharedFileName = "loginInfo";
 	protected static SharedPreferences loginPreferences;
@@ -78,6 +94,48 @@ public class LoginPageActivity extends Activity {
 						loginPreferences.getString("username", ""),
 						loginPreferences.getString("password", ""));
 			}
+			
+			faceButton = (LoginButton) findViewById(R.id.faceButton);
+			faceButton.setOnErrorListener(new OnErrorListener() {
+				
+				@Override
+				public void onError(FacebookException error) {
+					Log.i(TAG, "Error " + error.getMessage());					
+				}
+			});
+			
+			//facebook izinlerini set ediyoruz.
+			faceButton.setReadPermissions(Arrays.asList("basic_info", "email"));
+			
+			faceButton.setSessionStatusCallback(new StatusCallback() {
+				
+				@Override
+				public void call(Session session, SessionState state, Exception exception) {
+					
+					if (session.isOpened()) {
+						faceAccessToken = session.getAccessToken();
+						Log.i(TAG, "Access Token" + session.getAccessToken());
+						
+						Request.executeMeRequestAsync(session, new GraphUserCallback() {
+							
+							@Override
+							public void onCompleted(GraphUser user, Response response) {
+								if (user != null) {
+									String userID = user.getId();
+									String name = user.asMap().get("name").toString();
+									String username = user.asMap().get("username").toString();
+									String email = user.asMap().get("email").toString();
+									
+									Log.i(TAG, userID + "," + name + "," + username + "," + email);
+									
+								}
+							}
+						});
+						
+					}
+					
+				}
+			});
 		}
 	}
 
@@ -111,9 +169,16 @@ public class LoginPageActivity extends Activity {
 
 	protected void onPause() {
 		super.onPause();
-		finish();
+		//finish();
 	};
 
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		Session.getActiveSession().onActivityResult(this, requestCode,
+				resultCode, data);
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
