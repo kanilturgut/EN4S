@@ -51,6 +51,7 @@ public class LoginPageActivity extends Activity {
 	protected static SharedPreferences loginPreferences;
 
 	private LocationManager lManager = null;
+	private LocationListener mlocListener = null;
 	private double latitude = 0;
 	private double longitude = 0;
 
@@ -71,7 +72,7 @@ public class LoginPageActivity extends Activity {
 			// startService(new Intent(this, EN4SService.class));
 
 			lManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-			LocationListener mlocListener = new LoginPageLocationListener();
+			mlocListener = new LoginPageLocationListener();
 			lManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
 					0, 0, mlocListener);
 
@@ -169,7 +170,7 @@ public class LoginPageActivity extends Activity {
 
 	protected void onPause() {
 		super.onPause();
-		//finish();
+//		finish();
 	};
 
 	@Override
@@ -270,6 +271,9 @@ public class LoginPageActivity extends Activity {
 	            locationFlag, loginFlag));
 		if (locationFlag == true && loginFlag == true) {
 
+			//after login, we need to stop location listener
+			lManager.removeUpdates(mlocListener);
+			
 			Intent i = new Intent(LoginPageActivity.this, MainActivity.class);
 			i.putExtra("latitude", latitude);
 			i.putExtra("longitude", longitude);
