@@ -99,18 +99,21 @@ public class LoginPageActivity extends Activity {
 					MODE_PRIVATE);
 			if ((loginPreferences.getAll().size() != 0) && flag == false) {
 				flag = true;
-//				if(!loginPreferences.getString("facebook_accessToken", "null").equals("null")) {
-//					//facebook login
-//					Log.d(TAG, "trying login with facebook");
-//				}
-//				else { //normal login
+				if(!loginPreferences.getString("facebook_accessToken", "null").equals("null")) {
+					//facebook login
+					Log.d(TAG, "trying login with facebook");
+					
+					//burasi degisecek, facebook ile connection yazilinca iptal ediyorum burayi.
+					new LoginTask().execute("anil","123");
+				}
+				else { //normal login
 					Log.d(TAG, "trying login with username");
 					Log.d(TAG, loginPreferences.getString("username", ""));
 					Log.d(TAG, loginPreferences.getString("password", ""));
 					new LoginTask().execute(
 							loginPreferences.getString("username", ""),
 							loginPreferences.getString("password", ""));
-//				}
+				}
 			}
 
 			faceButton.setOnErrorListener(new OnErrorListener() {
@@ -152,6 +155,9 @@ public class LoginPageActivity extends Activity {
 									String email = user.asMap().get("email").toString();
 
 									Log.i(TAG, userID + "," + name + "," + username + "," + email);
+									
+									loginFlag = true;
+									startIntent();
 
 								}
 							}
