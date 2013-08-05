@@ -16,6 +16,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -23,7 +24,6 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.FacebookException;
@@ -66,6 +66,9 @@ public class LoginPageActivity extends Activity {
 	
     private AlertDialog alertDialog = null;
     private boolean closeFlag = false;
+    
+    private Handler myLocationHandler = null;
+    private Runnable locationRunnable = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +117,8 @@ public class LoginPageActivity extends Activity {
 							loginPreferences.getString("username", ""),
 							loginPreferences.getString("password", ""));
 				}
+				
+				loginWithoutCurrentLocation();
 			}
 
 			faceButton.setOnErrorListener(new OnErrorListener() {
@@ -157,8 +162,8 @@ public class LoginPageActivity extends Activity {
 									Log.i(TAG, userID + "," + name + "," + username + "," + email);
 									
 									loginFlag = true;
+//									loginWithoutCurrentLocation();
 									startIntent();
-
 								}
 							}
 						});
@@ -194,6 +199,8 @@ public class LoginPageActivity extends Activity {
 
 				new LoginTask().execute(etUsername.getText().toString(),
 						etPassword.getText().toString());
+				
+//				loginWithoutCurrentLocation();
 			}
 		}
 	};
@@ -202,8 +209,17 @@ public class LoginPageActivity extends Activity {
 	protected void onStop() {
 		super.onStop();
 		
-		if (intentCreated)
+		if (intentCreated) {		
+			myLocationHandler.removeCallbacks(locationRunnable);
+			locationRunnable = null;
+			myLocationHandler = null;
+			
+			lManager.removeUpdates(mlocListener);
+			lManager = null;
+			mlocListener = null;
+			
 			finish();
+		}
 		
 		Log.d(TAG, closeFlag + "");
 		
@@ -375,5 +391,24 @@ public class LoginPageActivity extends Activity {
 		
 		alertDialog = builder.create();
 		alertDialog.show();
+	}
+	
+	private void loginWithoutCurrentLocation() {
+		myLocationHandler = new Handler();
+		
+		locationRunnable = new Runnable() {
+			
+			@Override
+			public void run() {
+				Location lastLocation = lManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+				latitude = lastLocation.getLatitude();
+				longitude = lastLocation.getLongitude();
+				locationFlag = true;
+				Toast.makeText(getApplicationContext(), "We couldn't get your current location!", Toast.LENGTH_SHORT).show();
+				startIntent();			
+			}
+		};
+		
+		myLocationHandler.postDelayed(locationRunnable, 10000);
 	}
 }

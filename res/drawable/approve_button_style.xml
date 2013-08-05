@@ -5,12 +5,12 @@
     <item android:state_pressed="true" >
         <shape>
             <gradient
-                android:startColor="@color/send_button_pressed"
-                android:endColor="@color/send_button_pressed"
+                android:startColor="@color/approve_button_pressed"
+                android:endColor="@color/approve_button_pressed"
                 android:angle="270" />
             <stroke
                 android:width="3dp"
-                android:color="@color/send_button_pressed_stroke" />
+                android:color="@color/approve_button_pressed_stroke" />
             <corners
                 android:radius="0dp" />
             <padding
@@ -24,12 +24,12 @@
     <item>        
         <shape>
             <gradient
-                android:startColor="@color/send_button"
-                android:endColor="@color/send_button"
+                android:startColor="@color/approve_button"
+                android:endColor="@color/approve_button"
                 android:angle="270" />
             <stroke
                 android:width="3dp"
-                android:color="@color/send_button_stroke" />
+                android:color="@color/approve_button_stroke" />
             <corners
                 android:radius="0dp" />
             <padding

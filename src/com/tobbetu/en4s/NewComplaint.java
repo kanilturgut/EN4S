@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -110,7 +111,7 @@ public class NewComplaint extends Activity implements OnClickListener {
 
 		myMap = ((MapFragment) getFragmentManager().findFragmentById(
 				R.id.mapNewComplaint)).getMap();
-		myMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+		myMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
 		position = new LatLng(latitude, longitude);
 
@@ -176,7 +177,7 @@ public class NewComplaint extends Activity implements OnClickListener {
 	@Override
 	protected void onStop() {
 		super.onStop();
-		finish();
+//		finish();
 		Log.d(TAG, "in onStop");
 	}
 	
@@ -279,17 +280,63 @@ public class NewComplaint extends Activity implements OnClickListener {
 
 		if (resultCode == RESULT_OK) {
 
-			bmp = (Bitmap) grabImage(); // Resimin orjinal hali
+//			bmp = (Bitmap) grabImage(); // Resimin orjinal hali
+//
+//			img = new Image();
+//
+//			int height = bmp.getHeight();
+//			int width = bmp.getWidth();
+//
+//			Log.e(TAG, "height : " + height + ", width : " + width);
+//
+//			bTakePic.setVisibility(View.GONE);
+//			ivTakenPhoto.setVisibility(View.VISIBLE);
+//
+//			Display display = getWindowManager().getDefaultDisplay();
+//			Point size = new Point();
+//			display.getSize(size);
+//			int tmpWidth = size.x;
+//			int tmpHeight = photoButtonLL.getLayoutParams().height;
+//
+//			if (tmpWidth > 600) {
+//				tmpWidth = 600;
+//				tmpHeight = (int) ((double) (600 / tmpWidth) * tmpHeight);
+//			}
+//
+//			int difference = 0;
+//			if (size.x > size.y)
+//				difference = (size.x - size.y)/2;
+//			
+//			Log.e(TAG, "height : " + tmpHeight + ", width : " + tmpWidth);
+//
+//			Bitmap resized = Bitmap.createScaledBitmap(bmp, 600, 800, true); // 600 x 800 olarak resize edilmiþ resim
+//
+//			Log.e(TAG, "height : " + resized.getHeight() + ", width : " + resized.getWidth());
+//
+//			Bitmap cropped = Bitmap.createBitmap(resized, 0, 150, tmpWidth, tmpHeight); // Resized resim üzerinden crop edilmiþ resim
+//			ivTakenPhoto.setImageBitmap(cropped);
+//
+//			img.setBmp(resized);
+//
+//			ByteArrayOutputStream blob = new ByteArrayOutputStream();
+//			cropped.compress(CompressFormat.PNG, 0 /*ignored for PNG*/, blob);
+//			bitmapdata = blob.toByteArray();
+			
+			
+			bTakePic.setVisibility(View.GONE);
+			ivTakenPhoto.setVisibility(View.VISIBLE);
 
+			bmp = (Bitmap) grabImage(); // Resimin orjinal hali
 			img = new Image();
+
+			if(bmp.getHeight() < bmp.getWidth()){
+				Matrix matrix = new Matrix();
+				matrix.postRotate(90);
+				bmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, true);
+			}
 
 			int height = bmp.getHeight();
 			int width = bmp.getWidth();
-
-			Log.e(TAG, "height : " + height + ", width : " + width);
-
-			bTakePic.setVisibility(View.GONE);
-			ivTakenPhoto.setVisibility(View.VISIBLE);
 
 			Display display = getWindowManager().getDefaultDisplay();
 			Point size = new Point();
@@ -297,29 +344,18 @@ public class NewComplaint extends Activity implements OnClickListener {
 			int tmpWidth = size.x;
 			int tmpHeight = photoButtonLL.getLayoutParams().height;
 
-			if (tmpWidth > 600) {
-				tmpWidth = 600;
-				tmpHeight = (int) ((double) (600 / tmpWidth) * tmpHeight);
-			}
+			Log.e(TAG, "height : " + height + ", width : " + width);
+			Bitmap resized = Bitmap.createScaledBitmap(bmp, 600, 800, true); // 600 x 800 olarak resize edildi
+			//Bitmap layoutResized = Bitmap.createScaledBitmap(bmp, tmpWidth, (int) (tmpWidth * 8) / 6, true);
 
-			int difference = 0;
-			if (size.x > size.y)
-				difference = (size.x - size.y)/2;
-			
-			Log.e(TAG, "height : " + tmpHeight + ", width : " + tmpWidth);
+			Bitmap cropped = Bitmap.createBitmap(resized, 0, 100, 600, 600); // Resized resim üzerinden crop edildi
+			Bitmap layoutCropped = Bitmap.createScaledBitmap(cropped, tmpWidth, tmpHeight, true);
+			Log.e(TAG, "height : " + (int) (tmpHeight * 8) / 6 + ", width : " + tmpWidth);
+			//Bitmap cropped = Bitmap.createBitmap(resized, x noktasý, y noktasý, width, height); // Resized resim üzerinden crop edildi
 
-			Bitmap resized = Bitmap.createScaledBitmap(bmp, 600, 800, true); // 600 x 800 olarak resize edilmiþ resim
-
-			Log.e(TAG, "height : " + resized.getHeight() + ", width : " + resized.getWidth());
-
-			Bitmap cropped = Bitmap.createBitmap(resized, 0, 150, tmpWidth, tmpHeight); // Resized resim üzerinden crop edilmiþ resim
-			ivTakenPhoto.setImageBitmap(cropped);
-
+			ivTakenPhoto.setImageBitmap(layoutCropped);
 			img.setBmp(resized);
-
-			ByteArrayOutputStream blob = new ByteArrayOutputStream();
-			cropped.compress(CompressFormat.PNG, 0 /*ignored for PNG*/, blob);
-			bitmapdata = blob.toByteArray();
+			
 
 			/*
 			 * Kullanici fotograf cektiken sonra, send butonuna basmayi unutup

@@ -73,7 +73,7 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
 //			problemImage.setImageResource(R.drawable.type5);
 //		}
 		
-		problemImage.setImageResource(R.drawable.resim1);
+		problemImage.setImageResource(R.drawable.loading);
 		complaint.getImage(0, Image.SIZE_512, problemImage);
 //		new ImageTask().execute(complaint, problemImage);
 

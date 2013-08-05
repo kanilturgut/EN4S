@@ -54,7 +54,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
 	private TextView tvComplaintAdress, tvComplaintTitle, tvComplaintCategory,
 	tvReporter, tvReporterDate, tvYouAreNotAllowed;
-	private Button bUpVote, bDownVote, bMoreComment, bShare;
+	private Button bUpVote, bDownVote, bMoreComment /*bShare*/;
 	private LinearLayout viewPagerLayout;
 
 	private ViewPager mViewPager;
@@ -81,7 +81,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
 		comp = (Complaint) getIntent().getSerializableExtra("class");
 
-		viewPagerLayout = (LinearLayout) findViewById(R.id.viewPagerLayout);
+//		viewPagerLayout = (LinearLayout) findViewById(R.id.viewPagerLayout);
 
 		tvComplaintAdress = (TextView) findViewById(R.id.tvComplaintAdress);
 		tvComplaintTitle = (TextView) findViewById(R.id.tvComplaintTitle);
@@ -93,11 +93,11 @@ public class DetailsActivity extends Activity implements OnClickListener {
 		bUpVote = (Button) findViewById(R.id.bUpVote);
 		bDownVote = (Button) findViewById(R.id.bDownVote);
 		bMoreComment = (Button) findViewById(R.id.bMoreComment);
-		bShare = (Button) findViewById(R.id.bShare);
+//		bShare = (Button) findViewById(R.id.bShare);
 		bUpVote.setOnClickListener(this);
 		bDownVote.setOnClickListener(this);
 		bMoreComment.setOnClickListener(this);
-		bShare.setOnClickListener(this);
+//		bShare.setOnClickListener(this);
 
 		compPos = new LatLng(comp.getLatitude(), comp.getLongitude());
 		myPosition = new LatLng(getIntent().getDoubleExtra(
@@ -106,14 +106,14 @@ public class DetailsActivity extends Activity implements OnClickListener {
 			bUpVote.setVisibility(View.GONE);
 			bDownVote.setVisibility(View.GONE);
 
-			tvYouAreNotAllowed = (TextView) findViewById(R.id.tvYouAreNotAllowed);
-			tvYouAreNotAllowed.setVisibility(View.VISIBLE);
+//			tvYouAreNotAllowed = (TextView) findViewById(R.id.tvYouAreNotAllowed);
+//			tvYouAreNotAllowed.setVisibility(View.VISIBLE);
 
 		}
 
-		mViewPager = new HackyViewPager(this);
-		viewPagerLayout.addView(mViewPager);
-		mViewPager.setAdapter(new SamplePagerAdapter());
+//		mViewPager = new HackyViewPager(this);
+//		viewPagerLayout.addView(mViewPager);
+//		mViewPager.setAdapter(new SamplePagerAdapter());
 
 		myMap = ((MapFragment) getFragmentManager().findFragmentById(
 				R.id.mapDetails)).getMap();
@@ -128,10 +128,10 @@ public class DetailsActivity extends Activity implements OnClickListener {
 		tvReporter.setText(comp.getReporter());
 		tvReporterDate.setText(comp.getDateAsString());
 		
-		String sporDallari[] = {"Basketbol", "Futbol", "Tenis", "Voleybol",
-	            "Hentbol", "Yüzme", "Golf"};
-		ListView lvComments = (ListView) findViewById(R.id.lvCommentOnDetails);
-		lvComments.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,sporDallari));
+//		String sporDallari[] = {"Basketbol", "Futbol", "Tenis", "Voleybol",
+//	            "Hentbol", "Yüzme", "Golf"};
+//		ListView lvComments = (ListView) findViewById(R.id.lvCommentOnDetails);
+//		lvComments.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,sporDallari));
 		
 	}
 	
@@ -261,7 +261,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 			new UpVoteTask().execute();
 		} else if (v.getId() == R.id.bDownVote) {
 			new DownVoteTask().execute();
-		} else if(v.getId() == R.id.bShare) {
+//		} else if(v.getId() == R.id.bShare) {
 //			Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
 //			sharingIntent.setType("text/plain");	
 //			sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
