@@ -106,8 +106,8 @@ public class DetailsActivity extends Activity implements OnClickListener {
 			bUpVote.setVisibility(View.GONE);
 			bDownVote.setVisibility(View.GONE);
 
-//			tvYouAreNotAllowed = (TextView) findViewById(R.id.tvYouAreNotAllowed);
-//			tvYouAreNotAllowed.setVisibility(View.VISIBLE);
+			tvYouAreNotAllowed = (TextView) findViewById(R.id.tvYouAreNotAllowed);
+			tvYouAreNotAllowed.setVisibility(View.VISIBLE);
 
 		}
 

@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools"
-	android:id="@+id/scroller"
-	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:background="#DDDDDD"
-	android:fillViewport="true"
-	android:padding="15dp"
-	android:scrollY="0dp" >
-	
-    <LinearLayout android:id="@+id/complaintDetailLayout"
-	    android:layout_width="fill_parent"
-	    android:layout_height="wrap_content"
-	    android:background="#DDDDDD"
-	    android:orientation="vertical" >
-	    
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/scroller"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#DDDDDD"
+    android:fillViewport="true"
+    android:padding="15dp"
+    android:scrollY="0dp" >
+
+    <LinearLayout
+        android:id="@+id/complaintDetailLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#DDDDDD"
+        android:orientation="vertical" >
+
         <LinearLayout
             android:id="@+id/newComplaintTitleLayout"
             android:layout_width="match_parent"
@@ -25,12 +26,12 @@
                 android:id="@+id/etNewComplaint"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:hint="@string/new_item_title"
-                android:textColor="#222222"
-                android:inputType="textMultiLine"
                 android:background="#FFFFFF"
+                android:hint="@string/new_item_title"
+                android:inputType="textMultiLine"
                 android:paddingLeft="15dp"
-                android:textSize="12sp">
+                android:textColor="#222222"
+                android:textSize="12sp" >
             </EditText>
         </LinearLayout>
 
@@ -38,55 +39,67 @@
             android:id="@+id/categoryLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp" >
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal" >
 
             <Spinner
                 android:id="@+id/spinnerNewComplaintCategory"
                 android:layout_width="match_parent"
-                android:layout_height="40dp" 
+                android:layout_height="40dp"
                 android:background="#FFFFFF"
-                android:textSize="12sp"
-                android:paddingRight="5dp" />
+                android:paddingRight="5dp"
+                android:textSize="12sp" />
         </LinearLayout>
-        
-       <LinearLayout android:id="@+id/photoButtonLL"
-		    android:layout_width="match_parent"
-		    android:layout_height="295dp"
-		    android:layout_marginTop="10dp"
-		    android:background="#FFFFFF"
-		    android:orientation="horizontal" >
-			
-           <ImageButton
+
+        <LinearLayout
+            android:id="@+id/photoButtonLL"
+            android:layout_width="match_parent"
+            android:layout_height="295dp"
+            android:layout_marginTop="10dp"
+            android:background="#FFFFFF"
+            android:orientation="horizontal" >
+
+            <ImageButton
                 android:id="@+id/bTakePhoto"
                 android:layout_width="wrap_content"
                 android:layout_height="295dp"
                 android:layout_gravity="center"
                 android:background="@drawable/take_photo"
                 android:contentDescription="@string/new_item_take_photo_button" />
-           
-			<ImageView android:id="@+id/ivTakenPhoto"
-				android:layout_width="wrap_content"
-		        android:layout_height="295dp"
-		        android:layout_marginRight="10dp"
-		        android:layout_marginLeft="10dp"
-		        android:layout_marginTop="5dp"
-		        android:layout_marginBottom="5dp"
-		        android:background="#FFFFFF"
-		        android:layout_gravity="center"
-		        android:src="@drawable/loading_half"
-		        android:contentDescription="@string/new_item_taken_photo"
-		        android:visibility="gone" />
-           
-		</LinearLayout>
-       
-		<LinearLayout
+
+            <ImageView
+                android:id="@+id/ivTakenPhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="295dp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="5dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:background="#FFFFFF"
+                android:contentDescription="@string/new_item_taken_photo"
+                android:src="@drawable/loading_half"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/newComplaintMapLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:background="#FFFFFF"
             android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/tvImproveLoc"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="8dp"
+                android:gravity="center"
+                android:text="@string/clickMapInfo"
+                android:textColor="#0000FF"
+                android:textSize="13sp" />
 
             <fragment
                 android:id="@+id/mapNewComplaint"
@@ -99,8 +112,8 @@
                 android:id="@+id/tvNewComplaintAdress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
                 android:layout_gravity="center"
+                android:layout_margin="5dp"
                 android:text="@string/new_item_address"
                 android:textColor="#444444"
                 android:textSize="12sp" />
@@ -113,17 +126,16 @@
             android:layout_marginTop="10dp"
             android:background="#FFFFFF"
             android:orientation="vertical" >
-            
+
             <Button
-			    android:id="@+id/bPush"
-			    android:layout_width="match_parent"
-			    android:layout_height="40dp"
-			    android:background="@drawable/send_button_style"
-			    android:text="@string/new_item_send_button"
-			    android:textColor="#FFFFFF"
-			    android:textStyle="bold" />
-           
+                android:id="@+id/bPush"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@drawable/send_button_style"
+                android:text="@string/new_item_send_button"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold" />
         </LinearLayout>
     </LinearLayout>
-    
+
 </ScrollView>
