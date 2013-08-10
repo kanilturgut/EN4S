@@ -25,7 +25,7 @@
 
             <ImageView
                 android:id="@+id/ivProblemImage"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="145dp"
                 android:layout_gravity="center"
                 android:contentDescription="@string/detail_loading_image"
@@ -64,6 +64,7 @@
                 android:id="@+id/bUpVote"
                 android:layout_width="140dp"
                 android:layout_height="40dp"
+                android:layout_weight="1"
                 android:background="@drawable/approve_button_style"
                 android:text="@string/detail_item_approve_button"
                 android:textColor="#FFFFFF"
@@ -74,6 +75,7 @@
                 android:layout_width="140dp"
                 android:layout_height="40dp"
                 android:layout_marginLeft="10dp"
+                android:layout_weight="1"
                 android:background="@drawable/report_button_style"
                 android:text="@string/detail_item_report_button"
                 android:textColor="#FFFFFF"
@@ -85,10 +87,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
+                android:layout_weight="1"
                 android:text="@string/tvYouAreNotAllowed"
                 android:textColor="#222222"
-                android:visibility="gone"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:visibility="gone" />
         </LinearLayout>
 
         <LinearLayout
