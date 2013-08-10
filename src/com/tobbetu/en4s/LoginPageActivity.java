@@ -200,7 +200,7 @@ public class LoginPageActivity extends Activity {
 				new LoginTask().execute(etUsername.getText().toString(),
 						etPassword.getText().toString());
 				
-//				loginWithoutCurrentLocation();
+				loginWithoutCurrentLocation();
 			}
 		}
 	};
@@ -394,6 +394,9 @@ public class LoginPageActivity extends Activity {
 	}
 	
 	private void loginWithoutCurrentLocation() {
+		
+		Log.i(TAG, "loginWithoutCurrentLocation is started");
+		
 		myLocationHandler = new Handler();
 		
 		locationRunnable = new Runnable() {

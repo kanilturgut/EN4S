@@ -16,32 +16,34 @@
 package com.tobbetu.en4s;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import uk.co.senab.photoview.PhotoView;
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView.ScaleType;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.FacebookException;
 import com.facebook.FacebookOperationCanceledException;
+import com.facebook.Request;
+import com.facebook.Request.GraphUserCallback;
+import com.facebook.Response;
 import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.model.GraphUser;
 import com.facebook.widget.WebDialog;
 import com.facebook.widget.WebDialog.OnCompleteListener;
 import com.google.android.gms.maps.GoogleMap;
@@ -49,17 +51,17 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.tobbetu.en4s.backend.Complaint;
 
-@SuppressLint("NewApi")
 public class DetailsActivity extends Activity implements OnClickListener {
+
+	private final String TAG = "DetailsActivity";
 
 	private TextView tvComplaintAdress, tvComplaintTitle, tvComplaintCategory,
 	tvReporter, tvReporterDate, tvYouAreNotAllowed;
 	private Button bUpVote, bDownVote, bMoreComment /*bShare*/;
-	private LinearLayout viewPagerLayout;
+//	private LinearLayout viewPagerLayout;
 
-	private ViewPager mViewPager;
+//	private ViewPager mViewPager;
 	private PhotoView photoView;
-	private Bitmap bmp;
 
 	private Utils util = null;
 
@@ -68,20 +70,21 @@ public class DetailsActivity extends Activity implements OnClickListener {
 	private Complaint comp = null;
 	private LatLng compPos = null;
 	LatLng myPosition = null;
-	private Bitmap cropped = null;
+
+	private boolean isFetching;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.details_layout);
-//		getActionBar().hide();
+		//		getActionBar().hide();
 
 		util = new Utils();
 
 		comp = (Complaint) getIntent().getSerializableExtra("class");
 
-//		viewPagerLayout = (LinearLayout) findViewById(R.id.viewPagerLayout);
+		//		viewPagerLayout = (LinearLayout) findViewById(R.id.viewPagerLayout);
 
 		tvComplaintAdress = (TextView) findViewById(R.id.tvComplaintAdress);
 		tvComplaintTitle = (TextView) findViewById(R.id.tvComplaintTitle);
@@ -93,11 +96,11 @@ public class DetailsActivity extends Activity implements OnClickListener {
 		bUpVote = (Button) findViewById(R.id.bUpVote);
 		bDownVote = (Button) findViewById(R.id.bDownVote);
 		bMoreComment = (Button) findViewById(R.id.bMoreComment);
-//		bShare = (Button) findViewById(R.id.bShare);
+		//		bShare = (Button) findViewById(R.id.bShare);
 		bUpVote.setOnClickListener(this);
 		bDownVote.setOnClickListener(this);
 		bMoreComment.setOnClickListener(this);
-//		bShare.setOnClickListener(this);
+		//		bShare.setOnClickListener(this);
 
 		compPos = new LatLng(comp.getLatitude(), comp.getLongitude());
 		myPosition = new LatLng(getIntent().getDoubleExtra(
@@ -111,9 +114,9 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
 		}
 
-//		mViewPager = new HackyViewPager(this);
-//		viewPagerLayout.addView(mViewPager);
-//		mViewPager.setAdapter(new SamplePagerAdapter());
+		//		mViewPager = new HackyViewPager(this);
+		//		viewPagerLayout.addView(mViewPager);
+		//		mViewPager.setAdapter(new SamplePagerAdapter());
 
 		myMap = ((MapFragment) getFragmentManager().findFragmentById(
 				R.id.mapDetails)).getMap();
@@ -127,33 +130,33 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
 		tvReporter.setText(comp.getReporter());
 		tvReporterDate.setText(comp.getDateAsString());
-		
-//		String sporDallari[] = {"Basketbol", "Futbol", "Tenis", "Voleybol",
-//	            "Hentbol", "Yüzme", "Golf"};
-//		ListView lvComments = (ListView) findViewById(R.id.lvCommentOnDetails);
-//		lvComments.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,sporDallari));
-		
+
+		//		String sporDallari[] = {"Basketbol", "Futbol", "Tenis", "Voleybol",
+		//	            "Hentbol", "Yüzme", "Golf"};
+		//		ListView lvComments = (ListView) findViewById(R.id.lvCommentOnDetails);
+		//		lvComments.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,sporDallari));
+
 	}
-	
+
 	@Override
 	protected void onStop() {
 		super.onStop();
 		/*Bu sekilde detay sayfasina girilmis olan bir sikayetin, resmi yuklenmeden detay sayfasindan cikinca
 		 * arka plan da calisan resmi indirme gorevi iptal ediliyor. Boylece kapanma hatasi almiyoruz.*/
-		
+
 	}
-	
-//	@Override
-//	public void onBackPressed() {
-//		super.onBackPressed();
-//		
-//		/**/
-//		Intent i = new Intent(this, MainActivity.class);
-//		i.putExtra("latitude", myPosition.latitude);
-//		i.putExtra("longitude", myPosition.longitude);
-//		startActivity(i);
-//	}
-	
+
+	//	@Override
+	//	public void onBackPressed() {
+	//		super.onBackPressed();
+	//		
+	//		/**/
+	//		Intent i = new Intent(this, MainActivity.class);
+	//		i.putExtra("latitude", myPosition.latitude);
+	//		i.putExtra("longitude", myPosition.longitude);
+	//		startActivity(i);
+	//	}
+
 	class SamplePagerAdapter extends PagerAdapter {
 
 		// private int[] sDrawables = { R.drawable.img1, R.drawable.img2,
@@ -216,42 +219,42 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
 	}
 
-//	class ImageTask extends AsyncTask<Integer, String, String> {
-//
-//		@Override
-//		protected String doInBackground(Integer... params) {
-//
-//			try {
-//				Log.d("ImageTask", "istek yapildi1");
-//				bmp = comp.getImage(params[0]).getBmp();
-//				Log.d("ImageTask", "istek yapildi");
-//
-//			} catch (IOException e) {
-//				Log.e(getClass().getName(), "Image couldn't load", e);
-//			}
-//			return null;
-//		}
-//
-//		@Override
-//		protected void onPostExecute(String result) {
-//
-//			Display display = getWindowManager().getDefaultDisplay();
-//			Point size = new Point();
-//			display.getSize(size);
-//			int tmpWidth = size.x;
-//			int tmpHeight = viewPagerLayout.getLayoutParams().height;
-//
-//			if(tmpWidth > 600){
-//				tmpWidth = bmp.getWidth();
-//				tmpHeight = (int) ((double)(bmp.getWidth() / tmpWidth) * tmpHeight);
-//			}
-//
-//			Log.e(getClass().getName(), "tmp.width:" + tmpWidth + " , tmpheight : " + tmpHeight + "...." + "bmpW: " + bmp.getWidth() + " , bmpH : " + bmp.getHeight());
-//			cropped = Bitmap.createBitmap(bmp, 0, 150, tmpWidth, tmpHeight);
-//			Log.e("burasi", "croppe width : " + cropped.getWidth() + " cropped height : " + cropped.getHeight());
-//			photoView.setImageBitmap(cropped);
-//		}
-//	}
+	//	class ImageTask extends AsyncTask<Integer, String, String> {
+	//
+	//		@Override
+	//		protected String doInBackground(Integer... params) {
+	//
+	//			try {
+	//				Log.d("ImageTask", "istek yapildi1");
+	//				bmp = comp.getImage(params[0]).getBmp();
+	//				Log.d("ImageTask", "istek yapildi");
+	//
+	//			} catch (IOException e) {
+	//				Log.e(getClass().getName(), "Image couldn't load", e);
+	//			}
+	//			return null;
+	//		}
+	//
+	//		@Override
+	//		protected void onPostExecute(String result) {
+	//
+	//			Display display = getWindowManager().getDefaultDisplay();
+	//			Point size = new Point();
+	//			display.getSize(size);
+	//			int tmpWidth = size.x;
+	//			int tmpHeight = viewPagerLayout.getLayoutParams().height;
+	//
+	//			if(tmpWidth > 600){
+	//				tmpWidth = bmp.getWidth();
+	//				tmpHeight = (int) ((double)(bmp.getWidth() / tmpWidth) * tmpHeight);
+	//			}
+	//
+	//			Log.e(getClass().getName(), "tmp.width:" + tmpWidth + " , tmpheight : " + tmpHeight + "...." + "bmpW: " + bmp.getWidth() + " , bmpH : " + bmp.getHeight());
+	//			cropped = Bitmap.createBitmap(bmp, 0, 150, tmpWidth, tmpHeight);
+	//			Log.e("burasi", "croppe width : " + cropped.getWidth() + " cropped height : " + cropped.getHeight());
+	//			photoView.setImageBitmap(cropped);
+	//		}
+	//	}
 
 	// Buttons onClickListener
 	@Override
@@ -261,12 +264,12 @@ public class DetailsActivity extends Activity implements OnClickListener {
 			new UpVoteTask().execute();
 		} else if (v.getId() == R.id.bDownVote) {
 			new DownVoteTask().execute();
-//		} else if(v.getId() == R.id.bShare) {
-//			Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-//			sharingIntent.setType("text/plain");	
-//			sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
-//			sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, "selam");
-//			startActivity(Intent.createChooser(sharingIntent, "Share via"));
+			//		} else if(v.getId() == R.id.bShare) {
+			//			Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+			//			sharingIntent.setType("text/plain");	
+			//			sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
+			//			sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, "selam");
+			//			startActivity(Intent.createChooser(sharingIntent, "Share via"));
 			publishFeedDialog(); 
 		} else { //bMoreComment
 			Intent i = new Intent(this, MoreCommentsActivity.class);
@@ -278,100 +281,172 @@ public class DetailsActivity extends Activity implements OnClickListener {
 		}
 
 	}
-	private void publishFeedDialog() {
-	    Bundle params = new Bundle();
-	    params.putString("name", "Enforce");
-	    params.putString("caption", "Let's Create Better Cities");
-	    params.putString("description", "Enforce is a mobile app for creating better cities.");
-	    params.putString("link", "http://enforceapp.com");
-	    params.putString("picture", "http://enforceapp.com/static/img/icon.png");
 
-	    WebDialog feedDialog = (
-	        new WebDialog.FeedDialogBuilder(this,
-	            Session.getActiveSession(),
-	            params))
-	        .setOnCompleteListener(new OnCompleteListener() {
 
-	            @Override
-	            public void onComplete(Bundle values,
-	                FacebookException error) {
-	                if (error == null) {
-	                    // When the story is posted, echo the success
-	                    // and the post Id.
-	                    final String postId = values.getString("post_id");
-	                    if (postId != null) {
-	                        Toast.makeText(DetailsActivity.this,
-	                            "Posted story, id: "+postId,
-	                            Toast.LENGTH_SHORT).show();
-	                    } else {
-	                        // User clicked the Cancel button
-	                        Toast.makeText(getApplicationContext(), 
-	                            "Publish cancelled", 
-	                            Toast.LENGTH_SHORT).show();
-	                    }
-	                } else if (error instanceof FacebookOperationCanceledException) {
-	                    // User clicked the "x" button
-	                    Toast.makeText(getApplicationContext(), 
-	                        "Publish cancelled", 
-	                        Toast.LENGTH_SHORT).show();
-	                } else {
-	                    // Generic, ex: network error
-	                    Toast.makeText(getApplicationContext(), 
-	                        "Error posting story", 
-	                        Toast.LENGTH_SHORT).show();
-	                }
-	            }
+	private void startFacebookSession() {
 
-	        })
-	        .build();
-	    feedDialog.show();
-	
+//		if(Session.getActiveSession() == null) {
+			isFetching = false;
 
+			Log.d("FACEBOOK", "performFacebookLogin");
+			final Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(this, Arrays.asList("basic_info", "email"));
+
+			Session.openActiveSession(this, true, new Session.StatusCallback() {
+				@Override
+				public void call(Session session, SessionState state, Exception exception) {
+					Log.d("FACEBOOK", "call");
+					Log.i(TAG, session.isOpened() + "");
+					if (session.isOpened() && !isFetching) {
+						Log.d("FACEBOOK", "if (session.isOpened() && !isFetching)");
+						isFetching = true;
+						session.requestNewReadPermissions(newPermissionsRequest);
+						Request getMe = Request.newMeRequest(session, new GraphUserCallback() {
+							@Override
+							public void onCompleted(GraphUser user, Response response) {
+								Log.d("FACEBOOK", "onCompleted");
+								/*
+								 * Burada login icin yapilan shared preferences dan
+								 * farkli olarak yeni bir SPref.. kullanilabilir.
+								 * Bu sekilde kullanici uygulamaya facebook ile login
+								 * olmasa bile daha sonraki sikayet paylasimlarinda login
+								 * olmak icin zaman kaybetmez.*/
+							}
+						});
+
+						getMe.executeAsync();
+					}
+					else{
+						/*Bu if else in bir ustunde yapilirsa yani diger if icinde
+						 * o zaman baglanti inanimaz derecede uzadi. En az 3 deneme yaptim ve bu sekilde
+						 * nedense daha hizli baglanti gerceklesti.*/
+						if (session.isOpened())
+							publishFeedDialog();
+					}
+				}
+			});
+//		} else {
+//			/*Zaten daha onceden acilmis bir facebook session varsa, tekrar login ile ugrasmadan direk olarak
+//			 * feed publish ediyoruz.*/
+//			publishFeedDialog();
+//		}
 	}
-	
+
+	private void publishFeedDialog() {
+		Bundle params = new Bundle();
+		params.putString("name", "Enforce");
+		params.putString("caption", "Let's Create Better Cities");
+		params.putString("description", "Enforce is a mobile app for creating better cities.");
+		params.putString("link", "http://enforceapp.com");
+		params.putString("picture", "http://enforceapp.com/static/img/icon.png");
+
+		WebDialog feedDialog = (
+				new WebDialog.FeedDialogBuilder(this,
+						Session.getActiveSession(),
+						params))
+						.setOnCompleteListener(new OnCompleteListener() {
+
+							@Override
+							public void onComplete(Bundle values,
+									FacebookException error) {
+								if (error == null) {
+									// When the story is posted, echo the success
+									// and the post Id.
+									final String postId = values.getString("post_id");
+									if (postId != null) {
+										Toast.makeText(DetailsActivity.this,
+												"Posted story, id: "+postId,
+												Toast.LENGTH_SHORT).show();
+									} else {
+										// User clicked the Cancel button
+										Toast.makeText(getApplicationContext(), 
+												"Publish cancelled", 
+												Toast.LENGTH_SHORT).show();
+									}
+								} else if (error instanceof FacebookOperationCanceledException) {
+									// User clicked the "x" button
+									Toast.makeText(getApplicationContext(), 
+											"Publish cancelled", 
+											Toast.LENGTH_SHORT).show();
+								} else {
+									// Generic, ex: network error
+									Toast.makeText(getApplicationContext(), 
+											"Error posting story", 
+											Toast.LENGTH_SHORT).show();
+								}
+							}
+						})
+						.build();
+		feedDialog.show();
+		Session.getActiveSession().closeAndClearTokenInformation();
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		Session.getActiveSession().onActivityResult(this, requestCode,
+				resultCode, data);
+	}
+
 	class UpVoteTask extends AsyncTask<String, String, String> {
 
 		@Override
 		protected String doInBackground(String... params) {
-			
+
 			try {
 				Log.d(getClass().getName(), "In UpVoteTask doInbackground");
 				comp.upvote(Utils.locationToJSON(myPosition.latitude, myPosition.longitude));
 			} catch (IOException e) {
 				Log.e(getClass().getName(), "UpVoteTask failed", e);
 			}
-			
+
 			return null;
 		}
-		
+
 		@Override
 		protected void onPostExecute(String result) {
 			Log.d(getClass().getName(), "In UpVoteTask onPostExecute");
 			Toast.makeText(getApplicationContext(), "Thanks for your upvote", Toast.LENGTH_SHORT).show();
 		}
-		
+
 	}
-	
+
 	class DownVoteTask extends AsyncTask<String, String, String> {
 
 		@Override
 		protected String doInBackground(String... params) {
-			
+
 			try {
 				Log.d(getClass().getName(), "In DownVoteTask doInbackground");
 				comp.downvote(Utils.locationToJSON(myPosition.latitude, myPosition.longitude));
 			} catch (IOException e) {
 				Log.e(getClass().getName(), "DownVoteTask failed", e);
 			}
-			
+
 			return null;
 		}
-		
+
 		@Override
 		protected void onPostExecute(String result) {
 			Log.d(getClass().getName(), "In DownVoteTask onPostExecute");
 			Toast.makeText(getApplicationContext(), "Thanks for your downvote", Toast.LENGTH_SHORT).show();
 		}
-		
-	}	
+
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		getMenuInflater().inflate(R.menu.details_menu, menu);
+		return true;
+	}
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		if (item.getItemId() == R.id.shareOnFacebook)
+			startFacebookSession();
+		else if (item.getItemId() == R.id.shareOnTwitter)
+			Toast.makeText(this, "It is not available", Toast.LENGTH_SHORT).show();
+
+		return super.onOptionsItemSelected(item);
+	}
 }
