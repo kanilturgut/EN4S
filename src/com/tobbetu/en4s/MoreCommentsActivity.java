@@ -42,10 +42,14 @@ public class MoreCommentsActivity extends Activity {
 			}
 		});
 		
+		/*******************************************************************/
 		String sporDallari[] = {"Basketbol", "Futbol", "Tenis", "Voleybol",
 	            "Hentbol", "Yüzme", "Golf"};
 		ListView lvMoreComments = (ListView) findViewById(R.id.lvCommentOnMoreComment);
 		lvMoreComments.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,sporDallari));
+		
+		/*Su anda commentler serverdan alinamadigi icin bu sekilde sacma yorumlar getiriyorum. Fakat hem comment adapter
+		 * hem comment layout hem de comment sinifi yazildi. Server dan comment alinabildigi zaman burasi update edilecek*/
 	}
 
 }
