@@ -263,14 +263,8 @@ public class DetailsActivity extends Activity implements OnClickListener {
 		if (v.getId() == R.id.bUpVote) {
 			new UpVoteTask().execute();
 		} else if (v.getId() == R.id.bDownVote) {
-			new DownVoteTask().execute();
-			//		} else if(v.getId() == R.id.bShare) {
-			//			Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-			//			sharingIntent.setType("text/plain");	
-			//			sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Subject Here");
-			//			sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, "selam");
-			//			startActivity(Intent.createChooser(sharingIntent, "Share via"));
-			publishFeedDialog(); 
+			//new DownVoteTask().execute();	
+			Toast.makeText(getApplicationContext(), "It does nothing", Toast.LENGTH_SHORT).show();
 		} else { //bMoreComment
 			Intent i = new Intent(this, MoreCommentsActivity.class);
 			i.putExtra("class", comp);
