@@ -20,6 +20,7 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
@@ -89,6 +90,10 @@ public class LoginPageActivity extends Activity {
 
 			setContentView(R.layout.activity_login_page);
 			getActionBar().hide();
+			
+			getWindow().setSoftInputMode(
+				      WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+			
 			etUsername = (EditText) findViewById(R.id.etUsername);
 			etPassword = (EditText) findViewById(R.id.etPassword);
 

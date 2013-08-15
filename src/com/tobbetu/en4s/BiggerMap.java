@@ -22,7 +22,7 @@ public class BiggerMap extends Activity {
 	private LatLng markerPosition = null;
 
 	private Button sendButton = null;
-	
+
 	private String complaintTitle;
 	private int complaintCategory;
 	private byte[] complaintImage;
@@ -33,8 +33,8 @@ public class BiggerMap extends Activity {
 		setContentView(R.layout.activity_bigger_map);
 		getActionBar().hide();
 
-		Log.d("BiggerMap", "onCreate");	
-		
+		Log.d("BiggerMap", "onCreate");
+
 		complaintTitle = getIntent().getStringExtra("complaintTitle");
 		complaintCategory = getIntent().getIntExtra("complaintCategory", 0);
 		complaintImage = getIntent().getByteArrayExtra("complaintImage");
@@ -49,7 +49,7 @@ public class BiggerMap extends Activity {
 
 		Utils.addAMarker(myBigMap, markerPosition, true);
 		Utils.centerAndZomm(myBigMap, markerPosition, 18);
-		
+
 		myBigMap.setOnMarkerDragListener(new OnMarkerDragListener() {
 
 			@Override
@@ -72,14 +72,14 @@ public class BiggerMap extends Activity {
 
 			}
 		});
-		
+
 		myBigMap.setOnMapClickListener(new OnMapClickListener() {
-			
+
 			@Override
 			public void onMapClick(LatLng point) {
-				
+
 				myBigMap.animateCamera(CameraUpdateFactory.newLatLng(point));
-				
+
 			}
 		});
 
@@ -88,17 +88,29 @@ public class BiggerMap extends Activity {
 
 			@Override
 			public void onClick(View arg0) {
-				
-				Intent betterPositionIntent = new Intent(BiggerMap.this, NewComplaint.class);
-				betterPositionIntent.putExtra("user_lat", markerPosition.latitude);
-				betterPositionIntent.putExtra("user_lng", markerPosition.longitude);
+
+				Intent betterPositionIntent = new Intent(BiggerMap.this,
+						NewComplaint.class);
+				betterPositionIntent.putExtra("user_lat",
+						markerPosition.latitude);
+				betterPositionIntent.putExtra("user_lng",
+						markerPosition.longitude);
 				betterPositionIntent.putExtra("complaintTitle", complaintTitle);
-				betterPositionIntent.putExtra("complaintCategory", complaintCategory);
+				betterPositionIntent.putExtra("complaintCategory",
+						complaintCategory);
 				betterPositionIntent.putExtra("complaintImage", complaintImage);
 				startActivity(betterPositionIntent);
-				
+
 			}
 		});
 
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		
+		//kill activity
+		finish();
 	}
 }

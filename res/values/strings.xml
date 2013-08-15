@@ -35,7 +35,7 @@
     <string name="biggerMapSendButton">Select</string>
     <string name="biggerMapInfo">You can drag and drop the marker</string>
     <string name="title_activity_more_comments">MoreCommentsActivity</string>
-    <string name="clickMapInfo">To improve location, click on map!</string>
+    <string name="clickMapInfo">To improve location, click here!</string>
     <string name="facebook_app_id">543199292406693</string>
 	<string name="facebook_share">Share on Facebook</string>
 	<string name="twitter_share">Share on Twitter</string>

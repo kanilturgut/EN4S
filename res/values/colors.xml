@@ -28,4 +28,6 @@
    	<color name="send_button_stroke">#7DB833</color>
    	<color name="send_button_pressed">#8BC641</color>
    	<color name="send_button_pressed_stroke">#8BC641</color>
+
+   	<color name="improve_location_button_pressed">#ebebeb</color>
 </resources>

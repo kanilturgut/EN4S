@@ -98,13 +98,13 @@
             android:background="#FFFFFF"
             android:orientation="vertical" >
 
-            <TextView
-                android:id="@+id/tvImproveLoc"
+            <Button
+                android:id="@+id/bImproveLoc"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_margin="8dp"
                 android:gravity="center"
+                android:background="@drawable/improve_location_button_style"
                 android:text="@string/clickMapInfo"
                 android:textColor="#0000FF"
                 android:textSize="13sp" />
