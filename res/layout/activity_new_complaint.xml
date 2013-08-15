@@ -54,33 +54,41 @@
         <LinearLayout
             android:id="@+id/photoButtonLL"
             android:layout_width="match_parent"
-            android:layout_height="295dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:background="#FFFFFF"
-            android:orientation="horizontal" >
+            android:orientation="vertical" >
 
-            <ImageButton
-                android:id="@+id/bTakePhoto"
-                android:layout_width="wrap_content"
-                android:layout_height="295dp"
-                android:layout_gravity="center"
-                android:background="@drawable/take_photo"
-                android:contentDescription="@string/new_item_take_photo_button" />
+            <FrameLayout
+                android:id="@+id/fLPreview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible" >
+            </FrameLayout>
 
             <ImageView
                 android:id="@+id/ivTakenPhoto"
-                android:layout_width="wrap_content"
-                android:layout_height="295dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
                 android:background="#FFFFFF"
                 android:contentDescription="@string/new_item_taken_photo"
                 android:src="@drawable/loading_half"
                 android:visibility="gone" />
         </LinearLayout>
+
+        <Button
+            android:id="@+id/bTakeIt"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Çek" />
+
+        <Button
+            android:id="@+id/bReTake"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="Yeniden Çek"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/newComplaintMapLayout"

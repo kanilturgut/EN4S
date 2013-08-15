@@ -1,22 +1,20 @@
 package com.tobbetu.en4s;
 
-import java.io.File;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Point;
-import android.net.Uri;
+import android.hardware.Camera;
+import android.hardware.Camera.PictureCallback;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
@@ -27,7 +25,7 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -40,25 +38,21 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.tobbetu.en4s.backend.Complaint;
 import com.tobbetu.en4s.backend.Image;
+import com.tobbetu.en4s.helpers.Preview;
 
-@SuppressLint("NewApi")
 public class NewComplaint extends Activity implements OnClickListener {
 
-	private Button bPush;
-	private ImageButton bTakePic;
+	private Button bPush, bTakePhoto, bReTakePhoto;
 	private ImageView ivTakenPhoto;
 	private EditText etComplaintTitle;
 	private TextView tvNewComplaintAdress;
 	private Spinner categoriesSpinner;
-	private LinearLayout photoButtonLL;
 	private ProgressDialog progressDialog = null;
 
-	private Utils util = null;
+
 
 	private GoogleMap myMap;
-	//	private LocationManager lManager = null;
 	private LatLng position = null;
-	//	private LatLng temp = null;
 	private double latitude = 0;
 	private double longitude = 0;
 
@@ -72,40 +66,64 @@ public class NewComplaint extends Activity implements OnClickListener {
 
 	private String TAG = "NewComplaint";
 
-	private Uri mImageUri;
+	private Preview preview;
+	ProgressDialog pg = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_new_complaint);
 		getActionBar().hide();
-	
-		String savedComplainTitle = getIntent().getStringExtra("complaintTitle");
-		selectedCategoryIndex = getIntent().getIntExtra("complaintCategory", 0);
-		byte[] savedImage = getIntent().getByteArrayExtra("complaintImage");
-		Bitmap savedBitmap = null;
-		if (savedImage != null)
-			savedBitmap = BitmapFactory.decodeByteArray(savedImage , 0, savedImage .length);
 
-		util = new Utils();
+		Display display = getWindowManager().getDefaultDisplay();
+		Point size = new Point();
+		display.getSize(size);
+		int frameWidth = size.x;
+		Log.e("frameWidth", frameWidth + "");
+		double birsey = (frameWidth / 3.0);
+		int frameHeight = (int) (birsey * 4.0);
+
+		Log.i("ekran degerleri", frameWidth + "," + birsey + "," + frameHeight);
+
+		preview = new Preview(this);
+
+		if (Preview.pictureWidth == 0 || Preview.pictureHeight == 0) {
+
+			// Create an alert
+
+			finish();
+		}
+
+		LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(
+				frameWidth, frameWidth);
+		findViewById(R.id.photoButtonLL).setLayoutParams(llParams);
+
+		((FrameLayout) findViewById(R.id.fLPreview)).addView(preview);
+		findViewById(R.id.fLPreview).setVisibility(View.VISIBLE);
+
+		String savedComplainTitle = getIntent()
+				.getStringExtra("complaintTitle");
+		selectedCategoryIndex = getIntent().getIntExtra("complaintCategory", 0);
+		// byte[] savedImage = getIntent().getByteArrayExtra("complaintImage");
+		// Bitmap savedBitmap = null;
+		// if (savedImage != null)
+		// savedBitmap = BitmapFactory.decodeByteArray(savedImage , 0,
+		// savedImage .length);
 
 		latitude = getIntent().getDoubleExtra("user_lat", 0);
 		longitude = getIntent().getDoubleExtra("user_lng", 0);
 
-		photoButtonLL = (LinearLayout) findViewById(R.id.photoButtonLL);
 		etComplaintTitle = (EditText) findViewById(R.id.etNewComplaint);
 		tvNewComplaintAdress = (TextView) findViewById(R.id.tvNewComplaintAdress);
 		ivTakenPhoto = (ImageView) findViewById(R.id.ivTakenPhoto);
-		bTakePic = (ImageButton) findViewById(R.id.bTakePhoto);
+
+		bTakePhoto = (Button) findViewById(R.id.bTakeIt);
+		bReTakePhoto = (Button) findViewById(R.id.bReTake);
 		bPush = (Button) findViewById(R.id.bPush);
 
-		bTakePic.setOnClickListener(this);
+		bTakePhoto.setOnClickListener(this);
+		bReTakePhoto.setOnClickListener(this);
 		bPush.setOnClickListener(this);
-
-		//		lManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-		//		LocationListener mlocListener = new MyLocationListener();
-		//		lManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0,
-		//				mlocListener);
 
 		myMap = ((MapFragment) getFragmentManager().findFragmentById(
 				R.id.mapNewComplaint)).getMap();
@@ -113,24 +131,26 @@ public class NewComplaint extends Activity implements OnClickListener {
 
 		position = new LatLng(latitude, longitude);
 
-		util.addAMarker(myMap, position, false);
-		util.centerAndZomm(myMap, position, 15);
+		Utils.addAMarker(myMap, position, false);
+		Utils.centerAndZomm(myMap, position, 15);
 
-		tvNewComplaintAdress.setText(util
+		tvNewComplaintAdress.setText(Utils
 				.getAddress(getBaseContext(), position));
-
 
 		myMap.setOnMapClickListener(new OnMapClickListener() {
 
 			@Override
 			public void onMapClick(LatLng point) {
 
-				Intent biggerMapIntent = new Intent(NewComplaint.this, BiggerMap.class);
+				Intent biggerMapIntent = new Intent(NewComplaint.this,
+						BiggerMap.class);
 				biggerMapIntent.putExtra("LatLng_Lat", latitude);
 				biggerMapIntent.putExtra("LatLng_Lng", longitude);
-				biggerMapIntent.putExtra("complaintTitle", etComplaintTitle.getText().toString());
-				biggerMapIntent.putExtra("complaintCategory", selectedCategoryIndex);
-				biggerMapIntent.putExtra("complaintImage", bitmapdata);	
+				biggerMapIntent.putExtra("complaintTitle", etComplaintTitle
+						.getText().toString());
+				biggerMapIntent.putExtra("complaintCategory",
+						selectedCategoryIndex);
+				biggerMapIntent.putExtra("complaintImage", bitmapdata);
 				Log.d(TAG, "onMapClick intent started");
 				startActivity(biggerMapIntent);
 
@@ -142,43 +162,41 @@ public class NewComplaint extends Activity implements OnClickListener {
 				.createFromResource(this, R.array.categories,
 						android.R.layout.simple_spinner_item);
 		spinnerAdapter
-		.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		categoriesSpinner.setAdapter(spinnerAdapter);
 		categoriesSpinner
-		.setOnItemSelectedListener(new OnItemSelectedListener() {
+				.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-			@Override
-			public void onItemSelected(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3) {
-				category = arg0.getItemAtPosition(arg2).toString();
-				selectedCategoryIndex = arg2;
-			}
+					@Override
+					public void onItemSelected(AdapterView<?> arg0, View arg1,
+							int arg2, long arg3) {
+						category = arg0.getItemAtPosition(arg2).toString();
+						selectedCategoryIndex = arg2;
+					}
 
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {
-				category = "Disable Rights"; // default category
-				selectedCategoryIndex = 0;
-			}
-		});
-
+					@Override
+					public void onNothingSelected(AdapterView<?> arg0) {
+						category = "Disable Rights"; // default category
+						selectedCategoryIndex = 0;
+					}
+				});
 
 		etComplaintTitle.setText(savedComplainTitle);
 		categoriesSpinner.setSelection(selectedCategoryIndex);
-		if (savedImage != null) {
-			bTakePic.setVisibility(Button.GONE);
-			ivTakenPhoto.setVisibility(ImageView.VISIBLE);
-			ivTakenPhoto.setImageBitmap(savedBitmap);
-		}
-		
+		// if (savedImage != null) {
+		// bTakePic.setVisibility(Button.GONE);
+		// ivTakenPhoto.setVisibility(ImageView.VISIBLE);
+		// ivTakenPhoto.setImageBitmap(savedBitmap);
+		// }
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
-//		finish();
+		// finish();
 		Log.d(TAG, "in onStop");
 	}
-	
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -186,31 +204,25 @@ public class NewComplaint extends Activity implements OnClickListener {
 		return true;
 	}
 
-	private File createTemporaryFile(String part, String ext) throws Exception {
-		File tempDir = Environment.getExternalStorageDirectory();
-		tempDir = new File(tempDir.getAbsolutePath() + "/.temp/");
-		if (!tempDir.exists()) {
-			tempDir.mkdir();
-		}
-		return File.createTempFile(part, ext, tempDir);
-	}
-
 	@Override
 	public void onClick(View v) {
 
-		if (v.getId() == R.id.bTakePhoto) {
-			Intent cameraIntent = new Intent(
-					"android.media.action.IMAGE_CAPTURE");
-			File photo = null;
-			try {
-				photo = this.createTemporaryFile("picture", ".jpg");
-				photo.delete();
-			} catch (Exception e) {
-				Log.v(TAG, "Can't create file to take picture!");
-			}
-			mImageUri = Uri.fromFile(photo);
-			cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, mImageUri);
-			startActivityForResult(cameraIntent, 0);
+		if (v.getId() == R.id.bTakeIt) {
+			pg = ProgressDialog.show(NewComplaint.this, null,
+					"Capturing Image..");
+			pg.show();
+			preview.camera.takePicture(null, null, jpegCallback);
+		} else if (v.getId() == R.id.bReTake) {
+			bmp = null;
+			img = null;
+			
+			ivTakenPhoto.setVisibility(ImageView.GONE);
+			findViewById(R.id.fLPreview).setVisibility(FrameLayout.VISIBLE);
+			preview.camera.startPreview();
+			
+			bReTakePhoto.setVisibility(Button.GONE);
+			bTakePhoto.setVisibility(Button.VISIBLE);
+			
 		} else {
 
 			if (etComplaintTitle.getText().toString().equals(""))
@@ -218,11 +230,15 @@ public class NewComplaint extends Activity implements OnClickListener {
 						"You have to fill title!", Toast.LENGTH_SHORT).show();
 			else {
 
+				progressDialog = ProgressDialog
+						.show(NewComplaint.this, "Loading",
+								"Your complaint is sending. Thank you for your patience");
+
 				newComplaint = new Complaint();
 				newComplaint.setTitle(etComplaintTitle.getText().toString());
-				newComplaint.setAddress(util.getAddress(getBaseContext(),
+				newComplaint.setAddress(Utils.getAddress(getBaseContext(),
 						position));
-				newComplaint.setCity(util.getCity(getBaseContext(), position));
+				newComplaint.setCity(Utils.getCity(getBaseContext(), position));
 				newComplaint.setCategory(category);
 				newComplaint.setLatitude(latitude);
 				newComplaint.setLongitude(longitude);
@@ -240,175 +256,62 @@ public class NewComplaint extends Activity implements OnClickListener {
 
 	}
 
-	//	@Override
-	//	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-	//		super.onRestoreInstanceState(savedInstanceState);
-	//		Log.e(TAG, "in onRestoreInstanceState");
-	//		
-	//		etComplaintTitle.setText(savedInstanceState.getCharSequence("complaintTitle", "unknown"));
-	//		category = savedInstanceState.getCharSequence("category", "unknown").toString();
-	//		
-	//		byte[] byteArr = savedInstanceState.getByteArray("photo");
-	//		
-	//		Bitmap bitmap = BitmapFactory.decodeByteArray(byteArr , 0, byteArr .length);
-	//		img.setBmp(bitmap);
-	//		
-	//	}
+	/** Handles data for jpeg picture */
+	PictureCallback jpegCallback = new PictureCallback() {
+		public void onPictureTaken(byte[] data, Camera camera) {
+			if (data != null) {
 
-	public Bitmap grabImage() {
-		this.getContentResolver().notifyChange(mImageUri, null);
-		ContentResolver cr = this.getContentResolver();
-		Bitmap bitmap;
-		try {
-			bitmap = android.provider.MediaStore.Images.Media.getBitmap(cr,
-					mImageUri);
-			Log.e("Failed to load", bitmap.getHeight() + "");
-			return bitmap;
-		} catch (Exception e) {
-			Log.d(TAG, "Failed to load", e);
-		}
-		return null;
-	}
+				bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
 
-	@Override
-	// fotograf
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+				Log.e("Bitmap",
+						"width : " + bmp.getWidth() + ", height : "
+								+ bmp.getHeight() + " ,bitmap.size : "
+								+ (bmp.getByteCount() / 1000000) + " mb");
 
-		super.onActivityResult(requestCode, resultCode, data);
+				if (bmp.getHeight() < bmp.getWidth()) {
+					Matrix matrix = new Matrix();
+					matrix.postRotate(90);
+					bmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(),
+							bmp.getHeight(), matrix, true);
+				}
 
-		if (resultCode == RESULT_OK) {
+				Log.e("Bitmap",
+						"width : " + bmp.getWidth() + ", height : "
+								+ bmp.getHeight() + " ,bitmap.size : "
+								+ (bmp.getByteCount() / 1000000) + " mb");
 
-//			bmp = (Bitmap) grabImage(); // Resimin orjinal hali
-//
-//			img = new Image();
-//
-//			int height = bmp.getHeight();
-//			int width = bmp.getWidth();
-//
-//			Log.e(TAG, "height : " + height + ", width : " + width);
-//
-//			bTakePic.setVisibility(View.GONE);
-//			ivTakenPhoto.setVisibility(View.VISIBLE);
-//
-//			Display display = getWindowManager().getDefaultDisplay();
-//			Point size = new Point();
-//			display.getSize(size);
-//			int tmpWidth = size.x;
-//			int tmpHeight = photoButtonLL.getLayoutParams().height;
-//
-//			if (tmpWidth > 600) {
-//				tmpWidth = 600;
-//				tmpHeight = (int) ((double) (600 / tmpWidth) * tmpHeight);
-//			}
-//
-//			int difference = 0;
-//			if (size.x > size.y)
-//				difference = (size.x - size.y)/2;
-//			
-//			Log.e(TAG, "height : " + tmpHeight + ", width : " + tmpWidth);
-//
-//			Bitmap resized = Bitmap.createScaledBitmap(bmp, 600, 800, true); // 600 x 800 olarak resize edilmiþ resim
-//
-//			Log.e(TAG, "height : " + resized.getHeight() + ", width : " + resized.getWidth());
-//
-//			Bitmap cropped = Bitmap.createBitmap(resized, 0, 150, tmpWidth, tmpHeight); // Resized resim üzerinden crop edilmiþ resim
-//			ivTakenPhoto.setImageBitmap(cropped);
-//
-//			img.setBmp(resized);
-//
-//			ByteArrayOutputStream blob = new ByteArrayOutputStream();
-//			cropped.compress(CompressFormat.PNG, 0 /*ignored for PNG*/, blob);
-//			bitmapdata = blob.toByteArray();
-			
-			
-			bTakePic.setVisibility(View.GONE);
-			ivTakenPhoto.setVisibility(View.VISIBLE);
 
-			bmp = (Bitmap) grabImage(); // Resimin orjinal hali
-			img = new Image();
+				bmp = Bitmap.createBitmap(bmp, 0, 100, 960, 960);
 
-			if(bmp.getHeight() < bmp.getWidth()){
-				Matrix matrix = new Matrix();
-				matrix.postRotate(90);
-				bmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(), bmp.getHeight(), matrix, true);
+				ByteArrayOutputStream os = new ByteArrayOutputStream();
+				bmp.compress(CompressFormat.JPEG, 90, os);
+
+				img = new Image();
+				img.setBmp(bmp);
+				
+				// silinecek
+				byte[] array = os.toByteArray();
+				// bmp = BitmapFactory.decodeByteArray(array, 0, array.length);
+
+				Log.e("Bitmap",
+						"width : " + bmp.getWidth() + ", height : "
+								+ bmp.getHeight() + " ,bitmap.size : "
+								+ (double) (bmp.getByteCount() / 1000000.0)
+								+ " mb " + array.length / 1000000.0);
+
+				if (pg != null)
+					pg.dismiss();
+				
+				ivTakenPhoto.setVisibility(ImageView.VISIBLE);
+				findViewById(R.id.fLPreview).setVisibility(View.GONE);
+				bTakePhoto.setVisibility(Button.GONE);
+				bReTakePhoto.setVisibility(Button.VISIBLE);
+				ivTakenPhoto.setImageBitmap(bmp);
 			}
-
-			int height = bmp.getHeight();
-			int width = bmp.getWidth();
-
-			Display display = getWindowManager().getDefaultDisplay();
-			Point size = new Point();
-			display.getSize(size);
-			int tmpWidth = size.x;
-			int tmpHeight = photoButtonLL.getLayoutParams().height;
-
-			Log.e(TAG, "height : " + height + ", width : " + width);
-			Bitmap resized = Bitmap.createScaledBitmap(bmp, 600, 800, true); // 600 x 800 olarak resize edildi
-			//Bitmap layoutResized = Bitmap.createScaledBitmap(bmp, tmpWidth, (int) (tmpWidth * 8) / 6, true);
-
-			Bitmap cropped = Bitmap.createBitmap(resized, 0, 100, 600, 600); // Resized resim üzerinden crop edildi
-			Bitmap layoutCropped = Bitmap.createScaledBitmap(cropped, tmpWidth, tmpHeight, true);
-			Log.e(TAG, "height : " + (int) (tmpHeight * 8) / 6 + ", width : " + tmpWidth);
-			//Bitmap cropped = Bitmap.createBitmap(resized, x noktasý, y noktasý, width, height); // Resized resim üzerinden crop edildi
-
-			ivTakenPhoto.setImageBitmap(layoutCropped);
-			img.setBmp(resized);
-			
-
-			/*
-			 * Kullanici fotograf cektiken sonra, send butonuna basmayi unutup
-			 * aradan biraz zaman gectikten sonra farkederse konum bilgisi
-			 * degismis oluyor. Bize yollayinca da yanlis konum almis oluyoruz.
-			 * Bu sebeple fotograf cekildigi siradaki konumu kaydetmeli ve send
-			 * butonuna basilinca o konumu yollamaliyiz
-			 */
-			//			position = temp;
-
 		}
-
-	}
-
-	//	public class MyLocationListener implements LocationListener { // location
-	//
-	//		@Override
-	//		public void onLocationChanged(Location loc) {
-	//
-	//			latitude = loc.getLatitude();
-	//			longitude = loc.getLongitude();
-	//
-	//			temp = new LatLng(loc.getLatitude(), loc.getLongitude());
-	//
-	//			util.addAMarker(myMap, temp, true);
-	//			util.centerAndZomm(myMap, temp, 15);
-	//
-	//			tvNewComplaintAdress.setText(util
-	//					.getAddress(getBaseContext(), temp));
-	//
-	//		}
-	//
-	//		@Override
-	//		public void onProviderDisabled(String provider) {
-	//
-	//		}
-	//
-	//		@Override
-	//		public void onProviderEnabled(String provider) {
-	//
-	//		}
-	//
-	//		@Override
-	//		public void onStatusChanged(String provider, int status, Bundle extras) {
-	//
-	//		}
-	//	}
+	};
 
 	private class SaveTask extends AsyncTask<String, String, String> {
-
-		@Override
-		protected void onPreExecute() {
-			progressDialog = ProgressDialog.show(NewComplaint.this, "Loading",
-					"Your complaint is sending. Thank you for your patience");
-		}
 
 		@Override
 		protected String doInBackground(String... params) {
@@ -418,6 +321,7 @@ public class NewComplaint extends Activity implements OnClickListener {
 				newComplaint.addJustUploadedImage(url);
 			} catch (IOException e) {
 				// TODO: handle exception
+				Log.e(TAG, "SaveTask doInBackground");
 			}
 			return null;
 		}

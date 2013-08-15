@@ -1,6 +1,7 @@
 package com.tobbetu.en4s;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -11,6 +12,8 @@ import org.json.JSONObject;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.hardware.Camera;
+import android.hardware.Camera.Size;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -24,7 +27,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class Utils {
 
-    private Marker place = null;
+	private final static String TAG = "Utils";	
+    private static Marker place = null;
 
     /**
      * 
@@ -34,7 +38,7 @@ public class Utils {
      *            Parametre olarak aldigi harita uzerindeki, LatLng ile
      *            gosterilen konuma marker ekler.
      */
-    public void addAMarker(GoogleMap map, LatLng position, boolean draggable) {
+    public static void addAMarker(GoogleMap map, LatLng position, boolean draggable) {
 
         if (place != null)
             place.remove();
@@ -60,7 +64,7 @@ public class Utils {
      *            Harita uzerinde belirtilen konumu ekranda ortalayip, zoom
      *            yapar.
      */
-    public void centerAndZomm(GoogleMap map, LatLng position, int zoom) {
+    public static void centerAndZomm(GoogleMap map, LatLng position, int zoom) {
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(position, zoom));
     }
 
@@ -70,7 +74,7 @@ public class Utils {
      * @param position
      * @return Parametre olarak aldigi konumun acik adresini doner.
      */
-    public String getAddress(Context context, LatLng position) {
+    public static String getAddress(Context context, LatLng position) {
 
         String address = "";
 
@@ -85,13 +89,13 @@ public class Utils {
                 }
             }
         } catch (Exception e) {
-            Log.e(getClass().getName(), "Couldn't get address", e);
+            Log.e(TAG, "Couldn't get address", e);
         }
         return address;
 
     }
 
-    public String getCity(Context context, LatLng position) {
+    public static String getCity(Context context, LatLng position) {
 
         String city = null;
 
@@ -105,7 +109,7 @@ public class Utils {
                 city = addresses.get(0).getLocality();
 
         } catch (IOException e) {
-            Log.e(getClass().getName(), "Couldn't get city name", e);
+            Log.e(TAG, "Couldn't get city name", e);
         }
 
         return city;
@@ -162,7 +166,7 @@ public class Utils {
      * @return iki pozisyon arasindaki mesafe 5 kilometreden az ise true,
      *         degilse false doner.
      */
-    public boolean isNear(LatLng customerPosition, LatLng complaintPos) {
+    public static boolean isNear(LatLng customerPosition, LatLng complaintPos) {
         float distance = calculateDistance(customerPosition.latitude,
                 customerPosition.longitude, complaintPos.latitude,
                 complaintPos.longitude);
@@ -189,5 +193,47 @@ public class Utils {
             Log.e("Utils.locationToJSON", "JSONException throwed", e);
         }
         return loc.toString();
+    }
+    
+    /*
+     * Farkli android cihazlarin destekledigi kamera cozunurluklerine gore ayar yapilir.
+     * Donen deger, Preview sinifinin constructor ina gonderilir.*/
+    public static int[] deviceSupportedScreenSize() { 	
+    	int[] tmp = new int[2];  	
+    	Camera camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK);
+    	Camera.Parameters params = camera.getParameters();
+		ArrayList<Camera.Size>	list = (ArrayList<Size>) params.getSupportedPictureSizes();
+		
+		for (int i = 0; i < list.size(); i++) {
+			if (list.get(i).width == 800 && list.get(i).height == 600) {
+				tmp[0] = 800;
+				tmp[1] = 600;
+				break;
+			} else if (list.get(i).width == 640 && list.get(i).height == 480) {
+				tmp[0] = 640;
+				tmp[1] = 480;
+				break;
+			} else if (list.get(i).width == 1024 && list.get(i).height == 768) {
+				tmp[0] = 1024;
+				tmp[1] = 768;
+				break;
+			} else if (list.get(i).width == 1280 && list.get(i).height == 960) {
+				tmp[0] = 1280;
+				tmp[1] = 960;
+				break;
+			} else if (list.get(i).width == 1900 && list.get(i).height == 1600) {
+				tmp[0] = 1900;
+				tmp[1] = 1600;
+				break;
+			} else {
+				tmp[0] = 0;
+				tmp[1] = 0;
+			}
+		}
+		
+		camera.release();
+		list = null;
+		
+		return tmp;
     }
 }
