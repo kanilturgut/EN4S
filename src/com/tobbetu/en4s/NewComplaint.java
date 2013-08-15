@@ -183,7 +183,7 @@ public class NewComplaint extends Activity implements OnClickListener {
 	@Override
 	protected void onStop() {
 		super.onStop();
-		// finish();
+		finish();
 		Log.d(TAG, "in onStop");
 	}
 

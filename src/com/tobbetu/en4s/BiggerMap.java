@@ -88,29 +88,34 @@ public class BiggerMap extends Activity {
 
 			@Override
 			public void onClick(View arg0) {
-
-				Intent betterPositionIntent = new Intent(BiggerMap.this,
-						NewComplaint.class);
-				betterPositionIntent.putExtra("user_lat",
-						markerPosition.latitude);
-				betterPositionIntent.putExtra("user_lng",
-						markerPosition.longitude);
-				betterPositionIntent.putExtra("complaintTitle", complaintTitle);
-				betterPositionIntent.putExtra("complaintCategory",
-						complaintCategory);
-				betterPositionIntent.putExtra("complaintImage", complaintImage);
-				startActivity(betterPositionIntent);
-
+				startIntent();
 			}
 		});
-
 	}
 
 	@Override
 	protected void onPause() {
-		super.onPause();
-		
+		super.onPause();		
 		//kill activity
 		finish();
+	}
+	
+	@Override
+	public void onBackPressed() {
+		startIntent();
+	}
+	
+	private void startIntent() {
+		Intent betterPositionIntent = new Intent(BiggerMap.this,
+				NewComplaint.class);
+		betterPositionIntent.putExtra("user_lat",
+				markerPosition.latitude);
+		betterPositionIntent.putExtra("user_lng",
+				markerPosition.longitude);
+		betterPositionIntent.putExtra("complaintTitle", complaintTitle);
+		betterPositionIntent.putExtra("complaintCategory",
+				complaintCategory);
+		betterPositionIntent.putExtra("complaintImage", complaintImage);
+		startActivity(betterPositionIntent);
 	}
 }
