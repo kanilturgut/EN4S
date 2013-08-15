@@ -21,8 +21,6 @@ public class BiggerMap extends Activity {
 	private GoogleMap myBigMap = null;
 	private LatLng markerPosition = null;
 
-	private Utils util = null;
-
 	private Button sendButton = null;
 	
 	private String complaintTitle;
@@ -37,8 +35,6 @@ public class BiggerMap extends Activity {
 
 		Log.d("BiggerMap", "onCreate");	
 		
-		util = new Utils();
-		
 		complaintTitle = getIntent().getStringExtra("complaintTitle");
 		complaintCategory = getIntent().getIntExtra("complaintCategory", 0);
 		complaintImage = getIntent().getByteArrayExtra("complaintImage");
@@ -51,8 +47,8 @@ public class BiggerMap extends Activity {
 				R.id.mapBiggerMap)).getMap();
 		myBigMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 
-		util.addAMarker(myBigMap, markerPosition, true);
-		util.centerAndZomm(myBigMap, markerPosition, 18);
+		Utils.addAMarker(myBigMap, markerPosition, true);
+		Utils.centerAndZomm(myBigMap, markerPosition, 18);
 		
 		myBigMap.setOnMarkerDragListener(new OnMarkerDragListener() {
 

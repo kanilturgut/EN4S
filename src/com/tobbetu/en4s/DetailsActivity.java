@@ -63,8 +63,6 @@ public class DetailsActivity extends Activity implements OnClickListener {
 //	private ViewPager mViewPager;
 	private PhotoView photoView;
 
-	private Utils util = null;
-
 	private GoogleMap myMap;
 
 	private Complaint comp = null;
@@ -80,7 +78,6 @@ public class DetailsActivity extends Activity implements OnClickListener {
 		setContentView(R.layout.details_layout);
 		//		getActionBar().hide();
 
-		util = new Utils();
 
 		comp = (Complaint) getIntent().getSerializableExtra("class");
 
@@ -105,7 +102,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 		compPos = new LatLng(comp.getLatitude(), comp.getLongitude());
 		myPosition = new LatLng(getIntent().getDoubleExtra(
 				"latitude", 0), getIntent().getDoubleExtra("longitude", 0));
-		if (!util.isNear(myPosition, compPos)) {
+		if (!Utils.isNear(myPosition, compPos)) {
 			bUpVote.setVisibility(View.GONE);
 			bDownVote.setVisibility(View.GONE);
 
@@ -122,8 +119,8 @@ public class DetailsActivity extends Activity implements OnClickListener {
 				R.id.mapDetails)).getMap();
 		myMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-		util.addAMarker(myMap, compPos, false);
-		util.centerAndZomm(myMap, compPos, 15);
+		Utils.addAMarker(myMap, compPos, false);
+		Utils.centerAndZomm(myMap, compPos, 15);
 		tvComplaintAdress.setText(comp.getAddress());
 		tvComplaintTitle.setText(comp.getTitle());
 		tvComplaintCategory.setText(comp.getCategory());
