@@ -20,6 +20,7 @@ import android.view.Display;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
@@ -74,7 +75,11 @@ public class NewComplaint extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_new_complaint);
 		getActionBar().hide();
-
+		
+		//klavye kendi kendine acilmayacak...Oh beeee :D
+		getWindow().setSoftInputMode(
+			      WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+		
 		Display display = getWindowManager().getDefaultDisplay();
 		Point size = new Point();
 		display.getSize(size);
@@ -112,8 +117,8 @@ public class NewComplaint extends Activity implements OnClickListener {
 
 		latitude = getIntent().getDoubleExtra("user_lat", 0);
 		longitude = getIntent().getDoubleExtra("user_lng", 0);
-
-		etComplaintTitle = (EditText) findViewById(R.id.etNewComplaint);
+	
+		etComplaintTitle = (EditText) findViewById(R.id.etNewComplaint);	
 		tvNewComplaintAdress = (TextView) findViewById(R.id.tvNewComplaintAdress);
 		ivTakenPhoto = (ImageView) findViewById(R.id.ivTakenPhoto);
 
@@ -137,6 +142,7 @@ public class NewComplaint extends Activity implements OnClickListener {
 		tvNewComplaintAdress.setText(Utils
 				.getAddress(getBaseContext(), position));
 
+		//konum iyilestirmek icin harita uzerine tiklaninca gerceklescek islemler
 		myMap.setOnMapClickListener(new OnMapClickListener() {
 
 			@Override
