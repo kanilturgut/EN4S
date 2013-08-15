@@ -49,7 +49,7 @@ public class BiggerMap extends Activity {
 
 		myBigMap = ((MapFragment) getFragmentManager().findFragmentById(
 				R.id.mapBiggerMap)).getMap();
-		myBigMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+		myBigMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 
 		util.addAMarker(myBigMap, markerPosition, true);
 		util.centerAndZomm(myBigMap, markerPosition, 18);
