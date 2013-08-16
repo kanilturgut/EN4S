@@ -310,6 +310,17 @@ public class NewComplaint extends Activity implements OnClickListener {
 				bmp = Bitmap.createBitmap(bmp, 0, 100, preview.pictureHeight,
 						preview.pictureHeight);
 
+				if (pg != null)
+					pg.dismiss();
+
+				//fotograf yatay cekildi ise tekrar ceviriyoruz
+				if (260 < deviceOrientation && deviceOrientation <280) {
+					Matrix matrix = new Matrix();
+					matrix.postRotate(-90);
+					bmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(),
+							bmp.getHeight(), matrix, true);
+				}
+				
 				ByteArrayOutputStream os = new ByteArrayOutputStream();
 				bmp.compress(CompressFormat.JPEG, 90, os);
 
@@ -325,17 +336,7 @@ public class NewComplaint extends Activity implements OnClickListener {
 								+ bmp.getHeight() + " ,bitmap.size : "
 								+ (double) (bmp.getByteCount() / 1000000.0)
 								+ " mb " + bitmapdata.length / 1000000.0);
-
-				if (pg != null)
-					pg.dismiss();
-
-				//fotograf yatay cekildi ise tekrar ceviriyoruz
-				if (260 < deviceOrientation && deviceOrientation <280) {
-					Matrix matrix = new Matrix();
-					matrix.postRotate(-90);
-					bmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(),
-							bmp.getHeight(), matrix, true);
-				}
+				
 				
 				ivTakenPhoto.setVisibility(ImageView.VISIBLE);
 				findViewById(R.id.fLPreview).setVisibility(View.GONE);
