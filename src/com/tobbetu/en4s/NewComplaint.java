@@ -89,7 +89,7 @@ public class NewComplaint extends Activity implements OnClickListener {
 
 		preview = new Preview(this);
 
-		if (Preview.pictureWidth == 0 || Preview.pictureHeight == 0) {
+		if (preview.pictureWidth == 0 || preview.pictureHeight == 0) {
 
 			// Create an alert
 
@@ -271,7 +271,7 @@ public class NewComplaint extends Activity implements OnClickListener {
 
 				bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
 
-				Log.e("Bitmap",
+				Log.e("Bitmap1",
 						"width : " + bmp.getWidth() + ", height : "
 								+ bmp.getHeight() + " ,bitmap.size : "
 								+ (bmp.getByteCount() / 1000000) + " mb");
@@ -283,13 +283,13 @@ public class NewComplaint extends Activity implements OnClickListener {
 							bmp.getHeight(), matrix, true);
 				}
 
-				Log.e("Bitmap",
+				Log.e("Bitmap2",
 						"width : " + bmp.getWidth() + ", height : "
 								+ bmp.getHeight() + " ,bitmap.size : "
 								+ (bmp.getByteCount() / 1000000) + " mb");
 
 
-				bmp = Bitmap.createBitmap(bmp, 0, 100, 960, 960);
+				bmp = Bitmap.createBitmap(bmp, 0, 100, preview.pictureHeight, preview.pictureHeight);
 
 				ByteArrayOutputStream os = new ByteArrayOutputStream();
 				bmp.compress(CompressFormat.JPEG, 90, os);
@@ -301,7 +301,7 @@ public class NewComplaint extends Activity implements OnClickListener {
 				bitmapdata = os.toByteArray();
 				// bmp = BitmapFactory.decodeByteArray(array, 0, array.length);
 
-				Log.e("Bitmap",
+				Log.e("Bitmap3",
 						"width : " + bmp.getWidth() + ", height : "
 								+ bmp.getHeight() + " ,bitmap.size : "
 								+ (double) (bmp.getByteCount() / 1000000.0)

@@ -14,7 +14,7 @@ public class Preview extends SurfaceView implements SurfaceHolder.Callback {
 
 	SurfaceHolder mHolder;
 	public Camera camera;
-	public static int pictureWidth, pictureHeight;
+	public int pictureWidth, pictureHeight;
 
 	@SuppressWarnings("deprecation")
 	public Preview(Context context) {

@@ -204,15 +204,16 @@ public class Utils {
     	Camera.Parameters params = camera.getParameters();
 		ArrayList<Camera.Size>	list = (ArrayList<Size>) params.getSupportedPictureSizes();
 		
-		for (int i = 0; i < list.size(); i++) {
+		for (int i = list.size()-1; i >= 0; i--) {
+		
 			if (list.get(i).width == 800 && list.get(i).height == 600) {
 				tmp[0] = 800;
 				tmp[1] = 600;
 				break;
-			} else if (list.get(i).width == 640 && list.get(i).height == 480) {
-				tmp[0] = 640;
-				tmp[1] = 480;
-				break;
+//			} else if (list.get(i).width == 640 && list.get(i).height == 480) {
+//				tmp[0] = 640;
+//				tmp[1] = 480;
+//				break;
 			} else if (list.get(i).width == 1024 && list.get(i).height == 768) {
 				tmp[0] = 1024;
 				tmp[1] = 768;
@@ -233,6 +234,8 @@ public class Utils {
 		
 		camera.release();
 		list = null;
+		
+		Log.i(TAG, "deviceSupportedScreenSize returned " + tmp[0] + "x" + tmp[1]);
 		
 		return tmp;
     }
