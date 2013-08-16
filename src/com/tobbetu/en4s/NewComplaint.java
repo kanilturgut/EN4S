@@ -124,21 +124,27 @@ public class NewComplaint extends Activity implements OnClickListener {
 		bPush.setOnClickListener(this);
 		bImproveLocation.setOnClickListener(this);
 
-		//		byte[] savedImage = getIntent().getByteArrayExtra("complaintImage");
-		//		Bitmap savedBitmap = null;
-		//		if (savedImage != null) {
-		//			savedBitmap = BitmapFactory.decodeByteArray(savedImage , 0,
-		//					savedImage .length);
-		//
-		//			img = new Image();
-		//			img.setBmp(savedBitmap);
-		//
-		//			ivTakenPhoto.setVisibility(ImageView.VISIBLE);
-		//			findViewById(R.id.fLPreview).setVisibility(View.GONE);
-		//			bTakePhoto.setVisibility(Button.GONE);
-		//			bReTakePhoto.setVisibility(Button.VISIBLE);
-		//			ivTakenPhoto.setImageBitmap(bmp);
-		//		}
+		byte[] savedImage = getIntent().getByteArrayExtra("complaintImage");
+		Bitmap savedBitmap = null;
+		if (savedImage != null) {
+			savedBitmap = BitmapFactory.decodeByteArray(savedImage , 0,
+					savedImage .length);
+
+			img = new Image();
+			img.setBmp(savedBitmap);
+			
+			//resim cekildikten sonra ikinci kez haritadan konum secilirse
+			//mevcut foograf korunmali.
+			bitmapdata = savedImage;
+			
+			ivTakenPhoto.setVisibility(ImageView.VISIBLE);
+			findViewById(R.id.fLPreview).setVisibility(View.GONE);
+			bTakePhoto.setVisibility(Button.GONE);
+			bReTakePhoto.setVisibility(Button.VISIBLE);
+			ivTakenPhoto.setImageBitmap(savedBitmap);
+			
+			savedBitmap = null;
+		}
 
 		myMap = ((MapFragment) getFragmentManager().findFragmentById(
 				R.id.mapNewComplaint)).getMap();
