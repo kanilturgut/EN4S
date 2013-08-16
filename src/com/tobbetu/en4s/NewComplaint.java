@@ -13,11 +13,13 @@ import android.graphics.Matrix;
 import android.graphics.Point;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
+import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
+import android.view.OrientationEventListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
@@ -67,13 +69,16 @@ public class NewComplaint extends Activity implements OnClickListener {
 	private Preview preview;
 	ProgressDialog pg = null;
 
+	private OrientationEventListener mOrientationListener = null;
+	private int deviceOrientation, photoOrientation;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_new_complaint);
 		getActionBar().hide();
 
-		//klavye kendi kendine acilmayacak...Oh beeee :D
+		// klavye kendi kendine acilmayacak...Oh beeee :D
 		getWindow().setSoftInputMode(
 				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
@@ -110,7 +115,7 @@ public class NewComplaint extends Activity implements OnClickListener {
 		latitude = getIntent().getDoubleExtra("user_lat", 0);
 		longitude = getIntent().getDoubleExtra("user_lng", 0);
 
-		etComplaintTitle = (EditText) findViewById(R.id.etNewComplaint);	
+		etComplaintTitle = (EditText) findViewById(R.id.etNewComplaint);
 		tvNewComplaintAdress = (TextView) findViewById(R.id.tvNewComplaintAdress);
 		ivTakenPhoto = (ImageView) findViewById(R.id.ivTakenPhoto);
 
@@ -127,22 +132,22 @@ public class NewComplaint extends Activity implements OnClickListener {
 		byte[] savedImage = getIntent().getByteArrayExtra("complaintImage");
 		Bitmap savedBitmap = null;
 		if (savedImage != null) {
-			savedBitmap = BitmapFactory.decodeByteArray(savedImage , 0,
-					savedImage .length);
+			savedBitmap = BitmapFactory.decodeByteArray(savedImage, 0,
+					savedImage.length);
 
 			img = new Image();
 			img.setBmp(savedBitmap);
-			
-			//resim cekildikten sonra ikinci kez haritadan konum secilirse
-			//mevcut foograf korunmali.
+
+			// resim cekildikten sonra ikinci kez haritadan konum secilirse
+			// mevcut foograf korunmali.
 			bitmapdata = savedImage;
-			
+
 			ivTakenPhoto.setVisibility(ImageView.VISIBLE);
 			findViewById(R.id.fLPreview).setVisibility(View.GONE);
 			bTakePhoto.setVisibility(Button.GONE);
 			bReTakePhoto.setVisibility(Button.VISIBLE);
 			ivTakenPhoto.setImageBitmap(savedBitmap);
-			
+
 			savedBitmap = null;
 		}
 
@@ -155,40 +160,51 @@ public class NewComplaint extends Activity implements OnClickListener {
 		Utils.addAMarker(myMap, position, false);
 		Utils.centerAndZomm(myMap, position, 15);
 
-		tvNewComplaintAdress.setText(Utils
-				.getAddress(getBaseContext(), position));
+		tvNewComplaintAdress.setText(Utils.getAddress(getBaseContext(),
+				position));
 
 		categoriesSpinner = (Spinner) findViewById(R.id.spinnerNewComplaintCategory);
 		ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter
 				.createFromResource(this, R.array.categories,
 						android.R.layout.simple_spinner_item);
 		spinnerAdapter
-		.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+				.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		categoriesSpinner.setAdapter(spinnerAdapter);
 		categoriesSpinner
-		.setOnItemSelectedListener(new OnItemSelectedListener() {
+				.setOnItemSelectedListener(new OnItemSelectedListener() {
 
-			@Override
-			public void onItemSelected(AdapterView<?> arg0, View arg1,
-					int arg2, long arg3) {
-				category = arg0.getItemAtPosition(arg2).toString();
-				selectedCategoryIndex = arg2;
-			}
+					@Override
+					public void onItemSelected(AdapterView<?> arg0, View arg1,
+							int arg2, long arg3) {
+						category = arg0.getItemAtPosition(arg2).toString();
+						selectedCategoryIndex = arg2;
+					}
 
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0) {
-				category = "Disable Rights"; // default category
-				selectedCategoryIndex = 0;
-			}
-		});
+					@Override
+					public void onNothingSelected(AdapterView<?> arg0) {
+						category = "Disable Rights"; // default category
+						selectedCategoryIndex = 0;
+					}
+				});
 
 		etComplaintTitle.setText(savedComplainTitle);
 		categoriesSpinner.setSelection(selectedCategoryIndex);
+
+		mOrientationListener = new OrientationEventListener(this,
+				SensorManager.SENSOR_DELAY_NORMAL) {
+			@Override
+			public void onOrientationChanged(int orientation) {
+				deviceOrientation = orientation;
+			}
+		};
+		if (mOrientationListener.canDetectOrientation())
+			mOrientationListener.enable();
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
+		mOrientationListener.disable();
 		finish();
 		Log.d(TAG, "in onStop");
 	}
@@ -219,7 +235,7 @@ public class NewComplaint extends Activity implements OnClickListener {
 			bReTakePhoto.setVisibility(Button.GONE);
 			bTakePhoto.setVisibility(Button.VISIBLE);
 
-		} else if (v.getId() == R.id.bPush){
+		} else if (v.getId() == R.id.bPush) {
 
 			if (etComplaintTitle.getText().toString().equals(""))
 				Toast.makeText(getApplicationContext(),
@@ -248,15 +264,15 @@ public class NewComplaint extends Activity implements OnClickListener {
 
 				new SaveTask().execute();
 			}
-		} else { //bImroveLocation
+		} else { // bImroveLocation
 			Intent biggerMapIntent = new Intent(NewComplaint.this,
 					BiggerMap.class);
 			biggerMapIntent.putExtra("LatLng_Lat", latitude);
 			biggerMapIntent.putExtra("LatLng_Lng", longitude);
 			biggerMapIntent.putExtra("complaintTitle", etComplaintTitle
 					.getText().toString());
-			biggerMapIntent.putExtra("complaintCategory",
-					selectedCategoryIndex);
+			biggerMapIntent
+					.putExtra("complaintCategory", selectedCategoryIndex);
 			biggerMapIntent.putExtra("complaintImage", bitmapdata);
 			Log.d(TAG, "onMapClick intent started");
 			startActivity(biggerMapIntent);
@@ -269,6 +285,9 @@ public class NewComplaint extends Activity implements OnClickListener {
 		public void onPictureTaken(byte[] data, Camera camera) {
 			if (data != null) {
 
+				//foto cekildigi anda cihazin dur
+				photoOrientation = deviceOrientation;
+				
 				bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
 
 				Log.e("Bitmap1",
@@ -288,8 +307,8 @@ public class NewComplaint extends Activity implements OnClickListener {
 								+ bmp.getHeight() + " ,bitmap.size : "
 								+ (bmp.getByteCount() / 1000000) + " mb");
 
-
-				bmp = Bitmap.createBitmap(bmp, 0, 100, preview.pictureHeight, preview.pictureHeight);
+				bmp = Bitmap.createBitmap(bmp, 0, 100, preview.pictureHeight,
+						preview.pictureHeight);
 
 				ByteArrayOutputStream os = new ByteArrayOutputStream();
 				bmp.compress(CompressFormat.JPEG, 90, os);
@@ -310,6 +329,14 @@ public class NewComplaint extends Activity implements OnClickListener {
 				if (pg != null)
 					pg.dismiss();
 
+				//fotograf yatay cekildi ise tekrar ceviriyoruz
+				if (260 < deviceOrientation && deviceOrientation <280) {
+					Matrix matrix = new Matrix();
+					matrix.postRotate(-90);
+					bmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(),
+							bmp.getHeight(), matrix, true);
+				}
+				
 				ivTakenPhoto.setVisibility(ImageView.VISIBLE);
 				findViewById(R.id.fLPreview).setVisibility(View.GONE);
 				bTakePhoto.setVisibility(Button.GONE);
