@@ -20,6 +20,7 @@ import android.widget.ImageView;
 
 import com.tobbetu.en4s.Utils;
 import com.tobbetu.en4s.cache.Cache;
+import com.tobbetu.en4s.helpers.VoteRejectedException;
 
 public class Complaint implements Serializable {
 
@@ -213,13 +214,16 @@ public class Complaint implements Serializable {
         }
     }
 
-    public void upvote(String location) throws IOException {
+    public void upvote(String location) throws IOException, VoteRejectedException {
         HttpResponse put = Requests.put(String.format(
                 "http://en4s.msimav.net/complaint/%s/upvote", this.id),
                 location);
         if (Requests.checkStatusCode(put, HttpStatus.SC_NOT_ACCEPTABLE)) {
             Log.e(getClass().getName(), "Upvote Rejected");
-            // TODO throw new Exception("Upvote Rejected");
+            throw new VoteRejectedException("Upvote Rejected");
+        } else if (Requests.checkStatusCode(put, HttpStatus.SC_NOT_FOUND)) {
+            Log.e(getClass().getName(), "Upvote Rejected because complaint id is wrong");
+            throw new VoteRejectedException("There is no such complaint");
         }
     }
 

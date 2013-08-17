@@ -50,6 +50,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.tobbetu.en4s.backend.Complaint;
+import com.tobbetu.en4s.helpers.VoteRejectedException;
 
 public class DetailsActivity extends Activity implements OnClickListener {
 
@@ -129,7 +130,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 		tvReporterDate.setText(comp.getDateAsString());
 
 		//		String sporDallari[] = {"Basketbol", "Futbol", "Tenis", "Voleybol",
-		//	            "Hentbol", "Yüzme", "Golf"};
+		//	            "Hentbol", "Yï¿½zme", "Golf"};
 		//		ListView lvComments = (ListView) findViewById(R.id.lvCommentOnDetails);
 		//		lvComments.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,sporDallari));
 
@@ -388,7 +389,13 @@ public class DetailsActivity extends Activity implements OnClickListener {
 				comp.upvote(Utils.locationToJSON(myPosition.latitude, myPosition.longitude));
 			} catch (IOException e) {
 				Log.e(getClass().getName(), "UpVoteTask failed", e);
-			}
+			} catch (VoteRejectedException e) {
+                // TODO kullaniciya sorunu daha uygun bicimde goster
+			    Log.e(getClass().getName(), "UpVote rejected", e);
+			    Toast.makeText(getApplicationContext(),
+                        "Upvote Rejected: " + e.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
 
 			return null;
 		}
