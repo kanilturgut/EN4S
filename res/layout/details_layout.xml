@@ -30,6 +30,13 @@
                 android:layout_gravity="center"
                 android:contentDescription="@string/detail_loading_image"
                 android:src="@drawable/loading_half" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#FFFFFF"
+            android:orientation="vertical" >
 
             <TextView
                 android:id="@+id/tvComplaintTitle"
@@ -47,6 +54,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="3dp"
+                android:layout_marginBottom="5dp"
                 android:text="@string/detail_item_category"
                 android:textColor="#AAAAAA"
                 android:textSize="12sp" />

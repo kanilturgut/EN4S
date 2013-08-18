@@ -21,10 +21,13 @@ import java.util.Arrays;
 import uk.co.senab.photoview.PhotoView;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +35,8 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ImageView.ScaleType;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -50,6 +55,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.tobbetu.en4s.backend.Complaint;
+import com.tobbetu.en4s.backend.Image;
 import com.tobbetu.en4s.helpers.VoteRejectedException;
 
 public class DetailsActivity extends Activity implements OnClickListener {
@@ -59,9 +65,9 @@ public class DetailsActivity extends Activity implements OnClickListener {
 	private TextView tvComplaintAdress, tvComplaintTitle, tvComplaintCategory,
 	tvReporter, tvReporterDate, tvYouAreNotAllowed;
 	private Button bUpVote, bDownVote, bMoreComment /*bShare*/;
-//	private LinearLayout viewPagerLayout;
+	//	private LinearLayout viewPagerLayout;
 
-//	private ViewPager mViewPager;
+	//	private ViewPager mViewPager;
 	private PhotoView photoView;
 
 	private GoogleMap myMap;
@@ -71,9 +77,13 @@ public class DetailsActivity extends Activity implements OnClickListener {
 	LatLng myPosition = null;
 
 	private boolean isFetching;
-	
+
 	//more comment activitysine gidilip gidilmedigini tutacak.
 	private boolean toMoreCommentActivity = false;
+
+	private ImageView ivProblemImage = null;
+
+	private ImageTask imageTask;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -86,6 +96,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 		comp = (Complaint) getIntent().getSerializableExtra("class");
 
 		//		viewPagerLayout = (LinearLayout) findViewById(R.id.viewPagerLayout);
+		ivProblemImage = (ImageView) findViewById(R.id.ivProblemImage);
 
 		tvComplaintAdress = (TextView) findViewById(R.id.tvComplaintAdress);
 		tvComplaintTitle = (TextView) findViewById(R.id.tvComplaintTitle);
@@ -137,20 +148,23 @@ public class DetailsActivity extends Activity implements OnClickListener {
 		//		ListView lvComments = (ListView) findViewById(R.id.lvCommentOnDetails);
 		//		lvComments.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,sporDallari));
 
+		imageTask = new ImageTask();
+		imageTask.execute(0);
+
 	}
 
 	@Override
 	protected void onStop() {
 		super.onStop();
-		
+
 		//eger intent ile MoreCommentActivity e gidiliyorsa, artik bu activity oldurulsun
 		if (toMoreCommentActivity)
 			finish();
-		
-		
+
+
 		/*Bu sekilde detay sayfasina girilmis olan bir sikayetin, resmi yuklenmeden detay sayfasindan cikinca
 		 * arka plan da calisan resmi indirme gorevi iptal ediliyor. Boylece kapanma hatasi almiyoruz.*/
-
+		imageTask.cancel(true);
 	}
 
 	//	@Override
@@ -226,42 +240,49 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
 	}
 
-	//	class ImageTask extends AsyncTask<Integer, String, String> {
-	//
-	//		@Override
-	//		protected String doInBackground(Integer... params) {
-	//
-	//			try {
-	//				Log.d("ImageTask", "istek yapildi1");
-	//				bmp = comp.getImage(params[0]).getBmp();
-	//				Log.d("ImageTask", "istek yapildi");
-	//
-	//			} catch (IOException e) {
-	//				Log.e(getClass().getName(), "Image couldn't load", e);
-	//			}
-	//			return null;
-	//		}
-	//
-	//		@Override
-	//		protected void onPostExecute(String result) {
-	//
-	//			Display display = getWindowManager().getDefaultDisplay();
-	//			Point size = new Point();
-	//			display.getSize(size);
-	//			int tmpWidth = size.x;
-	//			int tmpHeight = viewPagerLayout.getLayoutParams().height;
-	//
-	//			if(tmpWidth > 600){
-	//				tmpWidth = bmp.getWidth();
-	//				tmpHeight = (int) ((double)(bmp.getWidth() / tmpWidth) * tmpHeight);
-	//			}
-	//
-	//			Log.e(getClass().getName(), "tmp.width:" + tmpWidth + " , tmpheight : " + tmpHeight + "...." + "bmpW: " + bmp.getWidth() + " , bmpH : " + bmp.getHeight());
-	//			cropped = Bitmap.createBitmap(bmp, 0, 150, tmpWidth, tmpHeight);
-	//			Log.e("burasi", "croppe width : " + cropped.getWidth() + " cropped height : " + cropped.getHeight());
-	//			photoView.setImageBitmap(cropped);
-	//		}
-	//	}
+	class ImageTask extends AsyncTask<Integer, String, String> {
+
+		private Bitmap bmp = null;
+
+		@Override
+		protected String doInBackground(Integer... params) {
+
+			Log.d("ImageTask", "istek yapildi1");
+			comp.getImage(params[0], Image.SIZE_512, ivProblemImage);
+			Log.d("ImageTask", "istek yapildi");
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+
+			Display display = getWindowManager().getDefaultDisplay();
+			Point size = new Point();
+			display.getSize(size);
+			int tmpWidth = size.x;
+
+			LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(
+					tmpWidth, tmpWidth);
+			findViewById(R.id.complaintItemInfoLayout).setLayoutParams(llParams);
+
+			//				LinearLayout.LayoutParams ivParams = new LinearLayout.LayoutParams(
+			//						tmpWidth, tmpWidth);
+
+			ivProblemImage.setLayoutParams(llParams);
+
+			//				int tmpHeight = viewPagerLayout.getLayoutParams().height;
+			//	
+			//				if(tmpWidth > 600){
+			//					tmpWidth = bmp.getWidth();
+			//					tmpHeight = (int) ((double)(bmp.getWidth() / tmpWidth) * tmpHeight);
+			//				}
+			//	
+			//				Log.e(getClass().getName(), "tmp.width:" + tmpWidth + " , tmpheight : " + tmpHeight + "...." + "bmpW: " + bmp.getWidth() + " , bmpH : " + bmp.getHeight());
+			//				cropped = Bitmap.createBitmap(bmp, 0, 150, tmpWidth, tmpHeight);
+			//				Log.e("burasi", "croppe width : " + cropped.getWidth() + " cropped height : " + cropped.getHeight());
+			//				photoView.setImageBitmap(cropped);
+		}
+	}
 
 	// Buttons onClickListener
 	@Override
@@ -271,7 +292,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 			new UpVoteTask().execute();
 		} else if (v.getId() == R.id.bDownVote) {
 			new DownVoteTask().execute();	
-//			Toast.makeText(getApplicationContext(), "It does nothing", Toast.LENGTH_SHORT).show();
+			//			Toast.makeText(getApplicationContext(), "It does nothing", Toast.LENGTH_SHORT).show();
 		} else { //bMoreComment
 			toMoreCommentActivity = true;			
 			Intent i = new Intent(this, MoreCommentsActivity.class);
@@ -287,50 +308,50 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
 	private void startFacebookSession() {
 
-//		if(Session.getActiveSession() == null) {
-			isFetching = false;
+		//		if(Session.getActiveSession() == null) {
+		isFetching = false;
 
-			Log.d("FACEBOOK", "performFacebookLogin");
-			final Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(this, Arrays.asList("basic_info", "email"));
+		Log.d("FACEBOOK", "performFacebookLogin");
+		final Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(this, Arrays.asList("basic_info", "email"));
 
-			Session.openActiveSession(this, true, new Session.StatusCallback() {
-				@Override
-				public void call(Session session, SessionState state, Exception exception) {
-					Log.d("FACEBOOK", "call");
-					Log.i(TAG, session.isOpened() + "");
-					if (session.isOpened() && !isFetching) {
-						Log.d("FACEBOOK", "if (session.isOpened() && !isFetching)");
-						isFetching = true;
-						session.requestNewReadPermissions(newPermissionsRequest);
-						Request getMe = Request.newMeRequest(session, new GraphUserCallback() {
-							@Override
-							public void onCompleted(GraphUser user, Response response) {
-								Log.d("FACEBOOK", "onCompleted");
-								/*
-								 * Burada login icin yapilan shared preferences dan
-								 * farkli olarak yeni bir SPref.. kullanilabilir.
-								 * Bu sekilde kullanici uygulamaya facebook ile login
-								 * olmasa bile daha sonraki sikayet paylasimlarinda login
-								 * olmak icin zaman kaybetmez.*/
-							}
-						});
+		Session.openActiveSession(this, true, new Session.StatusCallback() {
+			@Override
+			public void call(Session session, SessionState state, Exception exception) {
+				Log.d("FACEBOOK", "call");
+				Log.i(TAG, session.isOpened() + "");
+				if (session.isOpened() && !isFetching) {
+					Log.d("FACEBOOK", "if (session.isOpened() && !isFetching)");
+					isFetching = true;
+					session.requestNewReadPermissions(newPermissionsRequest);
+					Request getMe = Request.newMeRequest(session, new GraphUserCallback() {
+						@Override
+						public void onCompleted(GraphUser user, Response response) {
+							Log.d("FACEBOOK", "onCompleted");
+							/*
+							 * Burada login icin yapilan shared preferences dan
+							 * farkli olarak yeni bir SPref.. kullanilabilir.
+							 * Bu sekilde kullanici uygulamaya facebook ile login
+							 * olmasa bile daha sonraki sikayet paylasimlarinda login
+							 * olmak icin zaman kaybetmez.*/
+						}
+					});
 
-						getMe.executeAsync();
-					}
-					else{
-						/*Bu if else in bir ustunde yapilirsa yani diger if icinde
-						 * o zaman baglanti inanimaz derecede uzadi. En az 3 deneme yaptim ve bu sekilde
-						 * nedense daha hizli baglanti gerceklesti.*/
-						if (session.isOpened())
-							publishFeedDialog();
-					}
+					getMe.executeAsync();
 				}
-			});
-//		} else {
-//			/*Zaten daha onceden acilmis bir facebook session varsa, tekrar login ile ugrasmadan direk olarak
-//			 * feed publish ediyoruz.*/
-//			publishFeedDialog();
-//		}
+				else{
+					/*Bu if else in bir ustunde yapilirsa yani diger if icinde
+					 * o zaman baglanti inanimaz derecede uzadi. En az 3 deneme yaptim ve bu sekilde
+					 * nedense daha hizli baglanti gerceklesti.*/
+					if (session.isOpened())
+						publishFeedDialog();
+				}
+			}
+		});
+		//		} else {
+		//			/*Zaten daha onceden acilmis bir facebook session varsa, tekrar login ile ugrasmadan direk olarak
+		//			 * feed publish ediyoruz.*/
+		//			publishFeedDialog();
+		//		}
 	}
 
 	private void publishFeedDialog() {
@@ -400,12 +421,12 @@ public class DetailsActivity extends Activity implements OnClickListener {
 			} catch (IOException e) {
 				Log.e(getClass().getName(), "UpVoteTask failed", e);
 			} catch (VoteRejectedException e) {
-                // TODO kullaniciya sorunu daha uygun bicimde goster
-			    Log.e(getClass().getName(), "UpVote rejected", e);
-			    Toast.makeText(getApplicationContext(),
-                        "Upvote Rejected: " + e.getMessage(),
-                        Toast.LENGTH_SHORT).show();
-            }
+				// TODO kullaniciya sorunu daha uygun bicimde goster
+				Log.e(getClass().getName(), "UpVote rejected", e);
+				Toast.makeText(getApplicationContext(),
+						"Upvote Rejected: " + e.getMessage(),
+						Toast.LENGTH_SHORT).show();
+			}
 
 			return null;
 		}

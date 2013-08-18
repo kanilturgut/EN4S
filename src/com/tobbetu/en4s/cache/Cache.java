@@ -32,8 +32,8 @@ public class Cache {
         if (cache.containsKey(url)) {
             Log.d(TAG, "Cache HIT: " + url);
             Image img = cache.get(url);
-            //iv.setImageBitmap(img.getBmp());
-            iv.setImageBitmap(cropBitmapImage(img));
+            iv.setImageBitmap(img.getBmp());
+//            iv.setImageBitmap(cropBitmapImage(img));
         } else {
             Log.d(TAG, "Cache MISS: " + url);
             DownloadTask dt = new DownloadTask(url, iv);
@@ -68,8 +68,8 @@ public class Cache {
                 Log.d(TAG, "Cache SET: " + url);
                 if(iv != null && result != null) {
                     cache.put(this.url, result);
-                    //iv.setImageBitmap(result.getBmp());
-                    iv.setImageBitmap(cropBitmapImage(result));
+                    iv.setImageBitmap(result.getBmp());
+//                    iv.setImageBitmap(cropBitmapImage(result));
                 } else {
                     Log.d(TAG, "RESULT: " + result);
                 }
