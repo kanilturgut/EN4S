@@ -21,7 +21,6 @@ import java.util.Arrays;
 import uk.co.senab.photoview.PhotoView;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -36,8 +35,8 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ImageView.ScaleType;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -157,11 +156,12 @@ public class DetailsActivity extends Activity implements OnClickListener {
 	protected void onStop() {
 		super.onStop();
 
+		Log.i(TAG, "onStop");
+		
 		//eger intent ile MoreCommentActivity e gidiliyorsa, artik bu activity oldurulsun
 		if (toMoreCommentActivity)
 			finish();
-
-
+		
 		/*Bu sekilde detay sayfasina girilmis olan bir sikayetin, resmi yuklenmeden detay sayfasindan cikinca
 		 * arka plan da calisan resmi indirme gorevi iptal ediliyor. Boylece kapanma hatasi almiyoruz.*/
 		imageTask.cancel(true);
@@ -242,7 +242,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
 	class ImageTask extends AsyncTask<Integer, String, String> {
 
-		private Bitmap bmp = null;
+//		private Bitmap bmp = null;
 
 		@Override
 		protected String doInBackground(Integer... params) {
@@ -423,9 +423,12 @@ public class DetailsActivity extends Activity implements OnClickListener {
 			} catch (VoteRejectedException e) {
 				// TODO kullaniciya sorunu daha uygun bicimde goster
 				Log.e(getClass().getName(), "UpVote rejected", e);
-				Toast.makeText(getApplicationContext(),
-						"Upvote Rejected: " + e.getMessage(),
-						Toast.LENGTH_SHORT).show();
+//				Toast.makeText(getApplicationContext(),
+//						"Upvote Rejected: " + e.getMessage(),
+//						Toast.LENGTH_SHORT).show();
+							
+				//UpVoteTask durduruluyor
+				cancel(true);
 			}
 
 			return null;
@@ -435,6 +438,14 @@ public class DetailsActivity extends Activity implements OnClickListener {
 		protected void onPostExecute(String result) {
 			Log.d(getClass().getName(), "In UpVoteTask onPostExecute");
 			Toast.makeText(getApplicationContext(), "Thanks for your upvote", Toast.LENGTH_SHORT).show();
+		}
+		
+		@Override
+		protected void onCancelled() {
+			super.onCancelled();
+			
+			Utils.createAlert(DetailsActivity.this, "Hata", "Oyunuz gecerli degil", true, "", "Tamam");
+			
 		}
 
 	}
