@@ -6,8 +6,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -33,6 +35,7 @@ public class Complaint implements Serializable {
     private String category;
     private int upVote;
     private int downVote;
+    private Set<String> upvoters;
     private double latitude;
     private double longitude;
     private String address;
@@ -71,6 +74,11 @@ public class Complaint implements Serializable {
 
     public void setDownVote(int downVote) {
         this.downVote = downVote;
+    }
+
+    public boolean alreadyUpVoted(String me) {
+        // HashSet has O(1) lookup, I hope device has enough memory
+        return upvoters.contains(me);
     }
 
     public double getLatitude() {
@@ -157,7 +165,7 @@ public class Complaint implements Serializable {
         long unixtime = this.date.getTime();
 
         if (now - unixtime < 0) {
-        	return "Just Now";
+            return "Just Now";
         } else if (now - 60 * 1000 < unixtime) { // in fucking min
             return ((now - unixtime) / 1000) + " second ago";
         } else if (now - 60 * 60 * 1000 < unixtime) { // fucking hour
@@ -214,7 +222,8 @@ public class Complaint implements Serializable {
         }
     }
 
-    public void upvote(String location) throws IOException, VoteRejectedException {
+    public void upvote(String location) throws IOException,
+            VoteRejectedException {
         HttpResponse put = Requests.put(String.format(
                 "http://en4s.msimav.net/complaint/%s/upvote", this.id),
                 location);
@@ -222,7 +231,8 @@ public class Complaint implements Serializable {
             Log.e(getClass().getName(), "Upvote Rejected");
             throw new VoteRejectedException("Upvote Rejected");
         } else if (Requests.checkStatusCode(put, HttpStatus.SC_NOT_FOUND)) {
-            Log.e(getClass().getName(), "Upvote Rejected because complaint id is wrong");
+            Log.e(getClass().getName(),
+                    "Upvote Rejected because complaint id is wrong");
             throw new VoteRejectedException("There is no such complaint");
         }
     }
@@ -266,6 +276,14 @@ public class Complaint implements Serializable {
         obj.setDownVote(elem.optInt("downvote_count", 0));
         obj.setAddress(elem.optString("address"));
         obj.setCity(elem.optString("city"));
+
+        JSONArray upvoters = elem.optJSONArray("upvoters");
+        Set<String> tmp = new HashSet<String>();
+        for (int i = 0; i < upvoters.length(); i++) {
+            String user = upvoters.optString(i);
+            tmp.add(user);
+        }
+        obj.upvoters = tmp;
 
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
         try {
