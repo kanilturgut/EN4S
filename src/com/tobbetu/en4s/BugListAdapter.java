@@ -50,13 +50,16 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
 		ImageView problemImage = (ImageView) rowView.findViewById(R.id.ivProblemImage);
 		TextView complaintTitle = (TextView) rowView.findViewById(R.id.tvItem);
 		TextView tvAdditionalInfo = (TextView) rowView.findViewById(R.id.tvDate);
-
+		TextView tvUpVoteCount = (TextView) rowView.findViewById(R.id.tvUpVoteCount);
+		TextView tvDownVoteCount = (TextView) rowView.findViewById(R.id.tvDownVoteCount);
+		
+		
 //		TextView complaintAddress = (TextView) rowView
 //				.findViewById(R.id.tvComplaintAddress);
 //		TextView complaintUpVote = (TextView) rowView
-//				.findViewById(R.id.upVoteTW);
+//				.findViewById(R.id.tvUpVoteCount);
 //		TextView complaintDownVote = (TextView) rowView
-//				.findViewById(R.id.downVoteTW);
+//				.findViewById(R.id.tvDownVoteCount);
 //		TextView tvAdditionalInfo = (TextView) rowView
 //				.findViewById(R.id.tvAdditionalInfo);
 
@@ -80,10 +83,12 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
 
 
 		complaintTitle.setText(complaint.getTitle().trim());
+		tvUpVoteCount.setText("" + complaint.getUpVote());
+		tvDownVoteCount.setText("" + complaint.getDownVote());
 
 //		complaintAddress.setText("at " + complaint.getCity().toUpperCase());
-//		complaintUpVote.setText("" + complaint.getUpVote());
-//		complaintDownVote.setText("" + complaint.getDownVote());
+//		complaintUpVote.setText(complaint.getUpVote());
+//		complaintDownVote.setText(complaint.getDownVote());
 
 		// position
 		if (tabPosition == 0) {

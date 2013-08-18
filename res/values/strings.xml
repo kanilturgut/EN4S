@@ -39,6 +39,7 @@
     <string name="facebook_app_id">543199292406693</string>
 	<string name="facebook_share">Share on Facebook</string>
 	<string name="twitter_share">Share on Twitter</string>
+	<string name="dummyNumber">10</string>
     
     <!-- Onur un yazdiklari -->
     <string name="login_logo">Login Logo</string>
