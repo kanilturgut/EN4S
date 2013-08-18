@@ -71,6 +71,9 @@ public class DetailsActivity extends Activity implements OnClickListener {
 	LatLng myPosition = null;
 
 	private boolean isFetching;
+	
+	//more comment activitysine gidilip gidilmedigini tutacak.
+	private boolean toMoreCommentActivity = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -139,6 +142,12 @@ public class DetailsActivity extends Activity implements OnClickListener {
 	@Override
 	protected void onStop() {
 		super.onStop();
+		
+		//eger intent ile MoreCommentActivity e gidiliyorsa, artik bu activity oldurulsun
+		if (toMoreCommentActivity)
+			finish();
+		
+		
 		/*Bu sekilde detay sayfasina girilmis olan bir sikayetin, resmi yuklenmeden detay sayfasindan cikinca
 		 * arka plan da calisan resmi indirme gorevi iptal ediliyor. Boylece kapanma hatasi almiyoruz.*/
 
@@ -264,6 +273,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 			//new DownVoteTask().execute();	
 			Toast.makeText(getApplicationContext(), "It does nothing", Toast.LENGTH_SHORT).show();
 		} else { //bMoreComment
+			toMoreCommentActivity = true;			
 			Intent i = new Intent(this, MoreCommentsActivity.class);
 			i.putExtra("class", comp);
 			i.putExtra("latitude", comp.getLatitude());

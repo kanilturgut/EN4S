@@ -63,6 +63,24 @@ public class MoreCommentsActivity extends Activity {
          * burasi update edilecek
          */
     }
+    
+    @Override
+    public void onBackPressed() {
+        Intent i = new Intent(MoreCommentsActivity.this,
+                DetailsActivity.class);
+        i.putExtra("class", complaint);
+        i.putExtra("latitude", userPosition.latitude);
+        i.putExtra("longitude", userPosition.longitude);
+        startActivity(i);
+    }
+    
+    @Override
+    protected void onStop() {
+    	super.onStop();
+    	
+    	//kill this activity
+    	finish();
+    }
 
     private class CommentAsyncTask extends
             AsyncTask<String, String, List<Comment>> {
