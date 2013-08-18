@@ -49,6 +49,7 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
 
 		ImageView problemImage = (ImageView) rowView.findViewById(R.id.ivProblemImage);
 		TextView complaintTitle = (TextView) rowView.findViewById(R.id.tvItem);
+		TextView tvAdditionalInfo = (TextView) rowView.findViewById(R.id.tvDate);
 
 //		TextView complaintAddress = (TextView) rowView
 //				.findViewById(R.id.tvComplaintAddress);
@@ -85,16 +86,16 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
 //		complaintDownVote.setText("" + complaint.getDownVote());
 
 		// position
-//		if (tabPosition == 0) {
-//			tvAdditionalInfo.setText("Hot ile ilgili bilgi");
-//		} else if (tabPosition == 1) {
-//			tvAdditionalInfo.setText(complaint.getDateAsString());
-//		} else if (tabPosition == 2) {
-//			tvAdditionalInfo
-//					.setText(complaint.getDistance(latitude, longitude));
-//		} else {
-//			tvAdditionalInfo.setText("Top ile ilgili bilgi");
-//		}
+		if (tabPosition == 0) {
+			tvAdditionalInfo.setText("Hot ile ilgili bilgi");
+		} else if (tabPosition == 1) {
+			tvAdditionalInfo.setText(complaint.getDateAsString());
+		} else if (tabPosition == 2) {
+			tvAdditionalInfo
+					.setText(complaint.getDistance(latitude, longitude));
+		} else {
+			tvAdditionalInfo.setText("Top ile ilgili bilgi");
+		}
 
 		// complaintVote.setText(complaints.get(position).getDate());
 		// complaintAddress.setText(complaints.get(position).getAddress());
