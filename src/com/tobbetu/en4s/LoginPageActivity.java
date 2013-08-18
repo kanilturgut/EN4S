@@ -142,7 +142,10 @@ public class LoginPageActivity extends Activity {
 
                     // burasi degisecek, facebook ile connection yazilinca iptal
                     // ediyorum burayi.
-                    new LoginTask().execute("enforce", "anil", "123");
+					new LoginTask().execute("facebook", loginPreferences
+							.getString("facebook_email", "NONE"),
+							loginPreferences.getString("facebook_accessToken",
+									"NONE"));
                 } else { // normal login
                     Log.d(TAG, "trying login with username");
                     Log.d(TAG, loginPreferences.getString("username", ""));
@@ -215,8 +218,14 @@ public class LoginPageActivity extends Activity {
                                                     + "," + username + ","
                                                     + email);
 
-                                            loginFlag = true;
-                                            // loginWithoutCurrentLocation();
+//                                            loginFlag = true;
+                                             
+                                            new LoginTask().execute("facebook", loginPreferences
+                        							.getString("facebook_email", "NONE"),
+                        							loginPreferences.getString("facebook_accessToken",
+                        									"NONE"));
+                                            
+                                            loginWithoutCurrentLocation();
                                             startIntent();
                                         }
                                     }
