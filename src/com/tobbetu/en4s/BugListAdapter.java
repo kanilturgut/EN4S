@@ -1,15 +1,9 @@
 package com.tobbetu.en4s;
 
-import java.io.IOException;
 import java.util.List;
-
-import com.tobbetu.en4s.backend.Complaint;
-import com.tobbetu.en4s.backend.Image;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +11,9 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.tobbetu.en4s.backend.Complaint;
+import com.tobbetu.en4s.backend.Image;
 
 public class BugListAdapter extends ArrayAdapter<Complaint> {
 
@@ -99,7 +96,7 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
 			tvAdditionalInfo
 					.setText(complaint.getDistance(latitude, longitude));
 		} else {
-			tvAdditionalInfo.setText("Top ile ilgili bilgi");
+			tvAdditionalInfo.setText(complaint.getUpVote() + " kez beðenildi");
 		}
 
 		// complaintVote.setText(complaints.get(position).getDate());
