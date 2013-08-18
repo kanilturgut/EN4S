@@ -51,7 +51,7 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
 		TextView complaintTitle = (TextView) rowView.findViewById(R.id.tvItem);
 		TextView tvAdditionalInfo = (TextView) rowView.findViewById(R.id.tvDate);
 		TextView tvUpVoteCount = (TextView) rowView.findViewById(R.id.tvUpVoteCount);
-		TextView tvDownVoteCount = (TextView) rowView.findViewById(R.id.tvDownVoteCount);
+//		TextView tvDownVoteCount = (TextView) rowView.findViewById(R.id.tvDownVoteCount);
 		
 		
 //		TextView complaintAddress = (TextView) rowView
@@ -84,7 +84,7 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
 
 		complaintTitle.setText(complaint.getTitle().trim());
 		tvUpVoteCount.setText("" + complaint.getUpVote());
-		tvDownVoteCount.setText("" + complaint.getDownVote());
+//		tvDownVoteCount.setText("" + complaint.getDownVote());
 
 //		complaintAddress.setText("at " + complaint.getCity().toUpperCase());
 //		complaintUpVote.setText(complaint.getUpVote());

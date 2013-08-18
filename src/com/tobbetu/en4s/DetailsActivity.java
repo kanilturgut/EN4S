@@ -270,8 +270,8 @@ public class DetailsActivity extends Activity implements OnClickListener {
 		if (v.getId() == R.id.bUpVote) {
 			new UpVoteTask().execute();
 		} else if (v.getId() == R.id.bDownVote) {
-			//new DownVoteTask().execute();	
-			Toast.makeText(getApplicationContext(), "It does nothing", Toast.LENGTH_SHORT).show();
+			new DownVoteTask().execute();	
+//			Toast.makeText(getApplicationContext(), "It does nothing", Toast.LENGTH_SHORT).show();
 		} else { //bMoreComment
 			toMoreCommentActivity = true;			
 			Intent i = new Intent(this, MoreCommentsActivity.class);

@@ -232,7 +232,7 @@ public class Complaint implements Serializable {
                 "http://en4s.msimav.net/complaint/%s/downvote", this.id),
                 location);
         if (Requests.checkStatusCode(put, HttpStatus.SC_NOT_ACCEPTABLE)) {
-            Log.e(getClass().getName(), "Upvote Rejected");
+            Log.e(getClass().getName(), "Downvote Rejected");
             // TODO throw new Exception("Upvote Rejected");
         }
     }

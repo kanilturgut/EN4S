@@ -81,7 +81,7 @@
                     android:layout_marginRight="10dp"
                     android:gravity="center_vertical"
                     android:text="@string/dummyNumber" />
-
+<!-- 
                 <View
                     android:layout_width="0.1dp"
                     android:layout_height="fill_parent"
@@ -103,7 +103,7 @@
                     android:layout_marginRight="10dp"
                     android:gravity="center_vertical"
                     android:text="@string/dummyNumber" />
-
+ -->
                 <View
                     android:layout_width="0.1dp"
                     android:layout_height="fill_parent"
