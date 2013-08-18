@@ -39,6 +39,7 @@ import com.facebook.widget.LoginButton;
 import com.facebook.widget.LoginButton.OnErrorListener;
 import com.tobbetu.en4s.backend.Login;
 import com.tobbetu.en4s.backend.Login.LoginFailedException;
+import com.tobbetu.en4s.helpers.Preview;
 
 public class LoginPageActivity extends Activity {
 
@@ -53,6 +54,7 @@ public class LoginPageActivity extends Activity {
 
 	private String sharedFileName = "loginInfo";
 	protected static SharedPreferences loginPreferences;
+	protected static SharedPreferences firstTimeControlPref;
 
 	private LocationManager lManager = null;
 	private LocationListener mlocListener = null;
@@ -91,8 +93,26 @@ public class LoginPageActivity extends Activity {
 			setContentView(R.layout.activity_login_page);
 			getActionBar().hide();
 			
+			//klavye otomatik olarak cikmayacak.
 			getWindow().setSoftInputMode(
 				      WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+			
+			/*Bu blok, program cihaza yuklendikten sonra sadece 1 kere calisacak ve
+			 * yeni sikayet ekleme ekraninda kullanacagimiz, cihazin hangi boyutta
+			 * fotograf cekecegini (800x600, 1024x768 ...) belirleyen bilgileri bulacak.*/
+			firstTimeControlPref = getSharedPreferences("firstTimeController", MODE_PRIVATE);
+			if (firstTimeControlPref.getBoolean("isThisFirstTime", true)) {
+				
+				Log.i(TAG, "Bir daha burayi gormeyeceksin. Eger gorursen yanlis birsey var demektir.");
+				
+				int[] sizes = Utils.deviceSupportedScreenSize();
+				Preview.pictureWidth = sizes[0];
+				Preview.pictureHeight = sizes[1];
+				
+				SharedPreferences.Editor firsTimeEditor = firstTimeControlPref.edit();
+				firsTimeEditor.putBoolean("isThisFirstTime", false);
+				firsTimeEditor.apply();
+			}
 			
 			etUsername = (EditText) findViewById(R.id.etUsername);
 			etPassword = (EditText) findViewById(R.id.etPassword);

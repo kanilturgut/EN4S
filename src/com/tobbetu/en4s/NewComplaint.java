@@ -94,7 +94,7 @@ public class NewComplaint extends Activity implements OnClickListener {
 
 		preview = new Preview(this);
 
-		if (preview.pictureWidth == 0 || preview.pictureHeight == 0) {
+		if (Preview.pictureWidth == 0 || Preview.pictureHeight == 0) {
 
 			// Create an alert
 
@@ -307,14 +307,14 @@ public class NewComplaint extends Activity implements OnClickListener {
 								+ bmp.getHeight() + " ,bitmap.size : "
 								+ (bmp.getByteCount() / 1000000) + " mb");
 
-				bmp = Bitmap.createBitmap(bmp, 0, 100, preview.pictureHeight,
-						preview.pictureHeight);
+				bmp = Bitmap.createBitmap(bmp, 0, 100, Preview.pictureHeight,
+						Preview.pictureHeight);
 
 				if (pg != null)
 					pg.dismiss();
 
 				//fotograf yatay cekildi ise tekrar ceviriyoruz
-				if (260 < deviceOrientation && deviceOrientation <280) {
+				if (260 < photoOrientation && photoOrientation <280) {
 					Matrix matrix = new Matrix();
 					matrix.postRotate(-90);
 					bmp = Bitmap.createBitmap(bmp, 0, 0, bmp.getWidth(),

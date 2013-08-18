@@ -2,8 +2,6 @@ package com.tobbetu.en4s.helpers;
 
 import java.io.IOException;
 
-import com.tobbetu.en4s.Utils;
-
 import android.content.Context;
 import android.hardware.Camera;
 import android.util.Log;
@@ -14,7 +12,8 @@ public class Preview extends SurfaceView implements SurfaceHolder.Callback {
 
 	SurfaceHolder mHolder;
 	public Camera camera;
-	public int pictureWidth, pictureHeight;
+	public static int pictureWidth;
+	public static int pictureHeight;
 
 	@SuppressWarnings("deprecation")
 	public Preview(Context context) {
@@ -24,10 +23,6 @@ public class Preview extends SurfaceView implements SurfaceHolder.Callback {
 		mHolder = getHolder();
 		mHolder.addCallback(this);
 		mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
-
-		int[] sizes = Utils.deviceSupportedScreenSize();
-		pictureWidth = sizes[0];
-		pictureHeight = sizes[1];
 
 		Log.i("Preview", "Constructor");
 	}
