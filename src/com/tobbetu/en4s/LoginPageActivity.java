@@ -20,8 +20,8 @@ import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
@@ -37,406 +37,443 @@ import com.facebook.SessionState;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 import com.facebook.widget.LoginButton.OnErrorListener;
+import com.tobbetu.en4s.backend.EnforceLogin;
+import com.tobbetu.en4s.backend.FacebookLogin;
 import com.tobbetu.en4s.backend.Login;
 import com.tobbetu.en4s.backend.Login.LoginFailedException;
 import com.tobbetu.en4s.helpers.Preview;
 
 public class LoginPageActivity extends Activity {
 
-	private String TAG = "LoginPageActivity";
+    private String TAG = "LoginPageActivity";
 
-	private Button bLogin = null;
-	private EditText etUsername, etPassword;
-	private ProgressBar pbLogin = null;
+    private Button bLogin = null;
+    private EditText etUsername, etPassword;
+    private ProgressBar pbLogin = null;
 
-	private LoginButton faceButton = null;
-	private String faceAccessToken = null;
+    private LoginButton faceButton = null;
+    private String faceAccessToken = null;
 
-	private String sharedFileName = "loginInfo";
-	protected static SharedPreferences loginPreferences;
-	protected static SharedPreferences firstTimeControlPref;
+    private String sharedFileName = "loginInfo";
+    protected static SharedPreferences loginPreferences;
+    protected static SharedPreferences firstTimeControlPref;
 
-	private LocationManager lManager = null;
-	private LocationListener mlocListener = null;
-	private double latitude = 0;
-	private double longitude = 0;
+    private LocationManager lManager = null;
+    private LocationListener mlocListener = null;
+    private double latitude = 0;
+    private double longitude = 0;
 
-	private boolean flag = false;
-	private boolean loginFlag = false;
-	private boolean locationFlag = false;
-	
-	private boolean intentCreated = false;
-	
+    private boolean flag = false;
+    private boolean loginFlag = false;
+    private boolean locationFlag = false;
+
+    private boolean intentCreated = false;
+
     private AlertDialog alertDialog = null;
     private boolean closeFlag = false;
-    
+
     private Handler myLocationHandler = null;
     private Runnable locationRunnable = null;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-		if (!isNetworkAvailable()) {
-			Toast.makeText(getApplicationContext(),
-					"You have no internet access, please open your network",
-					Toast.LENGTH_LONG).show();
-			finish();
-		} else {
-			// startService(new Intent(this, EN4SService.class));
+        if (!isNetworkAvailable()) {
+            Toast.makeText(getApplicationContext(),
+                    "You have no internet access, please open your network",
+                    Toast.LENGTH_LONG).show();
+            finish();
+        } else {
+            // startService(new Intent(this, EN4SService.class));
 
-			lManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-			mlocListener = new LoginPageLocationListener();
-			lManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-					0, 0, mlocListener);
+            lManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+            mlocListener = new LoginPageLocationListener();
+            lManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                    0, 0, mlocListener);
 
-			setContentView(R.layout.activity_login_page);
-			getActionBar().hide();
-			
-			//klavye otomatik olarak cikmayacak.
-			getWindow().setSoftInputMode(
-				      WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
-			
-			/*Bu blok, program cihaza yuklendikten sonra sadece 1 kere calisacak ve
-			 * yeni sikayet ekleme ekraninda kullanacagimiz, cihazin hangi boyutta
-			 * fotograf cekecegini (800x600, 1024x768 ...) belirleyen bilgileri bulacak.*/
-			firstTimeControlPref = getSharedPreferences("firstTimeController", MODE_PRIVATE);
-			if (firstTimeControlPref.getBoolean("isThisFirstTime", true)) {
-				
-				Log.i(TAG, "Bir daha burayi gormeyeceksin. Eger gorursen yanlis birsey var demektir.");
-				
-				int[] sizes = Utils.deviceSupportedScreenSize();
-				Preview.pictureWidth = sizes[0];
-				Preview.pictureHeight = sizes[1];
-				
-				SharedPreferences.Editor firsTimeEditor = firstTimeControlPref.edit();
-				firsTimeEditor.putBoolean("isThisFirstTime", false);
-				firsTimeEditor.apply();
-			}
-			
-			etUsername = (EditText) findViewById(R.id.etUsername);
-			etPassword = (EditText) findViewById(R.id.etPassword);
+            setContentView(R.layout.activity_login_page);
+            getActionBar().hide();
 
-			bLogin = (Button) findViewById(R.id.bLogin);
-			bLogin.setOnClickListener(loginButtonListener);
+            // klavye otomatik olarak cikmayacak.
+            getWindow().setSoftInputMode(
+                    WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-			pbLogin = (ProgressBar) findViewById(R.id.pbLogin);
-			faceButton = (LoginButton) findViewById(R.id.faceButton);
+            /*
+             * Bu blok, program cihaza yuklendikten sonra sadece 1 kere
+             * calisacak ve yeni sikayet ekleme ekraninda kullanacagimiz,
+             * cihazin hangi boyutta fotograf cekecegini (800x600, 1024x768 ...)
+             * belirleyen bilgileri bulacak.
+             */
+            firstTimeControlPref = getSharedPreferences("firstTimeController",
+                    MODE_PRIVATE);
+            if (firstTimeControlPref.getBoolean("isThisFirstTime", true)) {
 
-			loginPreferences = getSharedPreferences(sharedFileName,
-					MODE_PRIVATE);
-			if ((loginPreferences.getAll().size() != 0) && flag == false) {
-				flag = true;
-				if(!loginPreferences.getString("facebook_accessToken", "null").equals("null")) {
-					//facebook login
-					Log.d(TAG, "trying login with facebook");
-					
-					//burasi degisecek, facebook ile connection yazilinca iptal ediyorum burayi.
-					new LoginTask().execute("anil","123");
-				}
-				else { //normal login
-					Log.d(TAG, "trying login with username");
-					Log.d(TAG, loginPreferences.getString("username", ""));
-					Log.d(TAG, loginPreferences.getString("password", ""));
-					new LoginTask().execute(
-							loginPreferences.getString("username", ""),
-							loginPreferences.getString("password", ""));
-				}
-				
-				loginWithoutCurrentLocation();
-			}
+                Log.i(TAG,
+                        "Bir daha burayi gormeyeceksin. Eger gorursen yanlis birsey var demektir.");
 
-			faceButton.setOnErrorListener(new OnErrorListener() {
+                int[] sizes = Utils.deviceSupportedScreenSize();
+                Preview.pictureWidth = sizes[0];
+                Preview.pictureHeight = sizes[1];
 
-				@Override
-				public void onError(FacebookException error) {
-					Log.i(TAG, "Error " + error.getMessage());					
-				}
-			});
+                SharedPreferences.Editor firsTimeEditor = firstTimeControlPref
+                        .edit();
+                firsTimeEditor.putBoolean("isThisFirstTime", false);
+                firsTimeEditor.apply();
+            }
 
-			//facebook izinlerini set ediyoruz.
-			faceButton.setReadPermissions(Arrays.asList("basic_info", "email"));
+            etUsername = (EditText) findViewById(R.id.etUsername);
+            etPassword = (EditText) findViewById(R.id.etPassword);
 
-			faceButton.setSessionStatusCallback(new StatusCallback() {
+            bLogin = (Button) findViewById(R.id.bLogin);
+            bLogin.setOnClickListener(loginButtonListener);
 
-				@Override
-				public void call(Session session, SessionState state, Exception exception) {
+            pbLogin = (ProgressBar) findViewById(R.id.pbLogin);
+            faceButton = (LoginButton) findViewById(R.id.faceButton);
 
-					if (session.isOpened()) {
-						faceAccessToken = session.getAccessToken();
-						Log.i(TAG, "Access Token" + session.getAccessToken());
+            loginPreferences = getSharedPreferences(sharedFileName,
+                    MODE_PRIVATE);
+            if ((loginPreferences.getAll().size() != 0) && flag == false) {
+                flag = true;
+                if (!loginPreferences.getString("facebook_accessToken", "null")
+                        .equals("null")) {
+                    // facebook login
+                    Log.d(TAG, "trying login with facebook");
 
-						Request.executeMeRequestAsync(session, new GraphUserCallback() {
+                    // burasi degisecek, facebook ile connection yazilinca iptal
+                    // ediyorum burayi.
+                    new LoginTask().execute("enforce", "anil", "123");
+                } else { // normal login
+                    Log.d(TAG, "trying login with username");
+                    Log.d(TAG, loginPreferences.getString("username", ""));
+                    Log.d(TAG, loginPreferences.getString("password", ""));
+                    new LoginTask().execute("enforce",
+                            loginPreferences.getString("username", ""),
+                            loginPreferences.getString("password", ""));
+                }
 
-							@Override
-							public void onCompleted(GraphUser user, Response response) {
-								if (user != null) {
+                loginWithoutCurrentLocation();
+            }
 
-									SharedPreferences.Editor spEditor = loginPreferences.edit();
-									spEditor.putString("facebook_name", user.asMap().get("name").toString());
-									spEditor.putString("facebook_username", user.asMap().get("username").toString());
-									spEditor.putString("facebook_email", user.asMap().get("email").toString());
-									spEditor.putString("facebook_accessToken", faceAccessToken);
-									spEditor.apply();
+            faceButton.setOnErrorListener(new OnErrorListener() {
 
-									String userID = user.getId();
-									String name = user.asMap().get("name").toString();
-									String username = user.asMap().get("username").toString();
-									String email = user.asMap().get("email").toString();
+                @Override
+                public void onError(FacebookException error) {
+                    Log.i(TAG, "Error " + error.getMessage());
+                }
+            });
 
-									Log.i(TAG, userID + "," + name + "," + username + "," + email);
-									
-									loginFlag = true;
-//									loginWithoutCurrentLocation();
-									startIntent();
-								}
-							}
-						});
+            // facebook izinlerini set ediyoruz.
+            faceButton.setReadPermissions(Arrays.asList("basic_info", "email"));
 
-					}
+            faceButton.setSessionStatusCallback(new StatusCallback() {
 
-				}
-			});
-		}
-	}
+                @Override
+                public void call(Session session, SessionState state,
+                        Exception exception) {
 
-	OnClickListener loginButtonListener = new OnClickListener() {
-		public void onClick(View v) {
+                    if (session.isOpened()) {
+                        faceAccessToken = session.getAccessToken();
+                        Log.i(TAG, "Access Token" + session.getAccessToken());
 
-			if (etUsername.getText().toString().equals("")
-					|| etPassword.getText().toString().equals("")) {
-				Toast.makeText(getApplicationContext(),
-						"Missing content, please fill username field !",
-						Toast.LENGTH_SHORT).show();
-			} else {
+                        Request.executeMeRequestAsync(session,
+                                new GraphUserCallback() {
 
-				/* Share Share Share Preferences */
-				SharedPreferences.Editor preferencesEditor = loginPreferences
-						.edit();
-				preferencesEditor.putString("username", etUsername.getText()
-						.toString());
-				preferencesEditor.putString("password", etPassword.getText()
-						.toString());
-				preferencesEditor.apply();
-				/* Share Share Share Preferences */
+                                    @Override
+                                    public void onCompleted(GraphUser user,
+                                            Response response) {
+                                        if (user != null) {
 
-				// unique bir kullanici mi ?
+                                            SharedPreferences.Editor spEditor = loginPreferences
+                                                    .edit();
+                                            spEditor.putString("facebook_name",
+                                                    user.asMap().get("name")
+                                                            .toString());
+                                            spEditor.putString(
+                                                    "facebook_username",
+                                                    user.asMap()
+                                                            .get("username")
+                                                            .toString());
+                                            spEditor.putString(
+                                                    "facebook_email",
+                                                    user.asMap().get("email")
+                                                            .toString());
+                                            spEditor.putString(
+                                                    "facebook_accessToken",
+                                                    faceAccessToken);
+                                            spEditor.apply();
 
-				new LoginTask().execute(etUsername.getText().toString(),
-						etPassword.getText().toString());
-				
-				loginWithoutCurrentLocation();
-			}
-		}
-	};
+                                            String userID = user.getId();
+                                            String name = user.asMap()
+                                                    .get("name").toString();
+                                            String username = user.asMap()
+                                                    .get("username").toString();
+                                            String email = user.asMap()
+                                                    .get("email").toString();
 
-	@Override
-	protected void onStop() {
-		super.onStop();
-		
-		if (intentCreated) {		
-			myLocationHandler.removeCallbacks(locationRunnable);
-			locationRunnable = null;
-			myLocationHandler = null;
-			
-			lManager.removeUpdates(mlocListener);
-			lManager = null;
-			mlocListener = null;
-			
-			finish();
-		}
-		
-		Log.d(TAG, closeFlag + "");
-		
-		if (alertDialog != null)
-			alertDialog.dismiss();
-	}
-	
-	@Override
-	public void onBackPressed() {
-		Log.e(TAG, "in onBackPressed");
-		createAlert();		
-	}
+                                            Log.i(TAG, userID + "," + name
+                                                    + "," + username + ","
+                                                    + email);
 
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		super.onActivityResult(requestCode, resultCode, data);
-		Session.getActiveSession().onActivityResult(this, requestCode,
-				resultCode, data);
-	}
+                                            loginFlag = true;
+                                            // loginWithoutCurrentLocation();
+                                            startIntent();
+                                        }
+                                    }
+                                });
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.login_page, menu);
-		return true;
-	}
+                    }
 
-	class LoginPageLocationListener implements LocationListener {
+                }
+            });
+        }
+    }
 
-		@Override
-		public void onLocationChanged(Location loc) {
+    OnClickListener loginButtonListener = new OnClickListener() {
+        public void onClick(View v) {
 
-			latitude = loc.getLatitude();
-			longitude = loc.getLongitude();
+            if (etUsername.getText().toString().equals("")
+                    || etPassword.getText().toString().equals("")) {
+                Toast.makeText(getApplicationContext(),
+                        "Missing content, please fill username field !",
+                        Toast.LENGTH_SHORT).show();
+            } else {
 
-			locationFlag = true;
-			startIntent();
-		}
+                /* Share Share Share Preferences */
+                SharedPreferences.Editor preferencesEditor = loginPreferences
+                        .edit();
+                preferencesEditor.putString("username", etUsername.getText()
+                        .toString());
+                preferencesEditor.putString("password", etPassword.getText()
+                        .toString());
+                preferencesEditor.apply();
+                /* Share Share Share Preferences */
 
-		@Override
-		public void onProviderDisabled(String arg0) {
-		}
+                // unique bir kullanici mi ?
 
-		@Override
-		public void onProviderEnabled(String arg0) {
-		}
+                new LoginTask().execute("enforce", etUsername.getText()
+                        .toString(), etPassword.getText().toString());
 
-		@Override
-		public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-		}
+                loginWithoutCurrentLocation();
+            }
+        }
+    };
 
-	}
+    @Override
+    protected void onStop() {
+        super.onStop();
 
-	class LoginTask extends AsyncTask<String, String, String> {
+        if (intentCreated) {
+            myLocationHandler.removeCallbacks(locationRunnable);
+            locationRunnable = null;
+            myLocationHandler = null;
 
-		@Override
-		protected void onPreExecute() {
-			lockToComponents();
-		}
+            lManager.removeUpdates(mlocListener);
+            lManager = null;
+            mlocListener = null;
 
-		@Override
-		protected String doInBackground(String... arg0) {
-			String username = arg0[0];
-			String passwd = arg0[1];
+            finish();
+        }
 
-			Log.d(getClass().getName(), "username: " + username);
-			Log.d(getClass().getName(), "passwd: " + passwd);
+        Log.d(TAG, closeFlag + "");
 
-			Login newLogin = new Login(username, passwd);
-			try {
-				newLogin.makeRequest();
-			} catch (IOException e) {
-				Toast.makeText(
-						getApplicationContext(),
-						"You have no internet access, please open your network !",
-						Toast.LENGTH_SHORT).show();
-				Log.e(getClass().getName(), "IOException", e);
+        if (alertDialog != null)
+            alertDialog.dismiss();
+    }
 
-			} catch (LoginFailedException e) {
-				Toast.makeText(
-						getApplicationContext(),
-						"Your username or password is wrong, please check your information !",
-						Toast.LENGTH_SHORT).show();
-				Log.e(getClass().getName(), String.format(
-						"[Login Failed] username: %s, passwd: %s", username,
-						passwd), e);
-				Log.e(getClass().getName(), "Login olamadik!");
-			}
-			return null;
-		}
+    @Override
+    public void onBackPressed() {
+        Log.e(TAG, "in onBackPressed");
+        createAlert();
+    }
 
-		@Override
-		protected void onPostExecute(String result) {
-			loginFlag = true;
-			startIntent();
-		}
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Session.getActiveSession().onActivityResult(this, requestCode,
+                resultCode, data);
+    }
 
-	}
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.login_page, menu);
+        return true;
+    }
 
-	private boolean isNetworkAvailable() {
-		ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo activeNetworkInfo = connectivityManager
-				.getActiveNetworkInfo();
-		return activeNetworkInfo != null;
-	}
+    class LoginPageLocationListener implements LocationListener {
 
-	private void startIntent() {
-		Log.d(getClass().getName(), String.format("Location: %s, Login: %s",
-				locationFlag, loginFlag));
-		if (locationFlag == true && loginFlag == true) {
+        @Override
+        public void onLocationChanged(Location loc) {
 
-			intentCreated = true;
-			
-			//after login, we need to stop location listener
-			lManager.removeUpdates(mlocListener);
+            latitude = loc.getLatitude();
+            longitude = loc.getLongitude();
 
-			Intent i = new Intent(LoginPageActivity.this, MainActivity.class);
-			i.putExtra("latitude", latitude);
-			i.putExtra("longitude", longitude);
+            locationFlag = true;
+            startIntent();
+        }
 
-			startActivity(i);
+        @Override
+        public void onProviderDisabled(String arg0) {
+        }
 
-			loginFlag = false;
+        @Override
+        public void onProviderEnabled(String arg0) {
+        }
 
-		} 
-	}
+        @Override
+        public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
+        }
 
-	private void lockToComponents() {
-		etUsername.setVisibility(EditText.INVISIBLE);
-		etPassword.setVisibility(EditText.INVISIBLE);
-		bLogin.setVisibility(Button.INVISIBLE);
-		pbLogin.setVisibility(ProgressBar.VISIBLE);
-		faceButton.setVisibility(Button.INVISIBLE);
+    }
 
-	}	
-	
-	private void createAlert() {
-		
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle("Exit ?");
-		builder.setMessage("Do you really want to quit ?");
-		builder.setCancelable(true);
-		builder.setPositiveButton("OK", 
-				new DialogInterface.OnClickListener() {
+    class LoginTask extends AsyncTask<String, String, String> {
+
+        @Override
+        protected void onPreExecute() {
+            lockToComponents();
+        }
+
+        @Override
+        protected String doInBackground(String... arg0) {
+            String method = arg0[0];
+            String loginArg0 = arg0[1];
+            String loginArg1 = arg0[2];
+
+            Log.d(getClass().getName(), "username: " + loginArg0);
+            Log.d(getClass().getName(), "passwd: " + loginArg1);
+
+            Login newLogin;
+            if (method.equals("facebook"))
+                newLogin = new FacebookLogin(loginArg0, loginArg1);
+            else
+                newLogin = new EnforceLogin(loginArg0, loginArg1);
+
+            try {
+                newLogin.makeRequest();
+            } catch (IOException e) {
+                Toast.makeText(
+                        getApplicationContext(),
+                        "You have no internet access, please open your network !",
+                        Toast.LENGTH_SHORT).show();
+                Log.e(getClass().getName(), "IOException", e);
+
+            } catch (LoginFailedException e) {
+                Toast.makeText(
+                        getApplicationContext(),
+                        "Your username or password is wrong, please check your information !",
+                        Toast.LENGTH_SHORT).show();
+                Log.e(getClass().getName(), String.format(
+                        "[Login Failed] username: %s, passwd: %s", loginArg0,
+                        loginArg1), e);
+                Log.e(getClass().getName(), "Login olamadik!");
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            loginFlag = true;
+            startIntent();
+        }
+
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager
+                .getActiveNetworkInfo();
+        return activeNetworkInfo != null;
+    }
+
+    private void startIntent() {
+        Log.d(getClass().getName(), String.format("Location: %s, Login: %s",
+                locationFlag, loginFlag));
+        if (locationFlag == true && loginFlag == true) {
+
+            intentCreated = true;
+
+            // after login, we need to stop location listener
+            lManager.removeUpdates(mlocListener);
+
+            Intent i = new Intent(LoginPageActivity.this, MainActivity.class);
+            i.putExtra("latitude", latitude);
+            i.putExtra("longitude", longitude);
+
+            startActivity(i);
+
+            loginFlag = false;
+
+        }
+    }
+
+    private void lockToComponents() {
+        etUsername.setVisibility(EditText.INVISIBLE);
+        etPassword.setVisibility(EditText.INVISIBLE);
+        bLogin.setVisibility(Button.INVISIBLE);
+        pbLogin.setVisibility(ProgressBar.VISIBLE);
+        faceButton.setVisibility(Button.INVISIBLE);
+
+    }
+
+    private void createAlert() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Exit ?");
+        builder.setMessage("Do you really want to quit ?");
+        builder.setCancelable(true);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
 
                 try {
-                	closeFlag = true;
-					System.exit(0);
-				} catch (Throwable e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+                    closeFlag = true;
+                    System.exit(0);
+                } catch (Throwable e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
             }
         });
-		builder.setNegativeButton("Cancel", 
-				new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
+        builder.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
 
-                try {
-                	closeFlag = true;
-					dialog.dismiss();
-				} catch (Throwable e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+                        try {
+                            closeFlag = true;
+                            dialog.dismiss();
+                        } catch (Throwable e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void loginWithoutCurrentLocation() {
+
+        Log.i(TAG, "loginWithoutCurrentLocation is started");
+
+        myLocationHandler = new Handler();
+
+        locationRunnable = new Runnable() {
+
+            @Override
+            public void run() {
+                Location lastLocation = lManager
+                        .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+                latitude = lastLocation.getLatitude();
+                longitude = lastLocation.getLongitude();
+                locationFlag = true;
+                Toast.makeText(getApplicationContext(),
+                        "We couldn't get your current location!",
+                        Toast.LENGTH_SHORT).show();
+                startIntent();
             }
-        });
-		
-		alertDialog = builder.create();
-		alertDialog.show();
-	}
-	
-	private void loginWithoutCurrentLocation() {
-		
-		Log.i(TAG, "loginWithoutCurrentLocation is started");
-		
-		myLocationHandler = new Handler();
-		
-		locationRunnable = new Runnable() {
-			
-			@Override
-			public void run() {
-				Location lastLocation = lManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-				latitude = lastLocation.getLatitude();
-				longitude = lastLocation.getLongitude();
-				locationFlag = true;
-				Toast.makeText(getApplicationContext(), "We couldn't get your current location!", Toast.LENGTH_SHORT).show();
-				startIntent();			
-			}
-		};
-		
-		myLocationHandler.postDelayed(locationRunnable, 10000);
-	}
+        };
+
+        myLocationHandler.postDelayed(locationRunnable, 10000);
+    }
 }

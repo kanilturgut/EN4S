@@ -9,23 +9,26 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
-public class Login {
+public abstract class Login {
 
-    JSONObject loginInfo;
+    private final String loginInfo;
+    private final String url;
 
-    public Login(String username, String passwd) {
-        this.loginInfo = new JSONObject();
+    public Login(String url, String arg0name, String arg0, String arg1name,
+            String arg1) {
+        this.url = url;
+        JSONObject login = new JSONObject();
         try {
-            this.loginInfo.put("username", username);
-            this.loginInfo.put("password", passwd);
+            login.put(arg0name, arg0);
+            login.put(arg1name, arg1);
         } catch (JSONException e) {
             Log.e(getClass().getName(), "JSONException", e);
         }
+        this.loginInfo = login.toString();
     }
 
     public void makeRequest() throws IOException, LoginFailedException {
-        HttpResponse loginResponse = Requests.post(
-                "http://en4s.msimav.net/login", loginInfo.toString());
+        HttpResponse loginResponse = Requests.post(this.url, loginInfo);
         if (Requests.checkStatusCode(loginResponse, HttpStatus.SC_NOT_FOUND))
             throw new LoginFailedException();
     }
