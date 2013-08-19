@@ -41,6 +41,7 @@ import com.tobbetu.en4s.backend.EnforceLogin;
 import com.tobbetu.en4s.backend.FacebookLogin;
 import com.tobbetu.en4s.backend.Login;
 import com.tobbetu.en4s.backend.Login.LoginFailedException;
+import com.tobbetu.en4s.backend.User;
 import com.tobbetu.en4s.helpers.Preview;
 
 public class LoginPageActivity extends Activity {
@@ -50,6 +51,7 @@ public class LoginPageActivity extends Activity {
     private Button bLogin = null;
     private EditText etUsername, etPassword;
     private ProgressBar pbLogin = null;
+    private User me = null;
 
     private LoginButton faceButton = null;
     private String faceAccessToken = null;
@@ -142,10 +144,10 @@ public class LoginPageActivity extends Activity {
 
                     // burasi degisecek, facebook ile connection yazilinca iptal
                     // ediyorum burayi.
-					new LoginTask().execute("facebook", loginPreferences
-							.getString("facebook_email", "NONE"),
-							loginPreferences.getString("facebook_accessToken",
-									"NONE"));
+                    new LoginTask().execute("facebook", loginPreferences
+                            .getString("facebook_email", "NONE"),
+                            loginPreferences.getString("facebook_accessToken",
+                                    "NONE"));
                 } else { // normal login
                     Log.d(TAG, "trying login with username");
                     Log.d(TAG, loginPreferences.getString("username", ""));
@@ -218,13 +220,20 @@ public class LoginPageActivity extends Activity {
                                                     + "," + username + ","
                                                     + email);
 
-//                                            loginFlag = true;
-                                             
-                                            new LoginTask().execute("facebook", loginPreferences
-                        							.getString("facebook_email", "NONE"),
-                        							loginPreferences.getString("facebook_accessToken",
-                        									"NONE"));
-                                            
+                                            // loginFlag = true;
+
+                                            new LoginTask()
+                                                    .execute(
+                                                            "facebook",
+                                                            loginPreferences
+                                                                    .getString(
+                                                                            "facebook_email",
+                                                                            "NONE"),
+                                                            loginPreferences
+                                                                    .getString(
+                                                                            "facebook_accessToken",
+                                                                            "NONE"));
+
                                             loginWithoutCurrentLocation();
                                             startIntent();
                                         }
@@ -336,7 +345,7 @@ public class LoginPageActivity extends Activity {
 
     }
 
-    class LoginTask extends AsyncTask<String, String, String> {
+    class LoginTask extends AsyncTask<String, String, User> {
 
         @Override
         protected void onPreExecute() {
@@ -344,7 +353,7 @@ public class LoginPageActivity extends Activity {
         }
 
         @Override
-        protected String doInBackground(String... arg0) {
+        protected User doInBackground(String... arg0) {
             String method = arg0[0];
             String loginArg0 = arg0[1];
             String loginArg1 = arg0[2];
@@ -359,7 +368,7 @@ public class LoginPageActivity extends Activity {
                 newLogin = new EnforceLogin(loginArg0, loginArg1);
 
             try {
-                newLogin.makeRequest();
+                return newLogin.makeRequest();
             } catch (IOException e) {
                 Toast.makeText(
                         getApplicationContext(),
@@ -381,8 +390,9 @@ public class LoginPageActivity extends Activity {
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(User result) {
             loginFlag = true;
+            me = result;
             startIntent();
         }
 
@@ -408,6 +418,7 @@ public class LoginPageActivity extends Activity {
             Intent i = new Intent(LoginPageActivity.this, MainActivity.class);
             i.putExtra("latitude", latitude);
             i.putExtra("longitude", longitude);
+            i.putExtra("user", me);
 
             startActivity(i);
 
