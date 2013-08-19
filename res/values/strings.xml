@@ -43,7 +43,7 @@
     
     <!-- Onur un yazdiklari -->
     <string name="login_logo">Login Logo</string>
-    <string name="hint_login_username">Kullanıcı Adı</string>
+    <string name="hint_login_username">Email</string>
     <string name="hint_login_password">Şifre</string>
     <string name="login_sign_in">GİRİŞ</string>
     <string name="bug_list_item_title">Problemin Başlığı</string>

@@ -27,10 +27,18 @@ public abstract class Login {
         this.loginInfo = login.toString();
     }
 
-    public void makeRequest() throws IOException, LoginFailedException {
+    public User makeRequest() throws IOException, LoginFailedException {
         HttpResponse loginResponse = Requests.post(this.url, loginInfo);
         if (Requests.checkStatusCode(loginResponse, HttpStatus.SC_NOT_FOUND))
             throw new LoginFailedException();
+        if (Requests.checkStatusCode(loginResponse, HttpStatus.SC_OK)) {
+            String response = Requests.readResponse(loginResponse);
+            return User.fromJSON(response);
+        } else {
+            // Don't know what happened but whatever happened, it must be very
+            // very bad
+            throw new LoginFailedException();
+        }
     }
 
     public class LoginFailedException extends Exception {
