@@ -139,7 +139,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 		tvComplaintTitle.setText(comp.getTitle());
 		tvComplaintCategory.setText(comp.getCategory());
 
-		tvReporter.setText(comp.getReporter());
+		tvReporter.setText(comp.getReporter().getName());
 		tvReporterDate.setText(comp.getDateAsString());
 
 		//		String sporDallari[] = {"Basketbol", "Futbol", "Tenis", "Voleybol",

@@ -31,7 +31,7 @@ public class Complaint implements Serializable {
     private String id;
     private String title;
     private Date date;
-    private String reporter;
+    private User reporter;
     private String category;
     private int upVote;
     private int downVote;
@@ -129,11 +129,11 @@ public class Complaint implements Serializable {
         this.date = date;
     }
 
-    public String getReporter() {
+    public User getReporter() {
         return reporter;
     }
 
-    public void setReporter(String reporter) {
+    public void setReporter(User reporter) {
         this.reporter = reporter;
     }
 
@@ -270,7 +270,7 @@ public class Complaint implements Serializable {
 
         obj.setId(elem.optString("_id"));
         obj.setTitle(elem.optString("title"));
-        obj.setReporter(elem.optString("user"));
+        obj.setReporter(User.fromJSON(elem.optJSONObject("user")));
         obj.setCategory(elem.optString("category"));
         obj.setUpVote(elem.optInt("upvote_count", 0));
         obj.setDownVote(elem.optInt("downvote_count", 0));
