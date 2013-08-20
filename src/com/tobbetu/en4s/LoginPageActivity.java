@@ -42,7 +42,6 @@ import com.tobbetu.en4s.backend.FacebookLogin;
 import com.tobbetu.en4s.backend.Login;
 import com.tobbetu.en4s.backend.Login.LoginFailedException;
 import com.tobbetu.en4s.backend.User;
-import com.tobbetu.en4s.helpers.Preview;
 
 public class LoginPageActivity extends Activity {
 
@@ -58,7 +57,7 @@ public class LoginPageActivity extends Activity {
 
     private String sharedFileName = "loginInfo";
     protected static SharedPreferences loginPreferences;
-    protected static SharedPreferences firstTimeControlPref;
+    public static SharedPreferences firstTimeControlPref;
 
     private LocationManager lManager = null;
     private LocationListener mlocListener = null;
@@ -115,13 +114,14 @@ public class LoginPageActivity extends Activity {
                         "Bir daha burayi gormeyeceksin. Eger gorursen yanlis birsey var demektir.");
 
                 int[] sizes = Utils.deviceSupportedScreenSize();
-                Preview.pictureWidth = sizes[0];
-                Preview.pictureHeight = sizes[1];
 
-                SharedPreferences.Editor firsTimeEditor = firstTimeControlPref
+                SharedPreferences.Editor firstTimeEditor = firstTimeControlPref
                         .edit();
-                firsTimeEditor.putBoolean("isThisFirstTime", false);
-                firsTimeEditor.apply();
+                firstTimeEditor.putBoolean("isThisFirstTime", false);
+                firstTimeEditor.putInt("deviceWidth", sizes[0]);
+                firstTimeEditor.putInt("deviceHeight", sizes[1]);
+                
+                firstTimeEditor.apply();
             }
 
             etUsername = (EditText) findViewById(R.id.etUsername);

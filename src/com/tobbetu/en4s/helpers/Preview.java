@@ -2,6 +2,8 @@ package com.tobbetu.en4s.helpers;
 
 import java.io.IOException;
 
+import com.tobbetu.en4s.LoginPageActivity;
+
 import android.content.Context;
 import android.hardware.Camera;
 import android.util.Log;
@@ -24,6 +26,9 @@ public class Preview extends SurfaceView implements SurfaceHolder.Callback {
 		mHolder.addCallback(this);
 		mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
+		pictureWidth = LoginPageActivity.firstTimeControlPref.getInt("deviceWidth", 0);
+		pictureHeight = LoginPageActivity.firstTimeControlPref.getInt("deviceHeight", 0);
+		
 		Log.i("Preview", "Constructor");
 	}
 
