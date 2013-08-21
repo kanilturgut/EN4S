@@ -28,7 +28,6 @@
                 android:layout_height="40dp"
                 android:background="#FFFFFF"
                 android:hint="@string/new_item_title"
-                android:inputType="textMultiLine"
                 android:paddingLeft="15dp"
                 android:textColor="#222222"
                 android:textSize="12sp" >
@@ -39,6 +38,7 @@
             android:id="@+id/categoryLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
             android:layout_marginTop="10dp"
             android:orientation="horizontal" >
 
@@ -103,8 +103,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:gravity="center"
                 android:background="@drawable/improve_location_button_style"
+                android:gravity="center"
                 android:text="@string/clickMapInfo"
                 android:textColor="#0000FF"
                 android:textSize="13sp" />
