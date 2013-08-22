@@ -116,6 +116,9 @@ public class DetailsActivity extends Activity implements OnClickListener {
 		compPos = new LatLng(comp.getLatitude(), comp.getLongitude());
 		myPosition = new LatLng(getIntent().getDoubleExtra(
 				"latitude", 0), getIntent().getDoubleExtra("longitude", 0));
+		Log.i(TAG, "calisti");
+		Log.d(TAG, "latitude = " + getIntent().getDoubleExtra("latitude", 0));
+		Log.d(TAG, "longitude = " + getIntent().getDoubleExtra("longitude", 0));
 		if (!Utils.isNear(myPosition, compPos)) {
 			bUpVote.setVisibility(View.GONE);
 			bDownVote.setVisibility(View.GONE);
@@ -297,8 +300,8 @@ public class DetailsActivity extends Activity implements OnClickListener {
 			toMoreCommentActivity = true;			
 			Intent i = new Intent(this, MoreCommentsActivity.class);
 			i.putExtra("class", comp);
-			i.putExtra("latitude", comp.getLatitude());
-			i.putExtra("longitude", comp.getLongitude());
+			i.putExtra("latitude", myPosition.latitude);
+			i.putExtra("longitude", myPosition.longitude);
 			// ayrica burada liste icerigini de intent icine yerlestirmeliyiz yada baska bir yontem
 			startActivity(i);
 		}
