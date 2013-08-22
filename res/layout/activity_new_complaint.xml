@@ -28,6 +28,8 @@
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="9"
+                android:inputType="text"
+                android:imeOptions="actionDone"
                 android:background="#FFFFFF"
                 android:hint="@string/new_item_title"
                 android:maxLength="100"
