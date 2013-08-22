@@ -4,7 +4,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -199,8 +201,9 @@ public class NewComplaint extends Activity implements OnClickListener {
 
 					@Override
 					public void onNothingSelected(AdapterView<?> arg0) {
-						category = "Disable Rights"; // default category
+						category = "Choose a category"; // default category
 						selectedCategoryIndex = 0;
+
 					}
 				});
 
@@ -257,7 +260,9 @@ public class NewComplaint extends Activity implements OnClickListener {
 			if (etComplaintTitle.getText().toString().equals(""))
 				Toast.makeText(getApplicationContext(),
 						"You have to fill title!", Toast.LENGTH_SHORT).show();
-			else {
+			else if (category.equals("Choose a category")) {
+				createAlertToChooseACategory();
+			} else {
 
 				progressDialog = ProgressDialog
 						.show(NewComplaint.this, "Loading",
@@ -364,6 +369,23 @@ public class NewComplaint extends Activity implements OnClickListener {
 		}
 	};
 
+	private void createAlertToChooseACategory() {
+	
+		AlertDialog.Builder alt_dlg_bld = new AlertDialog.Builder(this);
+		alt_dlg_bld.setTitle("Missing category");
+		alt_dlg_bld.setMessage("Please choose a category").setCancelable(true);
+		alt_dlg_bld.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+				dialog.dismiss();
+			}
+		});
+		
+		AlertDialog alt_bld = alt_dlg_bld.create();
+		alt_bld.show();
+		
+	}
 	private class SaveTask extends AsyncTask<String, String, String> {
 
 		@Override

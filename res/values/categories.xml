@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="categories">
+        <item>Choose a category</item>
         <item>Disability Rights</item>
         <item>Infrastructure</item>
         <item>Environment</item>
