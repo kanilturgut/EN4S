@@ -16,6 +16,8 @@ import android.hardware.Camera.PictureCallback;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
@@ -114,8 +116,23 @@ public class NewComplaint extends Activity implements OnClickListener {
 
 		latitude = getIntent().getDoubleExtra("user_lat", 0);
 		longitude = getIntent().getDoubleExtra("user_lng", 0);
-
+		
+		final TextView tvCount = (TextView) findViewById(R.id.tvWordCount);
 		etComplaintTitle = (EditText) findViewById(R.id.etNewComplaint);
+		etComplaintTitle.addTextChangedListener(new TextWatcher() {
+	
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {}			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {}
+			
+			@Override
+			public void afterTextChanged(Editable arg0) {
+				tvCount.setText(100 - etComplaintTitle.getText().length() + "");
+			}
+		});
+		
 		tvNewComplaintAdress = (TextView) findViewById(R.id.tvNewComplaintAdress);
 		ivTakenPhoto = (ImageView) findViewById(R.id.ivTakenPhoto);
 
