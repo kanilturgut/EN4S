@@ -17,9 +17,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.tobbetu.en4s.R;
 import com.tobbetu.en4s.Utils;
 import com.tobbetu.en4s.cache.Cache;
 import com.tobbetu.en4s.helpers.VoteRejectedException;
@@ -159,7 +161,7 @@ public class Complaint implements Serializable {
         return imageURLs.size();
     }
 
-    public String getDateAsString() {
+    public String getDateAsString(Context ctx) {
         // WARNING this is going to be fucking ugly
         long now = System.currentTimeMillis();
         long unixtime = this.date.getTime();
@@ -167,27 +169,32 @@ public class Complaint implements Serializable {
         if (now - unixtime < 0) {
             return "Just Now";
         } else if (now - 60 * 1000 < unixtime) { // in fucking min
-            return ((now - unixtime) / 1000) + " second ago";
+            return String.format(ctx.getString(R.string.comp_sec),
+                    ((now - unixtime) / 1000));
         } else if (now - 60 * 60 * 1000 < unixtime) { // fucking hour
-            return ((now - unixtime) / 60 / 1000) + " minutes ago";
+            return String.format(ctx.getString(R.string.comp_min),
+                    ((now - unixtime) / 60 / 1000));
         } else if (now - 24 * 60 * 60 * 1000 < unixtime) { // fucking day
-            return ((now - unixtime) / 60 / 60 / 1000) + " hours ago";
+            return String.format(ctx.getString(R.string.comp_hour),
+                    ((now - unixtime) / 60 / 60 / 1000));
         } else if (now - 7 * 24 * 60 * 60 * 1000 < unixtime) { // fucking week
-            return ((now - unixtime) / 24 / 60 / 60 / 1000) + " days ago";
+            return String.format(ctx.getString(R.string.comp_day),
+                    ((now - unixtime) / 24 / 60 / 60 / 1000));
         } else {
             return this.date.toString();
         }
     }
 
-    public String getDistance(double lat, double lon) {
+    public String getDistance(Context ctx, double lat, double lon) {
         float distance = Utils.calculateDistance(lat, lon, this.latitude,
                 this.longitude);
         if (distance < 0.0001) {
             return "Just Here!";
         } else if (distance < 10000) {
-            return String.format("%.0f meters", distance);
+            return String.format(ctx.getString(R.string.comp_meter), distance);
         } else {
-            return String.format("%.0f kilometers", distance / 1000);
+            return String.format(ctx.getString(R.string.comp_km),
+                    distance / 1000);
         }
     }
 

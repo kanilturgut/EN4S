@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="categories">
-        <item>Choose a category</item>
-        <item>Disability Rights</item>
-        <item>Infrastructure</item>
-        <item>Environment</item>
-        <item>Traffic</item>
+        <item>@string/cat_select</item>
+        <item>@string/cat_dr</item>
+        <item>@string/cat_inf</item>
+        <item>@string/cat_env</item>
+        <item>@string/cat_tra</item>
     </string-array>
 </resources>

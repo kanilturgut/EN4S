@@ -2,43 +2,42 @@
 <resources>
 
     <string name="app_name">Enforce</string>
-    <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="username">Username</string>
-    <string name="password">Password</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="action_settings">Ayarlar</string>
+    <string name="username">Kullanıcı Adı</string>
+    <string name="password">Şifre</string>
+    <string name="title_activity_main">Enforce</string>
     <string name="action_contact">Contact</string>
-    <string name="bugListTitle">Bug List Title</string>
-    <string name="cName">Complaint Title</string>
-    <string name="sendButton">Send Complaint</string>
-    <string name="cCategory">Complaint Category</string>
-    <string name="voteUp">Vote Up</string>
+    <string name="bugListTitle">Şikayetler</string>
+    <string name="cName">Şikayet</string>
+    <string name="sendButton">Şikayet Gönder</string>
+    <string name="cCategory">Şikayetin Kategorisi</string>
+    <string name="voteUp">Şikayeti Onayla</string>
     <string name="voteDown">Vote Down</string>
-    <string name="title_activity_new_complaint">NewComplaint</string>
-    <string name="photoDescription">Photo</string>
-    <string name="adressName">Complaint Address</string>
-    <string name="takePictureButton">Take a Pic</string>
-    <string name="etNewComplaint">Enter your complaint</string>
-    <string name="tvCategories">Pick a category</string>
-    <string name="loginButton">Login</string>
-    <string name="tvYouAreNotAllowed">Your not allowed to vote this complaint, because you are not close enough</string>
-    <string name="problem">What is the problem ?</string>
-    <string name="sendButton">Send It!</string>
-    <string name="newComplaintButton">New Complaint</string>
+    <string name="title_activity_new_complaint">Yeni Şikayet</string>
+    <string name="photoDescription">Fotoğraf</string>
+    <string name="adressName">Şikayetin Adresi</string>
+    <string name="takePictureButton">Fotoğraf Çek</string>
+    <string name="etNewComplaint">Şikayetinizi Girin</string>
+    <string name="tvCategories">Kategori Seçin</string>
+    <string name="loginButton">Giriş Yap</string>
+    <string name="tvYouAreNotAllowed">Yeterince yakın olmadığınız için bu şikayeti oylayamazsınız.</string>
+    <string name="problem">Şikayetiniz Nedir?</string>
+    <string name="sendButton">Gönder</string>
+    <string name="newComplaintButton">Yeni Şikayet</string>
     <string name="appNameUppercase">ENFORCE</string>
-    <string name="signIn">Sign In!</string>
-    <string name="likeButton">Approve</string>
-    <string name="dislikeButton">Disapprove</string>
+    <string name="signIn">Kayıt Ol</string>
+    <string name="likeButton">Şikayeti Onayla</string>
+    <string name="dislikeButton">Hatalı Bildiri</string>
     <string name="reporterName">Resporter Name</string>
     <string name="reportDate">Report Date</string>
     <string name="title_activity_bigger_map">Enforce</string>
-    <string name="biggerMapSendButton">Select</string>
-    <string name="biggerMapInfo">You can drag and drop the marker</string>
-    <string name="title_activity_more_comments">MoreCommentsActivity</string>
-    <string name="clickMapInfo">To improve location, click here!</string>
+    <string name="biggerMapSendButton">Yeni Konumu Kaydet</string>
+    <string name="biggerMapInfo">İmleci sürükleyip bırakabilirsiniz.</string>
+    <string name="title_activity_more_comments">Yorumlar</string>
+    <string name="clickMapInfo">Saptanan konum hatalıysa, hariyaya tıklayarak düzeltebilirsiniz</string>
     <string name="facebook_app_id">543199292406693</string>
-	<string name="facebook_share">Share on Facebook</string>
-	<string name="twitter_share">Share on Twitter</string>
+	<string name="facebook_share">Facebook\'ta Paylaş</string>
+	<string name="twitter_share">Twitter\'da Paylaş</string>
 	<string name="dummyNumber">10</string>
     
     <!-- Onur un yazdiklari -->
@@ -48,27 +47,71 @@
     <string name="login_sign_in">GİRİŞ</string>
     <string name="bug_list_item_title">Problemin Başlığı</string>
     <string name="bug_list_item_date">Problemin Tarihi</string>
-    <string name="bug_list_loading_image">Loading</string>
+    <string name="bug_list_loading_image">Yükleniyor</string>
     <string name="bug_list_up_image">Uygun</string>
     <string name="bug_list_down_image">Uygun Değil</string>
     <string name="bug_list_comment_image">Yorum</string>
     <string name="bug_list_more_image">Detaylar</string>
     <string name="detail_item_title">Problemin Başlığı</string>
     <string name="detail_item_category">Problemin Türü</string>
-    <string name="detail_loading_image">Loading</string>
+    <string name="detail_loading_image">Yükleniyor</string>
     <string name="detail_item_approve_button">ONAYLA</string>
     <string name="detail_item_report_button">RAPOR</string>
-    <string name="detail_item_user_photo">User Photo</string>
+    <string name="detail_item_user_photo">Kullanıcının Fotoğrafı</string>
     <string name="detail_item_user_name">Kullanıcı Adı</string>
     <string name="detail_item_user_creation_date">Problem Tarihi</string>
     <string name="detail_item_address">Problemin Bulunduğu Konum</string>
-    <string name="detail_item_comment">Kullanıcının Problem Hakkında Yaptığı Yorum</string>
+    <string name="detail_item_comment">Kullanıcıların Problem Hakkında Yaptığı Yorumlar</string>
     <string name="detail_item_comment_user">Yorum Yapan Kullanıcı</string>
-    <string name="detail_item_all_commments_button">Tüm Yorumları Görüntüle (Sayı)</string>
+    <string name="detail_item_all_commments_button">Tüm Yorumları Görüntüle (%d)</string>
     <string name="new_item_title">Problemin Başlığı</string>
     <string name="new_item_take_photo_button">Fotoğraf Çekme Butonu</string>
     <string name="new_item_taken_photo">Kullanıcının Çektiği Fotoğraf</string>
     <string name="new_item_address">Problemin Bulunduğu Konum</string>
     <string name="new_item_send_button">GÖNDER</string>
+
+    <!--
+    <string name="title_hot">Ateşli :)</string>
+    <string name="title_new">Yeni</string>
+    <string name="title_near">Yakın</string>
+    <string name="title_top">Çok Oy Alan</string>
+     -->
+
+    <string name="title_hot">GÜNCEL</string>
+    <string name="title_new">YENİ</string>
+    <string name="title_near">YAKIN</string>
+    <string name="title_top">POPÜLER</string>
+
+    <!-- Kategoriler -->
+    <string name="cat_select">Kategori Seçin</string>
+    <string name="cat_dr">Engelli Hakları</string>
+    <string name="cat_inf">Altyapı</string>
+    <string name="cat_env">Çevre</string>
+    <string name="cat_tra">Trafik</string>
+
+    <!-- Main Activity -->
+    <string name="ma_quit_title">Çıkış</string>
+    <string name="ma_quit_msg">Programı kapatmak istiyor musunuz?</string>
+    <string name="ma_quit_ok">Evet</string>
+    <string name="ma_quit_cancel">Hayır</string>
+
+    <!-- New Complaint -->
+    <string name="nc_cat_missing_title">Kategori Seçmediniz</string>
+    <string name="nc_cat_missing_msg">Lütfen bir kategori seçin.</string>
+    <string name="nc_cat_missing_ok">Tamam</string>
+
+    <!-- Complaint -->
+    <string name="comp_sec">%d saniye önce</string>
+    <string name="comp_min">%d dakika önce</string>
+    <string name="comp_hour">%d saat önce</string>
+    <string name="comp_day">%d gün önce</string>
+    <string name="comp_meter">%.0f metre</string>
+    <string name="comp_km">%.0f kilometre</string>
+
+    <!-- BugListAdapter -->
+    <string name="bla_hot"></string>
+    <string name="bla_new"></string>
+    <string name="bla_near"></string>
+    <string name="bla_top">%d kez beğenildi</string>
 
 </resources>

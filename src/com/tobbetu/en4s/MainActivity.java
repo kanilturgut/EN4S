@@ -98,22 +98,23 @@ public class MainActivity extends FragmentActivity {
     private void createAlert() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Exit ?");
-        builder.setMessage("Do you really want to quit ?");
+        builder.setTitle(R.string.ma_quit_title);
+        builder.setMessage(R.string.ma_quit_msg);
         builder.setCancelable(true);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
+        builder.setPositiveButton(R.string.ma_quit_ok,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
 
-                try {
-                    closeFlag = true;
-                    System.exit(0);
-                } catch (Throwable e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        });
-        builder.setNegativeButton("Cancel",
+                        try {
+                            closeFlag = true;
+                            System.exit(0);
+                        } catch (Throwable e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
+                });
+        builder.setNegativeButton(R.string.ma_quit_cancel,
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
@@ -245,7 +246,9 @@ public class MainActivity extends FragmentActivity {
 
     public class MyPagerAdapter extends FragmentPagerAdapter {
 
-        private final String[] TITLES = { "Hot", "New", "Near", "Top" };
+        private final String[] TITLES = { getString(R.string.title_hot),
+                getString(R.string.title_new), getString(R.string.title_near),
+                getString(R.string.title_top) };
 
         public MyPagerAdapter(FragmentManager fm) {
             super(fm);
