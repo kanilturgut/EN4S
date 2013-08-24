@@ -44,6 +44,7 @@ public class Complaint implements Serializable {
     private String city;
     private List<String> imageURLs = null;
     private List<Image> images = new ArrayList<Image>();
+    private List<Comment> comments;
 
     public Complaint() {
     }
@@ -145,6 +146,10 @@ public class Complaint implements Serializable {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
     }
 
     public void setImages(List<String> images) {
@@ -291,6 +296,13 @@ public class Complaint implements Serializable {
             tmp.add(user);
         }
         obj.upvoters = tmp;
+
+        JSONArray comments = elem.optJSONArray("comments");
+        List<Comment> tmpCmt = new LinkedList<Comment>();
+        for (int i = 0; i < comments.length(); i++) {
+            tmpCmt.add(Comment.fromJSON(comments.optJSONObject(i)));
+        }
+        obj.comments = tmpCmt;
 
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
         try {

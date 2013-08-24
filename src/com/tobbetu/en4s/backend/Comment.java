@@ -25,7 +25,7 @@ import android.util.Log;
 public class Comment {
 
     private String id;
-    private String author;
+    private User author;
     private String text;
 
     private Date date;
@@ -44,11 +44,11 @@ public class Comment {
         this.id = id;
     }
 
-    public String getAuthor() {
+    public User getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(User author) {
         this.author = author;
     }
 
@@ -94,8 +94,8 @@ public class Comment {
         }
 
         try {
-            Comment response = fromJSON(new JSONObject(
-                    Requests.readResponse(post)));
+            Comment response = Comment.fromJSON(new JSONObject(Requests
+                    .readResponse(post)));
 
             this.id = response.id;
             this.author = response.author;
@@ -121,11 +121,11 @@ public class Comment {
         return obj.toString();
     }
 
-    private static Comment fromJSON(JSONObject elem) {
+    public static Comment fromJSON(JSONObject elem) {
         Comment obj = new Comment();
 
         obj.setId(elem.optString("_id"));
-        obj.setAuthor(elem.optString("author"));
+        obj.setAuthor(User.fromJSON(elem.optJSONObject("author")));
         obj.setText(elem.optString("author"));
         obj.setLike(elem.optInt("like"));
         obj.setDislike(elem.optInt("dislike"));
