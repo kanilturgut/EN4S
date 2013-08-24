@@ -152,6 +152,10 @@ public class Complaint implements Serializable {
         return comments;
     }
 
+    public int getCommentsCount() {
+        return this.comments.size();
+    }
+
     public void setImages(List<String> images) {
         this.imageURLs = images;
     }
