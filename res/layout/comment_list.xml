@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical"
+	android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+
+    <ListView android:id="@+id/commentList"
+	    android:layout_width="wrap_content"
+	    android:layout_height="wrap_content" />
+    
+    <RelativeLayout android:id="@+id/newCommentLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#DDDDDD"
+        android:layout_alignParentBottom="true"
+        android:paddingBottom="10dp" >
+        
+        <EditText
+            android:id="@+id/etCommentListNew"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="10dp"
+            android:layout_toLeftOf="@+id/bCommentPush"
+            android:background="#FFFFFF"
+            android:hint="Yorum"
+            android:padding="5dp" />
+
+        <Button
+            android:id="@+id/bCommentPush"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/etCommentListNew"
+            android:background="@drawable/send_button_style"
+            android:text="@string/new_item_send_button"
+            android:textColor="#FFFFFF"
+            android:textSize="10sp"
+            android:layout_marginRight="10dp"
+            android:textStyle="bold" />
+        
+    </RelativeLayout>
+    
+</RelativeLayout>

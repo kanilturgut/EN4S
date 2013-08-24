@@ -297,12 +297,12 @@ public class Complaint implements Serializable {
         }
         obj.upvoters = tmp;
 
-        JSONArray comments = elem.optJSONArray("comments");
-        List<Comment> tmpCmt = new LinkedList<Comment>();
-        for (int i = 0; i < comments.length(); i++) {
-            tmpCmt.add(Comment.fromJSON(comments.optJSONObject(i)));
-        }
-        obj.comments = tmpCmt;
+//        JSONArray comments = elem.optJSONArray("comments");
+//        List<Comment> tmpCmt = new LinkedList<Comment>();
+//        for (int i = 0; i < comments.length(); i++) {
+//            tmpCmt.add(Comment.fromJSON(comments.optJSONObject(i)));
+//        }
+//        obj.comments = tmpCmt;
 
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
         try {

@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#262626">
+    android:background="#262626" >
 
     <RelativeLayout
         android:id="@+id/titleLayout"
@@ -54,21 +54,41 @@
             android:textColor="#000000" >
         </EditText>
 
-        <Button
-            android:id="@+id/bLogin"
+        <LinearLayout
+            android:id="@+id/llLoginAndRegister"
             android:layout_width="fill_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/etPassword"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/login_button_style"
-            android:text="@string/login_sign_in"
-            android:textColor="#FFFFFF" />
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/bLogin"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginRight="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/login_button_style"
+                android:text="@string/login_sign_in"
+                android:textColor="#FFFFFF" />
+
+            <Button
+                android:id="@+id/bRegister"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="5dp"
+                android:layout_weight="1"
+                android:background="@drawable/report_button_style"
+                android:text="@string/signIn"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
 
         <com.facebook.widget.LoginButton
             android:id="@+id/faceButton"
             android:layout_width="fill_parent"
             android:layout_height="40dp"
-            android:layout_below="@+id/bLogin"
+            android:layout_below="@+id/llLoginAndRegister"
             android:layout_marginTop="15dp" />
 
         <ProgressBar

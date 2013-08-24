@@ -36,6 +36,7 @@ import android.widget.FrameLayout.LayoutParams;
 import android.widget.ListView;
 
 import com.tobbetu.en4s.backend.Complaint;
+import com.tobbetu.en4s.backend.User;
 import com.tobbetu.en4s.helpers.ContentProviderFunction;
 
 public class TabCreator extends Fragment {
@@ -44,6 +45,7 @@ public class TabCreator extends Fragment {
     private ListView bugList = null;
     private int position;
     private String TAG = "TabCreator";
+    private User me = null;
 
     private double latitude = 0;
     private double longitude = 0;
@@ -62,6 +64,7 @@ public class TabCreator extends Fragment {
 
         latitude = getActivity().getIntent().getDoubleExtra("latitude", 0);
         longitude = getActivity().getIntent().getDoubleExtra("longitude", 0);
+        me = (User) getActivity().getIntent().getSerializableExtra("user");
 
         Log.d(TAG, "latitude : " + latitude + ", longitude : " + longitude);
 
@@ -198,7 +201,7 @@ public class TabCreator extends Fragment {
         protected void onPostExecute(List<Complaint> result) {
             super.onPostExecute(result);
             bugList.setAdapter(new BugListAdapter(activity, result, position,
-                    latitude, longitude));
+                    latitude, longitude, me));
         }
 
     }

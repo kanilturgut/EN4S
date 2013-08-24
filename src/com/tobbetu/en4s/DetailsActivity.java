@@ -119,14 +119,16 @@ public class DetailsActivity extends Activity implements OnClickListener {
         Log.i(TAG, "calisti");
         Log.d(TAG, "latitude = " + getIntent().getDoubleExtra("latitude", 0));
         Log.d(TAG, "longitude = " + getIntent().getDoubleExtra("longitude", 0));
-        if (!Utils.isNear(myPosition, compPos)) { // TODO if not already voted
-            bUpVote.setVisibility(View.GONE);
-            bDownVote.setVisibility(View.GONE);
-
-            tvYouAreNotAllowed = (TextView) findViewById(R.id.tvYouAreNotAllowed);
-            tvYouAreNotAllowed.setVisibility(View.VISIBLE);
-
-        }
+        
+        //burayi silmeyin ilerde tekrar aktif hale getireceðim.
+//        if (!Utils.isNear(myPosition, compPos)) { // TODO if not already voted
+//            bUpVote.setVisibility(View.GONE);
+//            bDownVote.setVisibility(View.GONE);
+//
+//            tvYouAreNotAllowed = (TextView) findViewById(R.id.tvYouAreNotAllowed);
+//            tvYouAreNotAllowed.setVisibility(View.VISIBLE);
+//
+//        }
 
         // mViewPager = new HackyViewPager(this);
         // viewPagerLayout.addView(mViewPager);
@@ -310,7 +312,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
             new DownVoteTask().execute();
             // Toast.makeText(getApplicationContext(), "It does nothing",
             // Toast.LENGTH_SHORT).show();
-        } else { // bMoreComment
+        } else if(v.getId() == R.id.bMoreComment){ // bMoreComment
             toMoreCommentActivity = true;
             Intent i = new Intent(this, MoreCommentsActivity.class);
             i.putExtra("class", comp);

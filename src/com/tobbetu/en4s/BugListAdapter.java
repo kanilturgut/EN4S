@@ -4,16 +4,20 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.webkit.WebView.FindListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tobbetu.en4s.backend.Complaint;
 import com.tobbetu.en4s.backend.Image;
+import com.tobbetu.en4s.backend.User;
 
 public class BugListAdapter extends ArrayAdapter<Complaint> {
 
@@ -22,9 +26,12 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
     private int tabPosition;
     private double latitude;
     private double longitude;
+    private Complaint complaint;
+    private User user;
+    private ImageView ivUp;
 
     public BugListAdapter(Context context, List<Complaint> complaints, int pos,
-            double lat, double lon) {
+            double lat, double lon, User me) {
         // super(c, R.layout.bug_list_item, complaints);
         super(context, R.layout.bug_list_item, complaints);
 
@@ -33,6 +40,7 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
         this.tabPosition = pos;
         this.latitude = lat;
         this.longitude = lon;
+        this.user = me;
     }
 
     @SuppressLint("DefaultLocale")
@@ -63,7 +71,7 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
         // TextView tvAdditionalInfo = (TextView) rowView
         // .findViewById(R.id.tvAdditionalInfo);
 
-        Complaint complaint = complaints.get(position);
+        complaint = complaints.get(position);
         Log.e("Type -> ", complaint.getCategory());
         // if (complaint.getCategory().equals("Traffic")) {
         // problemImage.setImageResource(R.drawable.type1);
@@ -89,6 +97,12 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
         // complaintUpVote.setText(complaint.getUpVote());
         // complaintDownVote.setText(complaint.getDownVote());
 
+        ivUp = (ImageView) rowView.findViewById(R.id.ivUp);
+        if(complaint.alreadyUpVoted(user)) {
+        	ivUp.setImageResource(R.drawable.up_voted);
+        }
+        
+        
         // position
         if (tabPosition == 0) {
             tvAdditionalInfo.setText(R.string.bla_hot);
@@ -103,6 +117,16 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
                             complaint.getUpVote()));
         }
 
+//        ImageView ivComments = (ImageView) rowView.findViewById(R.id.ivComment);
+//        ivComments.setOnClickListener(new OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//	            Intent i = new Intent(context, MoreCommentsActivity.class);
+//	            i.putExtra("class", complaint);
+//	            context.startActivity(i);	            
+//			}
+//		});
+        
         // complaintVote.setText(complaints.get(position).getDate());
         // complaintAddress.setText(complaints.get(position).getAddress());
         // imageArrow.setImageResource(R.drawable.right_arrow);

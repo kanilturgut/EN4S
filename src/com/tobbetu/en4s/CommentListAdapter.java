@@ -17,7 +17,7 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
     private List<Comment> comments;
 
     public CommentListAdapter(Context context, List<Comment> comments) {
-        super(context, R.layout.custom_comment_layout, comments);
+        super(context, R.layout.comment_list_item, comments);
 
         this.context = context;
         this.comments = comments;
@@ -28,10 +28,10 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
 
         LayoutInflater myInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View myRowView = myInflater.inflate(R.layout.custom_comment_layout,
+        View myRowView = myInflater.inflate(R.layout.comment_list_item,
                 parent, false);
 
-        TextView tvComment = (TextView) myRowView.findViewById(R.id.tvComment);
+        TextView tvComment = (TextView) myRowView.findViewById(R.id.tvCommentListComment);
         TextView tvCommentUser = (TextView) myRowView
                 .findViewById(R.id.tvCommentUser);
 
@@ -46,5 +46,4 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
 
         return myRowView;
     }
-
 }

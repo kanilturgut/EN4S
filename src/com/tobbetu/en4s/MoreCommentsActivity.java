@@ -3,8 +3,11 @@ package com.tobbetu.en4s;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -12,17 +15,21 @@ import com.tobbetu.en4s.backend.Complaint;
 
 public class MoreCommentsActivity extends Activity {
 
+	private final String TAG = "MoreCommentActivity";
     Complaint complaint = null;
     LatLng userPosition = null;
     private ListView lvMoreComments;
+    private EditText etNewComment = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_more_comments);
+        setContentView(R.layout.comment_list);
 
         getActionBar().hide();
-
+        // klavye kendi kendine acilmayacak...Oh beeee :D
+        getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         /*
          * Detay sayfasina geri dondugumuz zaman bu bilgileri inten icine
          * yerlestirmeliyiz.
@@ -32,7 +39,7 @@ public class MoreCommentsActivity extends Activity {
                 getIntent().getDoubleExtra("longitude", 0));
 
         // Geri tusuna basinca gerceklesecek islemler
-        findViewById(R.id.bBackToDetail).setOnClickListener(
+        /*findViewById(R.id.bBackToDetail).setOnClickListener(
                 new OnClickListener() {
 
                     @Override
@@ -46,11 +53,12 @@ public class MoreCommentsActivity extends Activity {
                         startActivity(i);
 
                     }
-                });
+                });*/
 
-        lvMoreComments = (ListView) findViewById(R.id.lvCommentOnMoreComment);
+        lvMoreComments = (ListView) findViewById(R.id.commentList);
         lvMoreComments.setAdapter(new CommentListAdapter(this, complaint
                 .getComments()));
+
 
     }
 
@@ -70,5 +78,5 @@ public class MoreCommentsActivity extends Activity {
         // kill this activity
         finish();
     }
-
+    
 }

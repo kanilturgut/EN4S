@@ -32,7 +32,11 @@ public class Cache {
         if (cache.containsKey(url)) {
             Log.d(TAG, "Cache HIT: " + url);
             Image img = cache.get(url);
-            iv.setImageBitmap(img.getBmp());
+            try {
+            	iv.setImageBitmap(img.getBmp());
+            } catch (Exception e) {
+            	Log.e(TAG, "Cache den image okuma hatasi");
+            }
 //            iv.setImageBitmap(cropBitmapImage(img));
         } else {
             Log.d(TAG, "Cache MISS: " + url);

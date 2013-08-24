@@ -4,6 +4,7 @@
     <string name="app_name">Enforce</string>
     <string name="action_settings">Ayarlar</string>
     <string name="username">Kullanıcı Adı</string>
+    <string name="name_surname">Ad-Soyad</string>
     <string name="password">Şifre</string>
     <string name="title_activity_main">Enforce</string>
     <string name="action_contact">Contact</string>
@@ -25,7 +26,7 @@
     <string name="sendButton">Gönder</string>
     <string name="newComplaintButton">Yeni Şikayet</string>
     <string name="appNameUppercase">ENFORCE</string>
-    <string name="signIn">Kayıt Ol</string>
+    <string name="signIn">KAYIT OL</string>
     <string name="likeButton">Şikayeti Onayla</string>
     <string name="dislikeButton">Hatalı Bildiri</string>
     <string name="reporterName">Resporter Name</string>
@@ -34,12 +35,12 @@
     <string name="biggerMapSendButton">Yeni Konumu Kaydet</string>
     <string name="biggerMapInfo">İmleci sürükleyip bırakabilirsiniz.</string>
     <string name="title_activity_more_comments">Yorumlar</string>
-    <string name="clickMapInfo">Saptanan konum hatalıysa, hariyaya tıklayarak düzeltebilirsiniz</string>
+    <string name="clickMapInfo">Saptanan konum hatalıysa, buraya tıklayarak düzeltebilirsiniz</string>
     <string name="facebook_app_id">543199292406693</string>
-	<string name="facebook_share">Facebook\'ta Paylaş</string>
-	<string name="twitter_share">Twitter\'da Paylaş</string>
-	<string name="dummyNumber">10</string>
-    
+    <string name="facebook_share">Facebook\'ta Paylaş</string>
+    <string name="twitter_share">Twitter\'da Paylaş</string>
+    <string name="dummyNumber">10</string>
+
     <!-- Onur un yazdiklari -->
     <string name="login_logo">Login Logo</string>
     <string name="hint_login_username">Email</string>
@@ -74,8 +75,8 @@
     <string name="title_hot">Ateşli :)</string>
     <string name="title_new">Yeni</string>
     <string name="title_near">Yakın</string>
-    <string name="title_top">Çok Oy Alan</string>
-     -->
+    <string name="title_top">Çok Oy Alan</string>
+    -->
 
     <string name="title_hot">GÜNCEL</string>
     <string name="title_new">YENİ</string>
@@ -113,5 +114,7 @@
     <string name="bla_new"></string>
     <string name="bla_near"></string>
     <string name="bla_top">%d kez beğenildi</string>
+    <string name="title_activity_register_page">RegisterPageActivity</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>
