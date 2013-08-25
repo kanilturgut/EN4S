@@ -4,8 +4,8 @@
 	<color name="upGreen">#42A35A</color>
 	<color name="downRed">#CA3838</color>
 	
-	<color name="login_button">#7DB833</color>
-	<color name="login_button_stroke">#7DB833</color>
+	<color name="login_button">#CCCCCC</color>
+	<color name="login_button_stroke">#CCCCCC</color>
 	<color name="login_button_pressed">#8BC641</color>
 	<color name="login_button_pressed_stroke">#8BC641</color>
 	
@@ -30,4 +30,9 @@
    	<color name="send_button_pressed_stroke">#8BC641</color>
 
    	<color name="improve_location_button_pressed">#ebebeb</color>
+   	
+   	<color name="facebook_button">#47639E</color>
+    <color name="facebook_button_stroke">#47639E</color>
+    <color name="facebook_button_pressed">#5270BC</color>
+    <color name="facebook_button_pressed_stroke">#5270BC</color>
 </resources>

@@ -40,12 +40,13 @@
     <string name="facebook_share">Facebook\'ta Paylaş</string>
     <string name="twitter_share">Twitter\'da Paylaş</string>
     <string name="dummyNumber">10</string>
+    <string name="veya">VEYA</string>
 
     <!-- Onur un yazdiklari -->
     <string name="login_logo">Login Logo</string>
-    <string name="hint_login_username">Email</string>
+    <string name="hint_login_username">E-Posta</string>
     <string name="hint_login_password">Şifre</string>
-    <string name="login_sign_in">GİRİŞ</string>
+    <string name="login_sign_in">GİRİŞ YAP</string>
     <string name="bug_list_item_title">Problemin Başlığı</string>
     <string name="bug_list_item_date">Problemin Tarihi</string>
     <string name="bug_list_loading_image">Yükleniyor</string>

@@ -24,6 +24,7 @@ import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -48,7 +49,7 @@ public class LoginPageActivity extends Activity implements OnClickListener {
 	private String TAG = "LoginPageActivity";
 
 	private Button bLogin = null;
-	private Button bRegister = null;
+//	private Button bRegister = null;
 	private EditText etUsername, etPassword;
 	private ProgressBar pbLogin = null;
 	private User me = null;
@@ -58,7 +59,6 @@ public class LoginPageActivity extends Activity implements OnClickListener {
 
 	private String sharedFileName = "loginInfo";
 	protected static SharedPreferences loginPreferences;
-	public static SharedPreferences firstTimeControlPref;
 
 	private LocationManager lManager = null;
 	private LocationListener mlocListener = null;
@@ -72,7 +72,6 @@ public class LoginPageActivity extends Activity implements OnClickListener {
 	private boolean intentCreated = false;
 
 	private AlertDialog alertDialog = null;
-	private boolean closeFlag = false;
 
 	private Handler myLocationHandler = null;
 	private Runnable locationRunnable = null;
@@ -101,37 +100,14 @@ public class LoginPageActivity extends Activity implements OnClickListener {
 			getWindow().setSoftInputMode(
 					WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-			/*
-			 * Bu blok, program cihaza yuklendikten sonra sadece 1 kere
-			 * calisacak ve yeni sikayet ekleme ekraninda kullanacagimiz,
-			 * cihazin hangi boyutta fotograf cekecegini (800x600, 1024x768 ...)
-			 * belirleyen bilgileri bulacak.
-			 */
-			firstTimeControlPref = getSharedPreferences("firstTimeController",
-					MODE_PRIVATE);
-			if (firstTimeControlPref.getBoolean("isThisFirstTime", true)) {
-
-				Log.i(TAG,
-						"Bir daha burayi gormeyeceksin. Eger gorursen yanlis birsey var demektir.");
-
-				int[] sizes = Utils.deviceSupportedScreenSize();
-
-				SharedPreferences.Editor firstTimeEditor = firstTimeControlPref
-						.edit();
-				firstTimeEditor.putBoolean("isThisFirstTime", false);
-				firstTimeEditor.putInt("deviceWidth", sizes[0]);
-				firstTimeEditor.putInt("deviceHeight", sizes[1]);
-
-				firstTimeEditor.apply();
-			}
 
 			etUsername = (EditText) findViewById(R.id.etUsername);
 			etPassword = (EditText) findViewById(R.id.etPassword);
 
 			bLogin = (Button) findViewById(R.id.bLogin);
-			bRegister = (Button) findViewById(R.id.bRegister);
+//			bRegister = (Button) findViewById(R.id.bRegister);
 			bLogin.setOnClickListener(this);
-			bRegister.setOnClickListener(this);
+//			bRegister.setOnClickListener(this);
 
 			pbLogin = (ProgressBar) findViewById(R.id.pbLogin);
 			faceButton = (LoginButton) findViewById(R.id.faceButton);
@@ -277,9 +253,9 @@ public class LoginPageActivity extends Activity implements OnClickListener {
 
 				loginWithoutCurrentLocation();
 			}
-		} else if (arg0.getId() == R.id.bRegister) {
-			Intent i = new Intent(this, RegisterPageActivity.class);
-			startActivity(i);
+//		} else if (arg0.getId() == R.id.bRegister) {
+//			Intent i = new Intent(this, RegisterPageActivity.class);
+//			startActivity(i);
 		}
 
 	}
@@ -300,8 +276,6 @@ public class LoginPageActivity extends Activity implements OnClickListener {
 			finish();
 		}
 
-		Log.d(TAG, closeFlag + "");
-
 		if (alertDialog != null)
 			alertDialog.dismiss();
 	}
@@ -309,7 +283,11 @@ public class LoginPageActivity extends Activity implements OnClickListener {
 	@Override
 	public void onBackPressed() {
 		Log.e(TAG, "in onBackPressed");
-		createAlert();
+		
+		if(LauncherActivity.firstTimeControlPref.getBoolean("didLogIn", false))
+			createAlert();
+		else
+			super.onBackPressed();
 	}
 
 	@Override
@@ -384,10 +362,7 @@ public class LoginPageActivity extends Activity implements OnClickListener {
 				Log.e(getClass().getName(), "IOException", e);
 
 			} catch (LoginFailedException e) {
-				Toast.makeText(
-						getApplicationContext(),
-						"Your username or password is wrong, please check your information !",
-						Toast.LENGTH_SHORT).show();
+
 				Log.e(getClass().getName(), String.format(
 						"[Login Failed] username: %s, passwd: %s", loginArg0,
 						loginArg1), e);
@@ -418,6 +393,9 @@ public class LoginPageActivity extends Activity implements OnClickListener {
 		if (locationFlag == true && loginFlag == true) {
 
 			intentCreated = true;
+			SharedPreferences.Editor editor = LauncherActivity.firstTimeControlPref.edit();
+			editor.putBoolean("didLogIn", true);
+			editor.apply();
 
 			// after login, we need to stop location listener
 			lManager.removeUpdates(mlocListener);
@@ -435,10 +413,13 @@ public class LoginPageActivity extends Activity implements OnClickListener {
 	}
 
 	private void lockToComponents() {
+		
+		findViewById(R.id.userInfoLayout).setVisibility(LinearLayout.GONE);
+		findViewById(R.id.breakLayout).setVisibility(LinearLayout.GONE);
 		etUsername.setVisibility(EditText.INVISIBLE);
 		etPassword.setVisibility(EditText.INVISIBLE);
 		bLogin.setVisibility(Button.INVISIBLE);
-		bRegister.setVisibility(Button.INVISIBLE);
+//		bRegister.setVisibility(Button.INVISIBLE);
 		pbLogin.setVisibility(ProgressBar.VISIBLE);
 		faceButton.setVisibility(Button.INVISIBLE);
 
@@ -454,7 +435,6 @@ public class LoginPageActivity extends Activity implements OnClickListener {
 			public void onClick(DialogInterface dialog, int id) {
 
 				try {
-					closeFlag = true;
 					System.exit(0);
 				} catch (Throwable e) {
 					// TODO Auto-generated catch block
@@ -467,7 +447,6 @@ public class LoginPageActivity extends Activity implements OnClickListener {
 			public void onClick(DialogInterface dialog, int id) {
 
 				try {
-					closeFlag = true;
 					dialog.dismiss();
 				} catch (Throwable e) {
 					// TODO Auto-generated catch block

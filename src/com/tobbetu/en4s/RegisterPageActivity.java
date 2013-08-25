@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -22,12 +23,14 @@ public class RegisterPageActivity extends Activity {
 		setContentView(R.layout.activity_register_page);
 
 		getActionBar().hide();
+		getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
 		etRegisterName = (EditText) findViewById(R.id.etRegisterName);
 		etRegisterEmail = (EditText) findViewById(R.id.etRegisterEmail);
 		etRegisterPassword = (EditText) findViewById(R.id.etRegisterPassword);
 
-		findViewById(R.id.bRegisterSend).setOnClickListener(new OnClickListener() {
+		findViewById(R.id.bSignup).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
 				Toast.makeText(getApplicationContext(),
