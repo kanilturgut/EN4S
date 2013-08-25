@@ -24,7 +24,7 @@ public class RegisterPageActivity extends Activity {
 
 		getActionBar().hide();
 		getWindow().setSoftInputMode(
-                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
 		etRegisterName = (EditText) findViewById(R.id.etRegisterName);
 		etRegisterEmail = (EditText) findViewById(R.id.etRegisterEmail);
@@ -33,8 +33,7 @@ public class RegisterPageActivity extends Activity {
 		findViewById(R.id.bSignup).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View arg0) {
-				Toast.makeText(getApplicationContext(),
-						"Kayýt iþlemi yapýlacak", Toast.LENGTH_SHORT).show();
+				new RegisterTask().execute();
 			}
 		});
 	}
@@ -44,11 +43,13 @@ public class RegisterPageActivity extends Activity {
 		String name = etRegisterName.getText().toString();
 		String email = etRegisterEmail.getText().toString();
 		String password = etRegisterPassword.getText().toString();
-		
+
 		@Override
 		protected User doInBackground(String... arg0) {
 
-
+			// simdilik herhangi bir kod yazmadim. Gecici olarak login islemi
+			// yaptiriyorum.
+			// Tabiki sistem de olmayan bir kullanici olursa fail ediyor.
 
 			return null;
 		}
@@ -56,21 +57,26 @@ public class RegisterPageActivity extends Activity {
 		@Override
 		protected void onPostExecute(User result) {
 
-			SharedPreferences.Editor editor = LoginPageActivity.loginPreferences
-					.edit();
+			// to give permission to kill LauncherActivity
+			LauncherActivity.shouldKillThisActivity = true;
+
+			SharedPreferences sp = getSharedPreferences("loginInfo",
+					MODE_PRIVATE);
+			SharedPreferences.Editor editor = sp.edit();
 			editor.putString("username", email);
 			editor.putString("password", password);
 			editor.apply();
-			
-			Intent i = new Intent(RegisterPageActivity.this, LoginPageActivity.class);
+
+			Intent i = new Intent(RegisterPageActivity.this,
+					LoginPageActivity.class);
 			startActivity(i);
 		}
 	}
-	
+
 	@Override
 	protected void onStop() {
 		super.onStop();
-		
+
 		finish();
 	}
 }

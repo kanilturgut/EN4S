@@ -24,6 +24,8 @@ public class LauncherActivity extends Activity implements OnClickListener {
 	public static SharedPreferences firstTimeControlPref;
 	private AlertDialog alertDialog = null;
 
+	protected static boolean shouldKillThisActivity = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -31,15 +33,15 @@ public class LauncherActivity extends Activity implements OnClickListener {
 		getActionBar().hide();
 
 		/*
-		 * Bu blok, program cihaza yuklendikten sonra sadece 1 kere
-		 * calisacak ve yeni sikayet ekleme ekraninda kullanacagimiz,
-		 * cihazin hangi boyutta fotograf cekecegini (800x600, 1024x768 ...)
-		 * belirleyen bilgileri bulacak.
+		 * Bu blok, program cihaza yuklendikten sonra sadece 1 kere calisacak ve
+		 * yeni sikayet ekleme ekraninda kullanacagimiz, cihazin hangi boyutta
+		 * fotograf cekecegini (800x600, 1024x768 ...) belirleyen bilgileri
+		 * bulacak.
 		 */
 		firstTimeControlPref = getSharedPreferences("firstTimeController",
 				MODE_PRIVATE);
-		if (firstTimeControlPref.getBoolean("isThisFirstTime", true) && 
-				!firstTimeControlPref.getBoolean("didLogIn", false)) {
+		if (firstTimeControlPref.getBoolean("isThisFirstTime", true)
+				|| !firstTimeControlPref.getBoolean("didLogIn", false)) {
 
 			Log.i(TAG,
 					"Bir daha burayi gormeyeceksin. Eger gorursen yanlis birsey var demektir.");
@@ -53,8 +55,7 @@ public class LauncherActivity extends Activity implements OnClickListener {
 			firstTimeEditor.putInt("deviceHeight", sizes[1]);
 
 			firstTimeEditor.apply();
-			
-			
+
 			mViewPager = new HackyViewPager(this);
 			infoLayout = (LinearLayout) findViewById(R.id.enforceInfoImageLayout);
 			infoLayout.addView(mViewPager);
@@ -86,15 +87,18 @@ public class LauncherActivity extends Activity implements OnClickListener {
 	public void onBackPressed() {
 		createAlert();
 	}
-	
+
 	@Override
 	protected void onStop() {
 		super.onStop();
-		
+
+//		if (shouldKillThisActivity)
+		finish();
+
 		if (alertDialog != null)
 			alertDialog.dismiss();
 	}
-	
+
 	static class SamplePagerAdapter extends PagerAdapter {
 
 		private static int[] sDrawables = { R.drawable.logo,
@@ -127,7 +131,7 @@ public class LauncherActivity extends Activity implements OnClickListener {
 			return view == object;
 		}
 	}
-	
+
 	private void createAlert() {
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -147,16 +151,16 @@ public class LauncherActivity extends Activity implements OnClickListener {
 		});
 		builder.setNegativeButton("Cancel",
 				new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
+					public void onClick(DialogInterface dialog, int id) {
 
-				try {
-					dialog.dismiss();
-				} catch (Throwable e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		});
+						try {
+							dialog.dismiss();
+						} catch (Throwable e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				});
 
 		alertDialog = builder.create();
 		alertDialog.show();

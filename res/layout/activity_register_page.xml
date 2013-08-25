@@ -17,12 +17,12 @@
             android:id="@+id/loginLogo"
             android:layout_width="110dp"
             android:layout_height="100dp"
-            android:contentDescription="@string/photoDescription"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_margin="15dp"
             android:layout_marginTop="15dp"
-            android:background="@drawable/logo" />
+            android:background="@drawable/logo"
+            android:contentDescription="@string/photoDescription" />
 
         <TextView
             android:id="@+id/appTitle"
@@ -97,6 +97,8 @@
                 android:background="#FFFFFF"
                 android:drawableLeft="@drawable/user_icon"
                 android:hint="@string/name_surname"
+                android:imeOptions="actionDone"
+                android:inputType="text"
                 android:padding="10dp" />
 
             <View
@@ -111,6 +113,7 @@
                 android:background="#FFFFFF"
                 android:drawableLeft="@drawable/email_icon"
                 android:hint="@string/hint_login_username"
+                android:imeOptions="actionDone"
                 android:inputType="textEmailAddress"
                 android:padding="10dp" />
 
@@ -124,9 +127,10 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:background="#FFFFFF"
-                android:inputType="textPassword"
                 android:drawableLeft="@drawable/lock_icon"
                 android:hint="@string/hint_login_password"
+                android:imeOptions="actionDone"
+                android:inputType="textPassword"
                 android:padding="10dp" />
         </LinearLayout>
 
