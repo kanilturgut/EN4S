@@ -269,9 +269,9 @@ public class NewComplaint extends Activity implements OnClickListener {
                 createAlertToChooseACategory();
             } else {
 
-                progressDialog = ProgressDialog
-                        .show(NewComplaint.this, "Loading",
-                                "Your complaint is sending. Thank you for your patience");
+                progressDialog = ProgressDialog.show(NewComplaint.this,
+                        getString(R.string.nc_cat_loading),
+                        getString(R.string.nc_cat_sending));
 
                 newComplaint = new Complaint();
                 newComplaint.setTitle(etComplaintTitle.getText().toString());
