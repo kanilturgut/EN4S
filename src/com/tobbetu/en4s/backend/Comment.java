@@ -121,6 +121,15 @@ public class Comment {
         return obj.toString();
     }
 
+    public static Comment fromJSON(String json) {
+        try {
+            return Comment.fromJSON(new JSONObject(json));
+        } catch (JSONException e) {
+            Log.e("Comment", "JSONException on Comment.fromJSON", e);
+            return null;
+        }
+    }
+
     public static Comment fromJSON(JSONObject elem) {
         Comment obj = new Comment();
 

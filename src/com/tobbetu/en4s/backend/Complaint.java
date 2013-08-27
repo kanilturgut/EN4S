@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import com.tobbetu.en4s.R;
 import com.tobbetu.en4s.Utils;
 import com.tobbetu.en4s.cache.Cache;
+import com.tobbetu.en4s.helpers.CommentRejectedException;
 import com.tobbetu.en4s.helpers.VoteRejectedException;
 
 public class Complaint implements Serializable {
@@ -260,6 +261,31 @@ public class Complaint implements Serializable {
             Log.e(getClass().getName(), "Downvote Rejected");
             // TODO throw new Exception("Upvote Rejected");
         }
+    }
+
+    public void comment(String text) throws IOException,
+            CommentRejectedException {
+        JSONObject comment = new JSONObject();
+        try {
+            comment.put("text", text);
+        } catch (JSONException e) {
+            Log.d("Complaint", "JSONException on comment", e);
+        }
+        HttpResponse put = Requests.put(
+                String.format("http://en4s.msimav.net/comment/%s", this.id),
+                comment.toString());
+
+        if (Requests.checkStatusCode(put, HttpStatus.SC_NOT_ACCEPTABLE)) {
+            Log.e(getClass().getName(), "Comment Rejected");
+            throw new CommentRejectedException("Comment Rejected");
+        } else if (Requests.checkStatusCode(put, HttpStatus.SC_NOT_FOUND)) {
+            Log.e(getClass().getName(),
+                    "Comment Rejected because complaint id is wrong");
+            throw new CommentRejectedException("There is no such complaint");
+        }
+
+        // comment successful
+        this.comments.add(Comment.fromJSON(Requests.readResponse(put)));
     }
 
     public String toJSON() {
