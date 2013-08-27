@@ -13,6 +13,11 @@ public abstract class Login {
 
     private final String loginInfo;
     private final String url;
+    private static User me;
+
+    public static User getMe() {
+        return me;
+    }
 
     public Login(String url, String arg0name, String arg0, String arg1name,
             String arg1) {
@@ -33,7 +38,8 @@ public abstract class Login {
             throw new LoginFailedException();
         if (Requests.checkStatusCode(loginResponse, HttpStatus.SC_OK)) {
             String response = Requests.readResponse(loginResponse);
-            return User.fromJSON(response);
+            me = User.fromJSON(response);
+            return me;
         } else {
             // Don't know what happened but whatever happened, it must be very
             // very bad

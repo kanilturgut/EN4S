@@ -55,6 +55,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.tobbetu.en4s.backend.Complaint;
 import com.tobbetu.en4s.backend.Image;
+import com.tobbetu.en4s.backend.Login;
 import com.tobbetu.en4s.backend.User;
 import com.tobbetu.en4s.helpers.CategoryI18n;
 import com.tobbetu.en4s.helpers.VoteRejectedException;
@@ -74,7 +75,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
     private GoogleMap myMap;
 
     private Complaint comp = null;
-    private User me = null;
+    private User me = Login.getMe();
     private LatLng compPos = null;
     LatLng myPosition = null;
 
@@ -95,7 +96,6 @@ public class DetailsActivity extends Activity implements OnClickListener {
         // getActionBar().hide();
 
         comp = (Complaint) getIntent().getSerializableExtra("class");
-        me = (User) getIntent().getSerializableExtra("user");
 
         // viewPagerLayout = (LinearLayout) findViewById(R.id.viewPagerLayout);
         ivProblemImage = (ImageView) findViewById(R.id.ivProblemImage);

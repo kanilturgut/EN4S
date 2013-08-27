@@ -4,19 +4,17 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.webkit.WebView.FindListener;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tobbetu.en4s.backend.Complaint;
 import com.tobbetu.en4s.backend.Image;
+import com.tobbetu.en4s.backend.Login;
 import com.tobbetu.en4s.backend.User;
 
 public class BugListAdapter extends ArrayAdapter<Complaint> {
@@ -27,11 +25,11 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
     private double latitude;
     private double longitude;
     private Complaint complaint;
-    private User user;
+    private User user = Login.getMe();
     private ImageView ivUp;
 
     public BugListAdapter(Context context, List<Complaint> complaints, int pos,
-            double lat, double lon, User me) {
+            double lat, double lon) {
         // super(c, R.layout.bug_list_item, complaints);
         super(context, R.layout.bug_list_item, complaints);
 
@@ -40,7 +38,6 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
         this.tabPosition = pos;
         this.latitude = lat;
         this.longitude = lon;
-        this.user = me;
     }
 
     @SuppressLint("DefaultLocale")
@@ -98,11 +95,10 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
         // complaintDownVote.setText(complaint.getDownVote());
 
         ivUp = (ImageView) rowView.findViewById(R.id.ivUp);
-        if(complaint.alreadyUpVoted(user)) {
-        	ivUp.setImageResource(R.drawable.up_voted);
+        if (complaint.alreadyUpVoted(user)) {
+            ivUp.setImageResource(R.drawable.up_voted);
         }
-        
-        
+
         // position
         if (tabPosition == 0) {
             tvAdditionalInfo.setText(R.string.bla_hot);
@@ -117,16 +113,17 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
                             complaint.getUpVote()));
         }
 
-//        ImageView ivComments = (ImageView) rowView.findViewById(R.id.ivComment);
-//        ivComments.setOnClickListener(new OnClickListener() {
-//			@Override
-//			public void onClick(View v) {
-//	            Intent i = new Intent(context, MoreCommentsActivity.class);
-//	            i.putExtra("class", complaint);
-//	            context.startActivity(i);	            
-//			}
-//		});
-        
+        // ImageView ivComments = (ImageView)
+        // rowView.findViewById(R.id.ivComment);
+        // ivComments.setOnClickListener(new OnClickListener() {
+        // @Override
+        // public void onClick(View v) {
+        // Intent i = new Intent(context, MoreCommentsActivity.class);
+        // i.putExtra("class", complaint);
+        // context.startActivity(i);
+        // }
+        // });
+
         // complaintVote.setText(complaints.get(position).getDate());
         // complaintAddress.setText(complaints.get(position).getAddress());
         // imageArrow.setImageResource(R.drawable.right_arrow);

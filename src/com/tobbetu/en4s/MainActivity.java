@@ -24,7 +24,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.astuetz.viewpager.extensions.PagerSlidingTabStrip;
-import com.tobbetu.en4s.backend.User;
 
 public class MainActivity extends FragmentActivity {
 
@@ -37,7 +36,6 @@ public class MainActivity extends FragmentActivity {
     private Drawable oldBackground = null;
     private int currentColor = 0xFF666666;
 
-    private User me = null;
     private double latitude = 0;
     private double longitude = 0;
 
@@ -54,7 +52,6 @@ public class MainActivity extends FragmentActivity {
 
         latitude = getIntent().getDoubleExtra("latitude", 0);
         longitude = getIntent().getDoubleExtra("longitude", 0);
-        me = (User) getIntent().getSerializableExtra("user");
         Log.e(TAG, "latitude : " + latitude + ", longitude : " + longitude);
 
         tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
