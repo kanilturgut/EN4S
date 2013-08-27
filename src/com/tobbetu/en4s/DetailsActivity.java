@@ -55,6 +55,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.tobbetu.en4s.backend.Complaint;
 import com.tobbetu.en4s.backend.Image;
+import com.tobbetu.en4s.backend.User;
 import com.tobbetu.en4s.helpers.CategoryI18n;
 import com.tobbetu.en4s.helpers.VoteRejectedException;
 
@@ -73,6 +74,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
     private GoogleMap myMap;
 
     private Complaint comp = null;
+    private User me = null;
     private LatLng compPos = null;
     LatLng myPosition = null;
 
@@ -93,6 +95,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
         // getActionBar().hide();
 
         comp = (Complaint) getIntent().getSerializableExtra("class");
+        me = (User) getIntent().getSerializableExtra("user");
 
         // viewPagerLayout = (LinearLayout) findViewById(R.id.viewPagerLayout);
         ivProblemImage = (ImageView) findViewById(R.id.ivProblemImage);
@@ -119,16 +122,9 @@ public class DetailsActivity extends Activity implements OnClickListener {
         Log.i(TAG, "calisti");
         Log.d(TAG, "latitude = " + getIntent().getDoubleExtra("latitude", 0));
         Log.d(TAG, "longitude = " + getIntent().getDoubleExtra("longitude", 0));
-        
-        //burayi silmeyin ilerde tekrar aktif hale getireceðim.
-//        if (!Utils.isNear(myPosition, compPos)) { // TODO if not already voted
-//            bUpVote.setVisibility(View.GONE);
-//            bDownVote.setVisibility(View.GONE);
-//
-//            tvYouAreNotAllowed = (TextView) findViewById(R.id.tvYouAreNotAllowed);
-//            tvYouAreNotAllowed.setVisibility(View.VISIBLE);
-//
-//        }
+
+        // Ipneligine sildim, saygilarimla.
+        // Mustafa
 
         // mViewPager = new HackyViewPager(this);
         // viewPagerLayout.addView(mViewPager);
@@ -312,7 +308,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
             new DownVoteTask().execute();
             // Toast.makeText(getApplicationContext(), "It does nothing",
             // Toast.LENGTH_SHORT).show();
-        } else if(v.getId() == R.id.bMoreComment){ // bMoreComment
+        } else if (v.getId() == R.id.bMoreComment) { // bMoreComment
             toMoreCommentActivity = true;
             Intent i = new Intent(this, MoreCommentsActivity.class);
             i.putExtra("class", comp);
@@ -444,7 +440,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
             try {
                 Log.d(getClass().getName(), "In UpVoteTask doInbackground");
-                comp.upvote(Utils.locationToJSON(myPosition.latitude,
+                comp.upvote(me, Utils.locationToJSON(myPosition.latitude,
                         myPosition.longitude));
             } catch (IOException e) {
                 Log.e(getClass().getName(), "UpVoteTask failed", e);

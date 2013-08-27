@@ -70,7 +70,7 @@ public class TabCreator extends Fragment {
 
         position = getArguments().getInt(ARG_POSITION);
     }
-    
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
@@ -164,6 +164,7 @@ public class TabCreator extends Fragment {
                 anIntent.putExtra("class", temp);
                 anIntent.putExtra("latitude", latitude);
                 anIntent.putExtra("longitude", longitude);
+                anIntent.putExtra("user", me);
                 startActivity(anIntent);
             }
 

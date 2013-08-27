@@ -238,7 +238,7 @@ public class Complaint implements Serializable {
         }
     }
 
-    public void upvote(String location) throws IOException,
+    public void upvote(User me, String location) throws IOException,
             VoteRejectedException {
         HttpResponse put = Requests.put(String.format(
                 "http://en4s.msimav.net/complaint/%s/upvote", this.id),
@@ -251,6 +251,10 @@ public class Complaint implements Serializable {
                     "Upvote Rejected because complaint id is wrong");
             throw new VoteRejectedException("There is no such complaint");
         }
+
+        // upvote successful
+        this.upVote++;
+        this.upvoters.add(me.getId());
     }
 
     public void downvote(String location) throws IOException {
