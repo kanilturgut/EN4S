@@ -215,7 +215,7 @@ public class Complaint implements Serializable {
         Cache.getInstance().getImage(Image.getImageURL(url, size), iv);
     }
 
-    public void save() throws IOException {
+    public Complaint save() throws IOException {
         Log.d("[JSON]", this.toJSON());
         HttpResponse post = Requests.post("http://en4s.msimav.net/complaint",
                 this.toJSON());
@@ -224,17 +224,12 @@ public class Complaint implements Serializable {
             Log.d(getClass().getName(), "Status Code in not 201");
         }
         try {
-            Complaint response = fromJSON(new JSONObject(
-                    Requests.readResponse(post)));
-            this.id = response.id;
-            this.date = response.date;
-            this.reporter = response.reporter;
-            this.upVote = response.upVote;
-            this.downVote = response.downVote;
-
-            // TODO save image too
+            return fromJSON(new JSONObject(Requests.readResponse(post)));
         } catch (JSONException e) {
             Log.e(getClass().getName(), "Impossible JSONException throwed", e);
+            Log.e("[WARNING]",
+                    "FYI, you are going to fucked up becuse newly created complaint object is null");
+            return null;
         }
     }
 

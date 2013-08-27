@@ -393,23 +393,24 @@ public class NewComplaint extends Activity implements OnClickListener {
 
     }
 
-    private class SaveTask extends AsyncTask<String, String, String> {
+    private class SaveTask extends AsyncTask<String, String, Complaint> {
 
         @Override
-        protected String doInBackground(String... params) {
+        protected Complaint doInBackground(String... params) {
+            Complaint savedComplaint = null;
             try {
-                newComplaint.save();
-                String url = img.upload(newComplaint.getId());
-                newComplaint.addJustUploadedImage(url);
+                savedComplaint = newComplaint.save();
+                String url = img.upload(savedComplaint.getId());
+                savedComplaint.addJustUploadedImage(url);
             } catch (IOException e) {
                 // TODO: handle exception
                 Log.e(TAG, "SaveTask doInBackground");
             }
-            return null;
+            return savedComplaint;
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(Complaint result) {
             super.onPostExecute(result);
 
             progressDialog.dismiss();
@@ -422,7 +423,7 @@ public class NewComplaint extends Activity implements OnClickListener {
                     DetailsActivity.class);
             anIntent.putExtra("latitude", latitude);
             anIntent.putExtra("longitude", longitude);
-            anIntent.putExtra("class", newComplaint);
+            anIntent.putExtra("class", result);
             startActivity(anIntent);
         }
 
