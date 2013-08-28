@@ -110,6 +110,8 @@ public class DetailsActivity extends Activity implements OnClickListener {
         tvReporterDate = (TextView) findViewById(R.id.tvReporterDate);
 
         bUpVote = (Button) findViewById(R.id.bUpVote);
+        if (comp.alreadyUpVoted(me))
+        	bUpVote.setVisibility(Button.INVISIBLE);
         bDownVote = (Button) findViewById(R.id.bDownVote);
         bMoreComment = (Button) findViewById(R.id.bMoreComment);
         // bShare = (Button) findViewById(R.id.bShare);
