@@ -8,6 +8,7 @@
 package com.tobbetu.en4s.backend;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -22,8 +23,9 @@ import org.json.JSONObject;
 
 import android.util.Log;
 
-public class Comment {
+public class Comment implements Serializable {
 
+    private static final long serialVersionUID = 5661075950176963308L;
     private String id;
     private User author;
     private String text;
