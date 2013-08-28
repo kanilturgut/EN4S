@@ -1,71 +1,65 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <LinearLayout
-        android:id="@+id/enforceInfoLayout"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="@drawable/login_background"
-        android:orientation="vertical" >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
 
         <LinearLayout
-            android:id="@+id/enforceInfoImageLayout"
+            android:id="@+id/enforceInfoLayout"
             android:layout_width="fill_parent"
-            android:layout_height="200dp"
-            android:layout_marginTop="15dp"
+            android:layout_height="fill_parent"
+            android:background="@drawable/login_background"
             android:orientation="vertical" >
+
+            <LinearLayout
+                android:id="@+id/enforceInfoImageLayout"
+                android:layout_width="fill_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="15dp"
+                android:orientation="vertical" >
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/enforceButtonLayout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical"
-        android:paddingBottom="20dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="5dp" >
-
-        <Button
-            android:id="@+id/bLauncherSignup"
+        <LinearLayout
+            android:id="@+id/enforceButtonLayout"
             android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginTop="15dp"
-            android:background="@drawable/signup_button_style"
-            android:text="@string/signIn"
-            android:textColor="#FFFFFF"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical"
+            android:paddingBottom="20dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="5dp" >
 
-        <Button
-            android:id="@+id/bLauncherLogin"
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:layout_marginLeft="12dp"
-            android:layout_marginRight="12dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/login_button_style"
-            android:text="@string/login_sign_in"
-            android:textColor="#222222"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <!--
-             <TextView android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:layout_marginTop="10dp"
+            <Button
+                android:id="@+id/bLauncherSignup"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
                 android:layout_marginLeft="12dp"
                 android:layout_marginRight="12dp"
-                android:text="Aslında buraya da bir şeyler yazabilsek züper olmaz mı???"
-                android:textSize="14sp"
-                android:gravity="center"/>
-        -->
-    </LinearLayout>
+                android:layout_marginTop="15dp"
+                android:background="@drawable/signup_button_style"
+                android:text="@string/signIn"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
-</RelativeLayout>
+            <Button
+                android:id="@+id/bLauncherLogin"
+                android:layout_width="fill_parent"
+                android:layout_height="50dp"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/login_button_style"
+                android:text="@string/login_sign_in"
+                android:textColor="#222222"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</ScrollView>
