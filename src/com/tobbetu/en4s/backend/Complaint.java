@@ -294,6 +294,7 @@ public class Complaint implements Serializable {
 
         // comment successful
         this.comments.add(Comment.fromJSON(Requests.readResponse(put)));
+        this.comments_count++;
     }
 
     public String toJSON() {

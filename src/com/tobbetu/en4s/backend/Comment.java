@@ -86,31 +86,6 @@ public class Comment implements Serializable {
         this.date = date;
     }
 
-    public void save(Complaint c) throws IOException {
-        Log.d("[JSON]", this.toJSON());
-        HttpResponse post = Requests.post(
-                "http://en4s.msimav.net/comment/" + c.getId(), this.toJSON());
-        if (!Requests.checkStatusCode(post, HttpStatus.SC_CREATED)) {
-            // TODO throw exception
-            Log.d("Comment", "Status Code in not 201");
-        }
-
-        try {
-            Comment response = Comment.fromJSON(new JSONObject(Requests
-                    .readResponse(post)));
-
-            this.id = response.id;
-            this.author = response.author;
-            this.text = response.text;
-            this.date = response.date;
-            this.like = response.like;
-            this.dislike = response.dislike;
-        } catch (JSONException e) {
-            Log.e("Comment", "Impossible JSONException throwed", e);
-        }
-
-    }
-
     public String toJSON() {
         JSONObject obj = new JSONObject();
 
