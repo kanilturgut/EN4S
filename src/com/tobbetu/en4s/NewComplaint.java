@@ -184,8 +184,13 @@ public class NewComplaint extends Activity implements OnClickListener {
         Utils.addAMarker(myMap, position, false);
         Utils.centerAndZomm(myMap, position, 15);
 
-        tvNewComplaintAdress.setText(Utils.getAddress(getBaseContext(),
-                position));
+        try {
+			tvNewComplaintAdress.setText(Utils.getAddress(getBaseContext(),
+			        position));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
         categoriesSpinner = (Spinner) findViewById(R.id.spinnerNewComplaintCategory);
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter
@@ -275,8 +280,13 @@ public class NewComplaint extends Activity implements OnClickListener {
 
                 newComplaint = new Complaint();
                 newComplaint.setTitle(etComplaintTitle.getText().toString());
-                newComplaint.setAddress(Utils.getAddress(getBaseContext(),
-                        position));
+                try {
+					newComplaint.setAddress(Utils.getAddress(getBaseContext(),
+					        position));
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
                 newComplaint.setCity(Utils.getCity(getBaseContext(), position));
                 newComplaint.setCategory(CategoryI18n
                         .getEnglishName(selectedCategoryIndex));

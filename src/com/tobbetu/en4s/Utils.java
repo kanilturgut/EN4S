@@ -73,13 +73,14 @@ public class Utils {
      * @param context
      * @param position
      * @return Parametre olarak aldigi konumun acik adresini doner.
+     * @throws IOException 
      */
-    public static String getAddress(Context context, LatLng position) {
+    public static String getAddress(Context context, LatLng position) throws IOException {
 
         String address = "";
 
         Geocoder gcd = new Geocoder(context, Locale.getDefault());
-        try {
+        
             List<Address> addresses = gcd.getFromLocation(position.latitude,
                     position.longitude, 1);
 
@@ -88,9 +89,7 @@ public class Utils {
                     address += addresses.get(0).getAddressLine(i) + ",";
                 }
             }
-        } catch (Exception e) {
-            Log.e(TAG, "Couldn't get address", e);
-        }
+        
         return address;
 
     }
