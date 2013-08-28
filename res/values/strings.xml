@@ -57,8 +57,8 @@
     <string name="detail_item_title">Problemin Başlığı</string>
     <string name="detail_item_category">Problemin Türü</string>
     <string name="detail_loading_image">Yükleniyor</string>
-    <string name="detail_item_approve_button">ONAYLA</string>
-    <string name="detail_item_report_button">RAPOR</string>
+    <string name="detail_item_approve_button">YUKARI TAŞI</string>
+    <string name="detail_item_report_button">AŞAĞI TAŞI</string>
     <string name="detail_item_user_photo">Kullanıcının Fotoğrafı</string>
     <string name="detail_item_user_name">Kullanıcı Adı</string>
     <string name="detail_item_user_creation_date">Problem Tarihi</string>

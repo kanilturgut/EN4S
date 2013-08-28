@@ -19,6 +19,7 @@ import com.tobbetu.en4s.backend.User;
 
 public class BugListAdapter extends ArrayAdapter<Complaint> {
 
+	private final String TAG = "BugListAdapter";
     private Context context;
     private List<Complaint> complaints;
     private int tabPosition;
@@ -93,7 +94,7 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
         try {
         	((TextView) rowView.findViewById(R.id.tvCommentCount)).setText(complaint.getCommentsCount());
         } catch (Exception e) {
-        	
+        	Log.e(TAG, "comment sayisi alinamadigi icin exception aliyoruz", e);
         }
         // complaintAddress.setText("at " + complaint.getCity().toUpperCase());
         // complaintUpVote.setText(complaint.getUpVote());

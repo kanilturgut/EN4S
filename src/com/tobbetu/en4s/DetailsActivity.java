@@ -20,6 +20,8 @@ import java.util.Arrays;
 
 import uk.co.senab.photoview.PhotoView;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Point;
 import android.os.AsyncTask;
@@ -303,11 +305,9 @@ public class DetailsActivity extends Activity implements OnClickListener {
     public void onClick(View v) {
 
         if (v.getId() == R.id.bUpVote) {
-            new UpVoteTask().execute();
+        	createAlert(1);          
         } else if (v.getId() == R.id.bDownVote) {
-            new DownVoteTask().execute();
-            // Toast.makeText(getApplicationContext(), "It does nothing",
-            // Toast.LENGTH_SHORT).show();
+        	createAlert(0);
         } else if (v.getId() == R.id.bMoreComment) { // bMoreComment
             toMoreCommentActivity = true;
             Intent i = new Intent(this, MoreCommentsActivity.class);
@@ -321,6 +321,42 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
     }
 
+	private void createAlert(int i) {
+
+		AlertDialog.Builder alt_bld = new AlertDialog.Builder(this);
+		alt_bld.setTitle("Dikkat");
+		alt_bld.setCancelable(true);
+
+		alt_bld.setNegativeButton("Ýptal",
+				new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
+						dialog.dismiss();
+					}
+				});
+
+		if (i == 0) { // down vote
+			alt_bld.setMessage("Aþaðý taþýdýðýnýz problemler daha alt sýralarda görünecektir");
+			alt_bld.setPositiveButton("Kabul",
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							new DownVoteTask().execute();
+						}
+					});
+		} else {
+			alt_bld.setMessage("Yukarý taþýdýðýnýz problemler daha üst sýralarda görünecektir");
+			alt_bld.setPositiveButton("Kabul",
+					new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							new UpVoteTask().execute();
+						}
+					});
+		}
+		
+		AlertDialog alt_dlg = alt_bld.create();
+		alt_dlg.show();
+
+	}
+    
     private void startFacebookSession() {
 
         // if(Session.getActiveSession() == null) {
