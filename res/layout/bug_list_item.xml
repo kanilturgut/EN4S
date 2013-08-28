@@ -20,17 +20,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"
-            android:weightSum="10"
             android:layout_marginTop="5dp"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:weightSum="10" >
 
             <TextView
                 android:id="@+id/tvItem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="8"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
+                android:layout_weight="8"
                 android:text="@string/bug_list_item_title"
                 android:textColor="#222222"
                 android:textSize="14sp" />
@@ -39,10 +39,10 @@
                 android:id="@+id/tvDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:gravity="right"
                 android:layout_marginRight="10dp"
                 android:layout_marginTop="5dp"
+                android:layout_weight="2"
+                android:gravity="right"
                 android:text="@string/bug_list_item_date"
                 android:textColor="#AAAAAA"
                 android:textSize="12sp" />
@@ -84,29 +84,7 @@
                     android:layout_marginRight="10dp"
                     android:gravity="center_vertical"
                     android:text="@string/dummyNumber" />
-<!-- 
-                <View
-                    android:layout_width="0.1dp"
-                    android:layout_height="fill_parent"
-                    android:background="#AAAAAA" />
 
-                <ImageView
-                    android:id="@+id/ivDown"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:contentDescription="@string/bug_list_down_image"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
-                    android:src="@drawable/down" />
-
-                <TextView
-                    android:id="@+id/tvDownVoteCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginRight="10dp"
-                    android:gravity="center_vertical"
-                    android:text="@string/dummyNumber" />
- -->
                 <View
                     android:layout_width="0.1dp"
                     android:layout_height="fill_parent"
@@ -120,6 +98,14 @@
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
                     android:src="@drawable/comment" />
+
+                <TextView
+                    android:id="@+id/tvCommentCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center_vertical"
+                    android:text="@string/dummyNumber" />
 
                 <RelativeLayout
                     android:id="@+id/complaintMoreLayout"

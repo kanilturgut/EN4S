@@ -89,7 +89,12 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
         complaintTitle.setText(complaint.getTitle().trim());
         tvUpVoteCount.setText("" + complaint.getUpVote());
         // tvDownVoteCount.setText("" + complaint.getDownVote());
-
+        
+        try {
+        	((TextView) rowView.findViewById(R.id.tvCommentCount)).setText(complaint.getCommentsCount());
+        } catch (Exception e) {
+        	
+        }
         // complaintAddress.setText("at " + complaint.getCity().toUpperCase());
         // complaintUpVote.setText(complaint.getUpVote());
         // complaintDownVote.setText(complaint.getDownVote());

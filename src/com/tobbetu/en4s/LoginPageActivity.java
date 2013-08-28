@@ -349,10 +349,10 @@ public class LoginPageActivity extends Activity implements OnClickListener {
             try {
                 return newLogin.makeRequest();
             } catch (IOException e) {
-                Toast.makeText(
-                        getApplicationContext(),
-                        "You have no internet access, please open your network !",
-                        Toast.LENGTH_SHORT).show();
+//                Toast.makeText(
+//                        getApplicationContext(),
+//                        "You have no internet access, please open your network !",
+//                        Toast.LENGTH_SHORT).show();
                 Log.e(getClass().getName(), "IOException", e);
 
             } catch (LoginFailedException e) {
