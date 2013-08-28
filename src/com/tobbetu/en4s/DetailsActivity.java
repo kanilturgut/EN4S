@@ -110,15 +110,15 @@ public class DetailsActivity extends Activity implements OnClickListener {
         tvReporterDate = (TextView) findViewById(R.id.tvReporterDate);
 
         bUpVote = (Button) findViewById(R.id.bUpVote);
-        if (comp.alreadyUpVoted(me))
-        	bUpVote.setVisibility(Button.INVISIBLE);
         bDownVote = (Button) findViewById(R.id.bDownVote);
+        if (comp.alreadyUpVoted(me)) {
+        	((LinearLayout)findViewById(R.id.complaintItemVoteLayout)).setVisibility(LinearLayout.GONE);
+        } else {
+            bUpVote.setOnClickListener(this);
+            bDownVote.setOnClickListener(this);
+        }
         bMoreComment = (Button) findViewById(R.id.bMoreComment);
-        // bShare = (Button) findViewById(R.id.bShare);
-        bUpVote.setOnClickListener(this);
-        bDownVote.setOnClickListener(this);
         bMoreComment.setOnClickListener(this);
-        // bShare.setOnClickListener(this);
 
         compPos = new LatLng(comp.getLatitude(), comp.getLongitude());
         myPosition = new LatLng(getIntent().getDoubleExtra("latitude", 0),
