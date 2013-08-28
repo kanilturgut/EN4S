@@ -19,7 +19,7 @@ import com.tobbetu.en4s.backend.User;
 
 public class BugListAdapter extends ArrayAdapter<Complaint> {
 
-	private final String TAG = "BugListAdapter";
+    private final String TAG = "BugListAdapter";
     private Context context;
     private List<Complaint> complaints;
     private int tabPosition;
@@ -57,8 +57,8 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
                 .findViewById(R.id.tvDate);
         TextView tvUpVoteCount = (TextView) rowView
                 .findViewById(R.id.tvUpVoteCount);
-        // TextView tvDownVoteCount = (TextView)
-        // rowView.findViewById(R.id.tvDownVoteCount);
+        TextView tvCommentCount = (TextView) rowView
+                .findViewById(R.id.tvCommentCount);
 
         // TextView complaintAddress = (TextView) rowView
         // .findViewById(R.id.tvComplaintAddress);
@@ -89,12 +89,13 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
 
         complaintTitle.setText(complaint.getTitle().trim());
         tvUpVoteCount.setText("" + complaint.getUpVote());
-        // tvDownVoteCount.setText("" + complaint.getDownVote());
-        
+        tvCommentCount.setText("" + complaint.getCommentsCount());
+
         try {
-        	((TextView) rowView.findViewById(R.id.tvCommentCount)).setText(complaint.getCommentsCount());
+            ((TextView) rowView.findViewById(R.id.tvCommentCount))
+                    .setText(complaint.getCommentsCount());
         } catch (Exception e) {
-        	Log.e(TAG, "comment sayisi alinamadigi icin exception aliyoruz", e);
+            Log.e(TAG, "comment sayisi alinamadigi icin exception aliyoruz", e);
         }
         // complaintAddress.setText("at " + complaint.getCity().toUpperCase());
         // complaintUpVote.setText(complaint.getUpVote());

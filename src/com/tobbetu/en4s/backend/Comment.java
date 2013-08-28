@@ -135,7 +135,7 @@ public class Comment {
 
         obj.setId(elem.optString("_id"));
         obj.setAuthor(User.fromJSON(elem.optJSONObject("author")));
-        obj.setText(elem.optString("author"));
+        obj.setText(elem.optString("text"));
         obj.setLike(elem.optInt("like"));
         obj.setDislike(elem.optInt("dislike"));
 

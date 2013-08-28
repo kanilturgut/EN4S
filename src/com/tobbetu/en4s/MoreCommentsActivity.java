@@ -1,21 +1,23 @@
 package com.tobbetu.en4s;
 
+import java.io.IOException;
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.view.WindowManager;
-import android.view.View.OnClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.tobbetu.en4s.backend.Comment;
 import com.tobbetu.en4s.backend.Complaint;
 
 public class MoreCommentsActivity extends Activity {
 
-	private final String TAG = "MoreCommentActivity";
+    private final String TAG = "MoreCommentActivity";
     Complaint complaint = null;
     LatLng userPosition = null;
     private ListView lvMoreComments;
@@ -56,9 +58,7 @@ public class MoreCommentsActivity extends Activity {
                 });*/
 
         lvMoreComments = (ListView) findViewById(R.id.commentList);
-        lvMoreComments.setAdapter(new CommentListAdapter(this, complaint
-                .getComments()));
-
+        new CommentAsyncTask().execute();
 
     }
 
@@ -78,5 +78,27 @@ public class MoreCommentsActivity extends Activity {
         // kill this activity
         finish();
     }
-    
+
+    private class CommentAsyncTask extends
+            AsyncTask<String, String, List<Comment>> {
+
+        @Override
+        protected List<Comment> doInBackground(String... arg0) {
+            try {
+                return complaint.getComments();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(List<Comment> result) {
+            // FIXMEE: I have no idea which context to use, so selected randomly
+            lvMoreComments.setAdapter(new CommentListAdapter(getBaseContext(),
+                    result));
+        }
+    }
+
 }

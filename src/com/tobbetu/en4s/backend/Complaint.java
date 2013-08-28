@@ -45,7 +45,8 @@ public class Complaint implements Serializable {
     private String city;
     private List<String> imageURLs = null;
     private List<Image> images = new ArrayList<Image>();
-    private List<Comment> comments;
+    private List<Comment> comments = null;
+    private int comments_count;
 
     public Complaint() {
     }
@@ -149,12 +150,19 @@ public class Complaint implements Serializable {
         this.category = category;
     }
 
-    public List<Comment> getComments() {
-        return comments;
+    public List<Comment> getComments() throws IOException {
+        if (comments_count == 0) {
+            return new LinkedList<Comment>();
+        } else if (comments != null) {
+            return comments;
+        } else {
+            comments = Comment.getComments(this);
+            return comments;
+        }
     }
 
     public int getCommentsCount() {
-        return this.comments.size();
+        return comments_count;
     }
 
     public void setImages(List<String> images) {
@@ -317,6 +325,7 @@ public class Complaint implements Serializable {
         obj.setDownVote(elem.optInt("downvote_count", 0));
         obj.setAddress(elem.optString("address"));
         obj.setCity(elem.optString("city"));
+        obj.comments_count = elem.optInt("comments_count");
 
         JSONArray upvoters = elem.optJSONArray("upvoters");
         Set<String> tmp = new HashSet<String>();
@@ -325,13 +334,6 @@ public class Complaint implements Serializable {
             tmp.add(user);
         }
         obj.upvoters = tmp;
-
-//        JSONArray comments = elem.optJSONArray("comments");
-//        List<Comment> tmpCmt = new LinkedList<Comment>();
-//        for (int i = 0; i < comments.length(); i++) {
-//            tmpCmt.add(Comment.fromJSON(comments.optJSONObject(i)));
-//        }
-//        obj.comments = tmpCmt;
 
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
         try {
