@@ -7,13 +7,18 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.tobbetu.en4s.backend.Comment;
 import com.tobbetu.en4s.backend.Complaint;
+import com.tobbetu.en4s.helpers.CommentRejectedException;
 
 public class MoreCommentsActivity extends Activity {
 
@@ -60,6 +65,16 @@ public class MoreCommentsActivity extends Activity {
         lvMoreComments = (ListView) findViewById(R.id.commentList);
         new CommentAsyncTask().execute();
 
+        final EditText etCommentListNew = (EditText) findViewById(R.id.etCommentListNew);
+        
+        findViewById(R.id.bCommentPush).setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				
+				new CommentSaveTask().execute(etCommentListNew.getText().toString());				
+			}
+		});
     }
 
     @Override
@@ -99,6 +114,31 @@ public class MoreCommentsActivity extends Activity {
             lvMoreComments.setAdapter(new CommentListAdapter(getBaseContext(),
                     result));
         }
+    }
+    
+    private class CommentSaveTask extends AsyncTask<String, String, String> {
+
+		@Override
+		protected String doInBackground(String... arg0) {
+			
+			try {
+				complaint.comment(arg0[0]);
+			} catch (IOException e) {				
+				e.printStackTrace();
+				Log.e(TAG, "CommentSaveTask IOException ", e);
+			} catch (CommentRejectedException e) {
+				e.printStackTrace();
+				Log.e(TAG, "CommentSaveTask CommentRejectedException ", e);
+			}
+			
+			return null;
+		}
+		
+		@Override
+		protected void onPostExecute(String result) {
+			Toast.makeText(getApplicationContext(), "Yorumunuz kaydedilmiþtir.", Toast.LENGTH_SHORT).show();
+		}
+    	
     }
 
 }

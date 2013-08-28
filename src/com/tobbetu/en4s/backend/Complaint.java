@@ -280,7 +280,7 @@ public class Complaint implements Serializable {
             Log.d("Complaint", "JSONException on comment", e);
         }
         HttpResponse put = Requests.put(
-                String.format("http://en4s.msimav.net/comment/%s", this.id),
+                String.format("http://en4s.msimav.net/comments/%s", this.id),
                 comment.toString());
 
         if (Requests.checkStatusCode(put, HttpStatus.SC_NOT_ACCEPTABLE)) {
