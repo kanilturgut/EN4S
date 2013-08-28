@@ -501,6 +501,8 @@ public class DetailsActivity extends Activity implements OnClickListener {
             Log.d(getClass().getName(), "In UpVoteTask onPostExecute");
             Toast.makeText(getApplicationContext(), "Thanks for your upvote",
                     Toast.LENGTH_SHORT).show();
+            
+            ((LinearLayout)findViewById(R.id.complaintItemVoteLayout)).setVisibility(LinearLayout.GONE);
         }
 
         @Override
@@ -535,6 +537,8 @@ public class DetailsActivity extends Activity implements OnClickListener {
             Log.d(getClass().getName(), "In DownVoteTask onPostExecute");
             Toast.makeText(getApplicationContext(), "Thanks for your downvote",
                     Toast.LENGTH_SHORT).show();
+            
+            ((LinearLayout)findViewById(R.id.complaintItemVoteLayout)).setVisibility(LinearLayout.GONE);
         }
 
     }
