@@ -13,10 +13,15 @@ public abstract class Login {
 
     private final String loginInfo;
     private final String url;
-    private static User me;
+    private static User me = null;
 
     public static User getMe() {
         return me;
+    }
+
+    public static void setMe(User me) {
+        if (Login.me == null)
+            Login.me = me;
     }
 
     public Login(String url, String arg0name, String arg0, String arg1name,
