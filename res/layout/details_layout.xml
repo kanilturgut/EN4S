@@ -96,6 +96,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_weight="1"
+                android:visibility="gone"
                 android:gravity="center_horizontal"
                 android:text="@string/da_already_voted"
                 android:textColor="#222222"
