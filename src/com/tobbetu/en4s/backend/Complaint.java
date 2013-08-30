@@ -376,8 +376,7 @@ public class Complaint implements Serializable {
 
     public static List<Complaint> getHotList() throws IOException {
         // TODO not forget to change that
-        HttpResponse get = Requests
-                .get("http://en4s.msimav.net/complaint/recent");
+        HttpResponse get = Requests.get("http://en4s.msimav.net/complaint/hot");
 
         if (!Requests.checkStatusCode(get, HttpStatus.SC_OK))
             Log.e("Complaint.getHotList", "[ERROR] Status Code: "
