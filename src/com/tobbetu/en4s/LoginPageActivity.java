@@ -467,8 +467,15 @@ public class LoginPageActivity extends Activity implements OnClickListener {
             public void run() {
                 Location lastLocation = lManager
                         .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-                latitude = lastLocation.getLatitude();
-                longitude = lastLocation.getLongitude();
+                try {
+                	latitude = lastLocation.getLatitude();
+                	longitude = lastLocation.getLongitude();
+                } catch(Exception e) {
+                	Log.e(TAG, "lastknwon location bile yok (0,0) olarak yolluyorum");
+                	latitude = 0;
+                	longitude = 0;
+                } 
+                
                 locationFlag = true;
                 Toast.makeText(getApplicationContext(),
                         "We couldn't get your current location!",

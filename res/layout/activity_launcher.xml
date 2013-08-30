@@ -1,65 +1,60 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@drawable/login_background" >
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
+    <LinearLayout
+        android:id="@+id/enforceInfoLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="200dp"
+        android:orientation="vertical" >
 
         <LinearLayout
-            android:id="@+id/enforceInfoLayout"
+            android:id="@+id/enforceInfoImageLayout"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:background="@drawable/login_background"
+            android:layout_height="match_parent"
+            android:layout_marginTop="15dp"
             android:orientation="vertical" >
-
-            <LinearLayout
-                android:id="@+id/enforceInfoImageLayout"
-                android:layout_width="fill_parent"
-                android:layout_height="200dp"
-                android:layout_marginTop="15dp"
-                android:orientation="vertical" >
-            </LinearLayout>
         </LinearLayout>
+    </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/enforceButtonLayout"
+    <LinearLayout
+        android:id="@+id/enforceButtonLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:paddingBottom="20dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="5dp" >
+
+        <Button
+            android:id="@+id/bLauncherSignup"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:orientation="vertical"
-            android:paddingBottom="20dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:paddingTop="5dp" >
+            android:layout_height="50dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/signup_button_style"
+            android:text="@string/signIn"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
-            <Button
-                android:id="@+id/bLauncherSignup"
-                android:layout_width="fill_parent"
-                android:layout_height="50dp"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="15dp"
-                android:background="@drawable/signup_button_style"
-                android:text="@string/signIn"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+        <Button
+            android:id="@+id/bLauncherLogin"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/login_button_style"
+            android:text="@string/login_sign_in"
+            android:textColor="#222222"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </LinearLayout>
 
-            <Button
-                android:id="@+id/bLauncherLogin"
-                android:layout_width="fill_parent"
-                android:layout_height="50dp"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/login_button_style"
-                android:text="@string/login_sign_in"
-                android:textColor="#222222"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-    </RelativeLayout>
-
-</ScrollView>
+</RelativeLayout>

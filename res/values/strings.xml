@@ -4,7 +4,8 @@
     <string name="app_name">Enforce</string>
     <string name="action_settings">Ayarlar</string>
     <string name="username">Kullanıcı Adı</string>
-    <string name="name_surname">Ad-Soyad</string>
+    <string name="name">Adınız</string>
+    <string name="surname">Soyadınız</string>
     <string name="password">Şifre</string>
     <string name="title_activity_main">Enforce</string>
     <string name="action_contact">Contact</string>
