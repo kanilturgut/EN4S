@@ -28,6 +28,8 @@ public class MoreCommentsActivity extends Activity {
 	private ListView lvMoreComments;
 	private final EditText etNewComment = null;
 
+	private final boolean commentAdded = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -149,6 +151,13 @@ public class MoreCommentsActivity extends Activity {
 			Toast.makeText(getApplicationContext(),
 					getResources().getString(R.string.mca_comment_accepted),
 					Toast.LENGTH_SHORT).show();
+
+			Intent i = new Intent(MoreCommentsActivity.this,
+					MoreCommentsActivity.class);
+			i.putExtra("class", complaint);
+			i.putExtra("latitude", userPosition.latitude);
+			i.putExtra("longitude", userPosition.longitude);
+			startActivity(i);
 		}
 
 	}
