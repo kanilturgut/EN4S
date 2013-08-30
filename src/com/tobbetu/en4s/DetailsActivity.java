@@ -30,6 +30,7 @@ import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.util.Log;
 import android.view.Display;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,6 +38,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
@@ -62,6 +64,7 @@ import com.tobbetu.en4s.backend.Image;
 import com.tobbetu.en4s.backend.Login;
 import com.tobbetu.en4s.backend.User;
 import com.tobbetu.en4s.helpers.CategoryI18n;
+import com.tobbetu.en4s.helpers.CommentRejectedException;
 import com.tobbetu.en4s.helpers.VoteRejectedException;
 
 public class DetailsActivity extends Activity implements OnClickListener {
@@ -295,8 +298,38 @@ public class DetailsActivity extends Activity implements OnClickListener {
 				i.putExtra("longitude", myPosition.longitude);
 				startActivity(i);
 			} else {
-				Toast.makeText(getApplicationContext(), "dur daha kodlamadim",
-						Toast.LENGTH_SHORT).show();
+				final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+				LayoutInflater inflater = LayoutInflater.from(this);
+				final View deneme = inflater.inflate(
+						R.layout.new_comment_from_dialog, null);
+				alert.setView(deneme);
+				alert.setTitle(getResources()
+						.getString(R.string.dialog_comment));
+				alert.setPositiveButton(
+						getResources().getString(R.string.sendButton),
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+
+								EditText et = (EditText) deneme
+										.findViewById(R.id.etNewCommenFromDialog);
+								new CommentSaveTask().execute(et.getText()
+										.toString());
+
+							}
+						});
+
+				alert.setNegativeButton(
+						getResources().getString(R.string.dialog_cancel),
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface dialog,
+									int whichButton) {
+								dialog.cancel();
+							}
+						});
+				alert.show();
 			}
 		}
 
@@ -581,6 +614,33 @@ public class DetailsActivity extends Activity implements OnClickListener {
 				}
 			}
 		}
+	}
+
+	private class CommentSaveTask extends AsyncTask<String, String, String> {
+
+		@Override
+		protected String doInBackground(String... arg0) {
+
+			try {
+				comp.comment(arg0[0]);
+			} catch (IOException e) {
+				e.printStackTrace();
+				Log.e(TAG, "CommentSaveTask IOException ", e);
+			} catch (CommentRejectedException e) {
+				e.printStackTrace();
+				Log.e(TAG, "CommentSaveTask CommentRejectedException ", e);
+			}
+
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String result) {
+			Toast.makeText(getApplicationContext(),
+					getResources().getString(R.string.mca_comment_accepted),
+					Toast.LENGTH_SHORT).show();
+		}
+
 	}
 
 	@Override

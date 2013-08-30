@@ -136,5 +136,9 @@
     
     <string name="mca_comment_accepted">Yorumunuz kaydedilmiştir, teşekkür ederiz.</string>
     <string name="mca_comment_rejected">Üzgünüz fakat yorumunuzu kaydedemiyoruz.</string>
+    
+    <string name="dialog_cancel">Kapat</string>
+    <string name="dialog_comment">Yorum</string>
+    <string name="dialog_comment_hint">Yorumunuzu giriniz</string>
 
 </resources>

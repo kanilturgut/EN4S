@@ -23,7 +23,7 @@
             android:layout_margin="10dp"
             android:layout_toLeftOf="@+id/bCommentPush"
             android:background="#FFFFFF"
-            android:hint="Yorum"
+            android:hint="@string/dialog_comment_hint"
             android:padding="5dp" />
 
         <Button
