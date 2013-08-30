@@ -128,6 +128,8 @@
     <string name="da_dialog_pos">Kabul</string>
     <string name="da_voting_accepted">Oyunuz alınmıştır, teşekkür ederiz.</string>
     <string name="da_already_voted">Bu soruna daha önceden oyunuzu verdiniz</string>
+    <string name="da_voting_rejected">Üzgünüz ama oyunuzu alamıyoruz.</string>
+    <string name="da_add_the_first_comment">İlk Yorumu Siz Ekleyin</string>
     
     <string name="login_failed_msg">Üzgünüz ama giriş yapamadınız.</string>
     <string name="no_internet_access_dialog">Üzgünüz ama internet erişiminiz olmadan bu uygulamayı kullanamazsınız.</string>

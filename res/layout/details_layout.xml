@@ -96,12 +96,12 @@
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_weight="1"
-                android:visibility="gone"
                 android:gravity="center_horizontal"
                 android:text="@string/da_already_voted"
                 android:textColor="#222222"
                 android:textSize="14sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:visibility="gone" />
         </LinearLayout>
 
         <LinearLayout
@@ -209,90 +209,107 @@
                 android:background="#FFFFFF"
                 android:orientation="vertical" >
 
-                <TextView
-                    android:id="@+id/tvComment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:text="@string/detail_item_comment"
-                    android:textColor="#444444"
-                    android:textSize="12sp" />
-
                 <LinearLayout
-                    android:id="@+id/newComplaintCommentUserInfoLayout"
+                    android:id="@+id/newComplaintCommentOne"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
                     android:background="#FFFFFF"
-                    android:orientation="horizontal" >
-
-                    <ImageView
-                        android:id="@+id/ivCommentUserAvatar"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:contentDescription="@string/detail_item_user_photo"
-                        android:src="@drawable/default_user_photo" />
+                    android:orientation="vertical" >
 
                     <TextView
-                        android:id="@+id/tvCommentUser"
+                        android:id="@+id/tvComment"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginTop="2dp"
-                        android:text="@string/detail_item_comment_user"
+                        android:layout_margin="5dp"
+                        android:text="@string/detail_item_comment"
                         android:textColor="#444444"
                         android:textSize="12sp" />
+
+                    <LinearLayout
+                        android:id="@+id/newComplaintCommentUserInfoLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:background="#FFFFFF"
+                        android:orientation="horizontal" >
+
+                        <ImageView
+                            android:id="@+id/ivCommentUserAvatar"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:contentDescription="@string/detail_item_user_photo"
+                            android:src="@drawable/default_user_photo" />
+
+                        <TextView
+                            android:id="@+id/tvCommentUser"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/detail_item_comment_user"
+                            android:textColor="#444444"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="0.1dp"
+                        android:background="#AAAAAA" />
                 </LinearLayout>
 
-                <View
-                    android:layout_width="fill_parent"
-                    android:layout_height="0.1dp"
-                    android:background="#AAAAAA" />
-
-                <TextView
-                    android:id="@+id/tvComment2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:text="@string/detail_item_comment"
-                    android:textColor="#444444"
-                    android:textSize="12sp" />
-
                 <LinearLayout
-                    android:id="@+id/newComplaintCommentUserInfoLayout2"
+                    android:id="@+id/newComplaintCommentTwo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
                     android:background="#FFFFFF"
-                    android:orientation="horizontal" >
-
-                    <ImageView
-                        android:id="@+id/ivCommentUserAvatar2"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:contentDescription="@string/detail_item_user_photo"
-                        android:src="@drawable/default_user_photo" />
+                    android:orientation="vertical" >
 
                     <TextView
-                        android:id="@+id/tvCommentUser2"
+                        android:id="@+id/tvComment2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginTop="2dp"
-                        android:text="@string/detail_item_comment_user"
+                        android:layout_margin="5dp"
+                        android:text="@string/detail_item_comment"
                         android:textColor="#444444"
                         android:textSize="12sp" />
+
+                    <LinearLayout
+                        android:id="@+id/newComplaintCommentUserInfoLayout2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:background="#FFFFFF"
+                        android:orientation="horizontal" >
+
+                        <ImageView
+                            android:id="@+id/ivCommentUserAvatar2"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:contentDescription="@string/detail_item_user_photo"
+                            android:src="@drawable/default_user_photo" />
+
+                        <TextView
+                            android:id="@+id/tvCommentUser2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="2dp"
+                            android:text="@string/detail_item_comment_user"
+                            android:textColor="#444444"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+
+                    <View
+                        android:layout_width="fill_parent"
+                        android:layout_height="0.1dp"
+                        android:background="#AAAAAA" />
+
                 </LinearLayout>
             </LinearLayout>
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="0.1dp"
-                android:background="#AAAAAA" />
 
             <Button
                 android:id="@+id/bMoreComment"

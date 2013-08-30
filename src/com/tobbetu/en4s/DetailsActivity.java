@@ -490,8 +490,9 @@ public class DetailsActivity extends Activity implements OnClickListener {
 		protected void onCancelled() {
 			super.onCancelled();
 
-			Utils.createAlert(DetailsActivity.this, "Hata",
-					"Oyunuz gecerli degil", true, "", "Tamam");
+			// oy verme sirasinda bir sikinti yasanirsa alert verilecek
+			Utils.createAlert(DetailsActivity.this, "Hata", getResources()
+					.getString(R.string.da_voting_rejected), true, "", "Tamam");
 
 		}
 
@@ -547,20 +548,33 @@ public class DetailsActivity extends Activity implements OnClickListener {
 		@Override
 		protected void onPostExecute(List<Comment> result) {
 
-			if (result != null && result.size() != 0) {
-				TextView tvComment = (TextView) findViewById(R.id.tvComment);
-				TextView tvCommentUser = (TextView) findViewById(R.id.tvCommentUser);
+			TextView tvComment = (TextView) findViewById(R.id.tvComment);
+			TextView tvCommentUser = (TextView) findViewById(R.id.tvCommentUser);
 
-				TextView tvComment2 = (TextView) findViewById(R.id.tvComment2);
-				TextView tvCommentUser2 = (TextView) findViewById(R.id.tvCommentUser2);
+			TextView tvComment2 = (TextView) findViewById(R.id.tvComment2);
+			TextView tvCommentUser2 = (TextView) findViewById(R.id.tvCommentUser2);
 
-				tvComment.setText(result.get(0).getText().toString());
-				tvCommentUser.setText(result.get(0).getAuthor().getName());
+			if (result != null) {
+				if (result.size() >= 2) {
+					tvComment.setText(result.get(0).getText().toString());
+					tvCommentUser.setText(result.get(0).getAuthor().getName());
 
-				tvComment2.setText(result.get(1).getText().toString());
-				tvCommentUser2.setText(result.get(1).getAuthor().getName());
+					tvComment2.setText(result.get(1).getText().toString());
+					tvCommentUser2.setText(result.get(1).getAuthor().getName());
+				} else if (result.size() == 1) {
+					tvComment.setText(result.get(0).getText().toString());
+					tvCommentUser.setText(result.get(0).getAuthor().getName());
+
+					((LinearLayout) findViewById(R.id.newComplaintCommentTwo))
+							.setVisibility(LinearLayout.GONE);
+				} else { // 0
+					((LinearLayout) findViewById(R.id.newComplaintCommentInfoLayout))
+							.setVisibility(LinearLayout.GONE);
+
+					bMoreComment.setText(getResources().getString(
+							R.string.da_add_the_first_comment));
+				}
 			}
-
 		}
 	}
 
