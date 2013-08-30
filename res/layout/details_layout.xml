@@ -52,9 +52,9 @@
                 android:id="@+id/tvComplaintCategory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="3dp"
-                android:layout_marginBottom="5dp"
                 android:text="@string/detail_item_category"
                 android:textColor="#AAAAAA"
                 android:textSize="12sp" />
@@ -71,7 +71,7 @@
             <Button
                 android:id="@+id/bUpVote"
                 android:layout_width="140dp"
-                android:layout_height="40dp"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:background="@drawable/approve_button_style"
                 android:text="@string/detail_item_approve_button"
@@ -81,7 +81,7 @@
             <Button
                 android:id="@+id/bDownVote"
                 android:layout_width="140dp"
-                android:layout_height="40dp"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
                 android:layout_weight="1"
                 android:background="@drawable/report_button_style"
@@ -92,14 +92,15 @@
             <TextView
                 android:id="@+id/tvYouAreNotAllowed"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
                 android:layout_weight="1"
-                android:text="@string/tvYouAreNotAllowed"
+                android:gravity="center_horizontal"
+                android:text="@string/da_already_voted"
                 android:textColor="#222222"
                 android:textSize="14sp"
-                android:visibility="gone" />
+                android:textStyle="bold" />
         </LinearLayout>
 
         <LinearLayout
