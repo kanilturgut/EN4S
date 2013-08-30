@@ -348,15 +348,13 @@ public class LoginPageActivity extends Activity implements OnClickListener {
 
             try {
                 return newLogin.makeRequest();
-            } catch (IOException e) {
-//                Toast.makeText(
-//                        getApplicationContext(),
-//                        "You have no internet access, please open your network !",
-//                        Toast.LENGTH_SHORT).show();
+            } catch (IOException e) {          	
+            	cancel(true);
+          
                 Log.e(getClass().getName(), "IOException", e);
-
             } catch (LoginFailedException e) {
-
+            	cancel(true);
+            	
                 Log.e(getClass().getName(), String.format(
                         "[Login Failed] username: %s, passwd: %s", loginArg0,
                         loginArg1), e);
@@ -372,6 +370,15 @@ public class LoginPageActivity extends Activity implements OnClickListener {
             LauncherActivity.shouldKillThisActivity = true;
 
             startIntent();
+        }
+        
+        @Override
+        protected void onCancelled() {
+        	super.onCancelled();
+
+			Toast.makeText(LoginPageActivity.this,
+					getResources().getString(R.string.login_failed_dialog),
+					Toast.LENGTH_LONG).show();
         }
 
     }
