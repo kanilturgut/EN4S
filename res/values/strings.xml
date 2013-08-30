@@ -123,6 +123,7 @@
     
     <string name="upVoteDialog">Yukarı taşıdığınız problemler daha üst sıralarda görünecektir</string>
     <string name="downVoteDialog">Aşağı taşıdığınız problemler daha alt sıralarda görünecektir</string>
-    <string name="login_failed_dialog">Üzgünüm ama giriş yapamadınız.</string>
+    <string name="login_failed_dialog">Üzgünüz ama giriş yapamadınız.</string>
+    <string name="no_internet_access_dialog">Üzgünüz ama internet erişiminiz olmadan bu uygulamayı kullanamazsınız.</string>
 
 </resources>

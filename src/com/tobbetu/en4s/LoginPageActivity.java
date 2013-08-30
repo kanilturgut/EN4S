@@ -80,7 +80,7 @@ public class LoginPageActivity extends Activity implements OnClickListener {
 
         if (!isNetworkAvailable()) {
             Toast.makeText(getApplicationContext(),
-                    "You have no internet access, please open your network",
+                    getResources().getString(R.string.no_internet_access_dialog),
                     Toast.LENGTH_LONG).show();
             finish();
         } else {
@@ -102,9 +102,7 @@ public class LoginPageActivity extends Activity implements OnClickListener {
             etPassword = (EditText) findViewById(R.id.etPassword);
 
             bLogin = (Button) findViewById(R.id.bLogin);
-            // bRegister = (Button) findViewById(R.id.bRegister);
             bLogin.setOnClickListener(this);
-            // bRegister.setOnClickListener(this);
 
             pbLogin = (ProgressBar) findViewById(R.id.pbLogin);
             faceButton = (LoginButton) findViewById(R.id.faceButton);
@@ -247,9 +245,6 @@ public class LoginPageActivity extends Activity implements OnClickListener {
 
                 loginWithoutCurrentLocation();
             }
-            // } else if (arg0.getId() == R.id.bRegister) {
-            // Intent i = new Intent(this, RegisterPageActivity.class);
-            // startActivity(i);
         }
 
     }
@@ -417,8 +412,8 @@ public class LoginPageActivity extends Activity implements OnClickListener {
 
     private void lockToComponents() {
 
-        findViewById(R.id.userInfoLayout).setVisibility(LinearLayout.GONE);
-        findViewById(R.id.breakLayout).setVisibility(LinearLayout.GONE);
+        findViewById(R.id.userInfoLayout).setVisibility(LinearLayout.INVISIBLE);
+        findViewById(R.id.breakLayout).setVisibility(LinearLayout.INVISIBLE);
         etUsername.setVisibility(EditText.INVISIBLE);
         etPassword.setVisibility(EditText.INVISIBLE);
         bLogin.setVisibility(Button.INVISIBLE);
