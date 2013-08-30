@@ -94,6 +94,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 	private ImageView ivProblemImage = null;
 
 	private ImageTask imageTask;
+	private boolean afterCommentFlag = false;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -179,7 +180,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
 		// eger intent ile MoreCommentActivity e gidiliyorsa, artik bu activity
 		// oldurulsun
-		if (toMoreCommentActivity)
+		if (toMoreCommentActivity || afterCommentFlag)
 			finish();
 
 		/*
@@ -639,6 +640,13 @@ public class DetailsActivity extends Activity implements OnClickListener {
 			Toast.makeText(getApplicationContext(),
 					getResources().getString(R.string.mca_comment_accepted),
 					Toast.LENGTH_SHORT).show();
+
+			afterCommentFlag = true;
+			Intent i = new Intent(DetailsActivity.this, DetailsActivity.class);
+			i.putExtra("class", comp);
+			i.putExtra("latitude", myPosition.latitude);
+			i.putExtra("longitude", myPosition.longitude);
+			startActivity(i);
 		}
 
 	}
