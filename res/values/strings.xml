@@ -120,10 +120,14 @@
     <string name="bla_top">%d kez beğenildi</string>
     <string name="title_activity_register_page">RegisterPageActivity</string>
     <string name="hello_world">Hello world!</string>
+
+    <!-- Details Activity -->
+    <string name="da_upvote_msg">Yukarı taşıdığınız problemler daha üst sıralarda görünecektir</string>
+    <string name="da_downvote_msg">Aşağı taşıdığınız problemler daha alt sıralarda görünecektir</string>
+    <string name="da_dialog_neg">İptal</string>
+    <string name="da_dialog_pos">Kabul</string>
     
-    <string name="upVoteDialog">Yukarı taşıdığınız problemler daha üst sıralarda görünecektir</string>
-    <string name="downVoteDialog">Aşağı taşıdığınız problemler daha alt sıralarda görünecektir</string>
-    <string name="login_failed_dialog">Üzgünüz ama giriş yapamadınız.</string>
+    <string name="login_failed_msg">Üzgünüz ama giriş yapamadınız.</string>
     <string name="no_internet_access_dialog">Üzgünüz ama internet erişiminiz olmadan bu uygulamayı kullanamazsınız.</string>
 
 </resources>
