@@ -340,20 +340,20 @@ public class DetailsActivity extends Activity implements OnClickListener {
 			}
 		});
 
-		if (i == 0) { // down vote
-			alt_bld.setMessage("Aþaðý taþýdýðýnýz problemler daha alt sýralarda görünecektir");
-			alt_bld.setPositiveButton("Kabul",
-					new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-					new DownVoteTask().execute();
-				}
-			});
-		} else {
-			alt_bld.setMessage("Yukarý taþýdýðýnýz problemler daha üst sýralarda görünecektir");
+		if (i == 0) { // up vote
+			alt_bld.setMessage(getResources().getString(R.string.upVoteDialog));
 			alt_bld.setPositiveButton("Kabul",
 					new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int id) {
 					new UpVoteTask().execute();
+				}
+			});
+		} else {
+			alt_bld.setMessage(getResources().getString(R.string.downVoteDialog));
+			alt_bld.setPositiveButton("Kabul",
+					new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+					new DownVoteTask().execute();
 				}
 			});
 		}

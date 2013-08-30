@@ -119,5 +119,8 @@
     <string name="bla_top">%d kez beğenildi</string>
     <string name="title_activity_register_page">RegisterPageActivity</string>
     <string name="hello_world">Hello world!</string>
+    
+    <string name="upVoteDialog">Yukarı taşıdığınız problemler daha üst sıralarda görünecektir</string>
+    <string name="downVoteDialog">Aşağı taşıdığınız problemler daha alt sıralarda görünecektir</string>
 
 </resources>
