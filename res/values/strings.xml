@@ -66,7 +66,7 @@
     <string name="detail_item_address">Problemin Bulunduğu Konum</string>
     <string name="detail_item_comment">Kullanıcıların Problem Hakkında Yaptığı Yorumlar</string>
     <string name="detail_item_comment_user">Yorum Yapan Kullanıcı</string>
-    <string name="detail_item_all_commments_button">Tüm Yorumları Görüntüle (%d)</string>
+    <string name="detail_item_all_commments_button">Tüm Yorumları Görüntüle</string>
     <string name="new_item_title">Problemin Başlığı</string>
     <string name="new_item_take_photo_button">Fotoğraf Çekme Butonu</string>
     <string name="new_item_taken_photo">Kullanıcının Çektiği Fotoğraf</string>

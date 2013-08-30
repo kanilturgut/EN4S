@@ -127,6 +127,12 @@ public class DetailsActivity extends Activity implements OnClickListener {
 		bMoreComment = (Button) findViewById(R.id.bMoreComment);
 		bMoreComment.setOnClickListener(this);
 
+		if (comp.getCommentsCount() > 0) {
+			bMoreComment.setText(getResources().getString(
+					R.string.detail_item_all_commments_button)
+					+ " (" + comp.getCommentsCount() + ")");
+		}
+
 		compPos = new LatLng(comp.getLatitude(), comp.getLongitude());
 		myPosition = new LatLng(getIntent().getDoubleExtra("latitude", 0),
 				getIntent().getDoubleExtra("longitude", 0));
