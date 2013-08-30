@@ -288,11 +288,16 @@ public class DetailsActivity extends Activity implements OnClickListener {
 		} else if (v.getId() == R.id.bMoreComment) { // bMoreComment
 			toMoreCommentActivity = true;
 
-			Intent i = new Intent(this, MoreCommentsActivity.class);
-			i.putExtra("class", comp);
-			i.putExtra("latitude", myPosition.latitude);
-			i.putExtra("longitude", myPosition.longitude);
-			startActivity(i);
+			if (comp.getCommentsCount() != 0) {
+				Intent i = new Intent(this, MoreCommentsActivity.class);
+				i.putExtra("class", comp);
+				i.putExtra("latitude", myPosition.latitude);
+				i.putExtra("longitude", myPosition.longitude);
+				startActivity(i);
+			} else {
+				Toast.makeText(getApplicationContext(), "dur daha kodlamadim",
+						Toast.LENGTH_SHORT).show();
+			}
 		}
 
 	}
