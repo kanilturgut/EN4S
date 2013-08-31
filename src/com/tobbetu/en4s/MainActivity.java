@@ -102,6 +102,7 @@ public class MainActivity extends FragmentActivity {
         builder.setCancelable(true);
         builder.setPositiveButton(R.string.ma_quit_ok,
                 new DialogInterface.OnClickListener() {
+                    @Override
                     public void onClick(DialogInterface dialog, int id) {
 
                         try {
@@ -115,6 +116,7 @@ public class MainActivity extends FragmentActivity {
                 });
         builder.setNegativeButton(R.string.ma_quit_cancel,
                 new DialogInterface.OnClickListener() {
+                    @Override
                     public void onClick(DialogInterface dialog, int id) {
 
                         try {
@@ -141,23 +143,23 @@ public class MainActivity extends FragmentActivity {
             // dialog.show(getSupportFragmentManager(), "QuickContactFragment");
             // return true;
 
-        	try {
-        		Utils.getAddress(this, new LatLng(latitude, longitude));
-        		
-        		Intent i = new Intent(MainActivity.this, NewComplaint.class);
+            try {
+                Utils.getAddress(this, new LatLng(latitude, longitude));
+
+                Intent i = new Intent(MainActivity.this, NewComplaint.class);
                 i.putExtra("user_lat", latitude);
                 i.putExtra("user_lng", longitude);
                 startActivity(i);
 
-        	} catch (Exception e) {
-        		Log.e(TAG, "Geocoder calismadigi icin new complaint acilmayacak");
-        		
-				Toast.makeText(
-						getApplicationContext(),
-						"Konum bilginiz alýnamadýðý için yeni þikayet ekleyemezsiniz",
-						Toast.LENGTH_LONG).show();
-        	}
-            
+            } catch (Exception e) {
+                Log.e(TAG,
+                        "Geocoder calismadigi icin new complaint acilmayacak");
+
+                Toast.makeText(getApplicationContext(),
+                        getResources().getString(R.string.ma_no_location),
+                        Toast.LENGTH_LONG).show();
+            }
+
             break;
 
         }
@@ -237,7 +239,7 @@ public class MainActivity extends FragmentActivity {
         changeColor(currentColor);
     }
 
-    private Drawable.Callback drawableCallback = new Drawable.Callback() {
+    private final Drawable.Callback drawableCallback = new Drawable.Callback() {
         @SuppressLint("NewApi")
         @Override
         public void invalidateDrawable(Drawable who) {

@@ -97,6 +97,7 @@
     <string name="ma_quit_msg">Programı kapatmak istiyor musunuz?</string>
     <string name="ma_quit_ok">Evet</string>
     <string name="ma_quit_cancel">Hayır</string>
+    <string name="ma_no_location">Konum bilginiz alınamadığı için şikayet bildiremezsiniz.</string>
 
     <!-- New Complaint -->
     <string name="nc_cat_missing_title">Kategori Seçmediniz</string>

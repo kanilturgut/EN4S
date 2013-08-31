@@ -27,9 +27,6 @@ public class MoreCommentsActivity extends Activity {
     Complaint complaint = null;
     LatLng userPosition = null;
     private ListView lvMoreComments;
-    private final EditText etNewComment = null;
-
-    private final boolean commentAdded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,21 +44,6 @@ public class MoreCommentsActivity extends Activity {
         complaint = (Complaint) getIntent().getSerializableExtra("class");
         userPosition = new LatLng(getIntent().getDoubleExtra("latitude", 0),
                 getIntent().getDoubleExtra("longitude", 0));
-
-        // Geri tusuna basinca gerceklesecek islemler
-        /*
-         * findViewById(R.id.bBackToDetail).setOnClickListener( new
-         * OnClickListener() {
-         * 
-         * @Override public void onClick(View v) {
-         * 
-         * Intent i = new Intent(MoreCommentsActivity.this,
-         * DetailsActivity.class); i.putExtra("class", complaint);
-         * i.putExtra("latitude", userPosition.latitude);
-         * i.putExtra("longitude", userPosition.longitude); startActivity(i);
-         * 
-         * } });
-         */
 
         lvMoreComments = (ListView) findViewById(R.id.commentList);
         new CommentAsyncTask().execute();
