@@ -16,7 +16,6 @@
 package com.tobbetu.en4s;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 import uk.co.senab.photoview.PhotoView;
@@ -47,16 +46,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.FacebookException;
-import com.facebook.FacebookOperationCanceledException;
-import com.facebook.Request;
-import com.facebook.Request.GraphUserCallback;
-import com.facebook.Response;
-import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.model.GraphUser;
-import com.facebook.widget.WebDialog;
-import com.facebook.widget.WebDialog.OnCompleteListener;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -87,8 +76,6 @@ public class DetailsActivity extends Activity implements OnClickListener {
     private final User me = Login.getMe();
     private LatLng compPos = null;
     LatLng myPosition = null;
-
-    private boolean isFetching;
 
     // more comment activitysine gidilip gidilmedigini tutacak.
     private boolean toMoreCommentActivity = false;
@@ -334,8 +321,17 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
                                 EditText et = (EditText) deneme
                                         .findViewById(R.id.etNewCommenFromDialog);
-                                new CommentSaveTask().execute(et.getText()
-                                        .toString());
+
+                                if (et.getText().toString().length() == 0)
+                                    Toast.makeText(
+                                            DetailsActivity.this,
+                                            getResources()
+                                                    .getString(
+                                                            R.string.dialog_empty_comment),
+                                            Toast.LENGTH_SHORT).show();
+                                else
+                                    new CommentSaveTask().execute(et.getText()
+                                            .toString());
 
                             }
                         });
@@ -392,119 +388,6 @@ public class DetailsActivity extends Activity implements OnClickListener {
         AlertDialog alt_dlg = alt_bld.create();
         alt_dlg.show();
 
-    }
-
-    private void startFacebookSession() {
-
-        // if(Session.getActiveSession() == null) {
-        isFetching = false;
-
-        Log.d("FACEBOOK", "performFacebookLogin");
-        final Session.NewPermissionsRequest newPermissionsRequest = new Session.NewPermissionsRequest(
-                this, Arrays.asList("basic_info", "email"));
-
-        Session.openActiveSession(this, true, new Session.StatusCallback() {
-            @Override
-            public void call(Session session, SessionState state,
-                    Exception exception) {
-                Log.d("FACEBOOK", "call");
-                Log.i(TAG, session.isOpened() + "");
-                if (session.isOpened() && !isFetching) {
-                    Log.d("FACEBOOK", "if (session.isOpened() && !isFetching)");
-                    isFetching = true;
-                    session.requestNewReadPermissions(newPermissionsRequest);
-                    Request getMe = Request.newMeRequest(session,
-                            new GraphUserCallback() {
-                                @Override
-                                public void onCompleted(GraphUser user,
-                                        Response response) {
-                                    Log.d("FACEBOOK", "onCompleted");
-                                    /*
-                                     * Burada login icin yapilan shared
-                                     * preferences dan farkli olarak yeni bir
-                                     * SPref.. kullanilabilir. Bu sekilde
-                                     * kullanici uygulamaya facebook ile login
-                                     * olmasa bile daha sonraki sikayet
-                                     * paylasimlarinda login olmak icin zaman
-                                     * kaybetmez.
-                                     */
-                                }
-                            });
-
-                    getMe.executeAsync();
-                } else {
-                    /*
-                     * Bu if else in bir ustunde yapilirsa yani diger if icinde
-                     * o zaman baglanti inanimaz derecede uzadi. En az 3 deneme
-                     * yaptim ve bu sekilde nedense daha hizli baglanti
-                     * gerceklesti.
-                     */
-                    if (session.isOpened())
-                        publishFeedDialog();
-                }
-            }
-        });
-        // } else {
-        // /*Zaten daha onceden acilmis bir facebook session varsa, tekrar login
-        // ile ugrasmadan direk olarak
-        // * feed publish ediyoruz.*/
-        // publishFeedDialog();
-        // }
-    }
-
-    private void publishFeedDialog() {
-        Bundle params = new Bundle();
-        // params.putString("name", "Enforce");
-        // params.putString("caption", "Let's Create Better Cities");
-        // params.putString("description",
-        // "Enforce is a mobile app for creating better cities.");
-        params.putString("link", comp.getPublicURL());
-        // params.putString("picture",
-        // "http://enforceapp.com/static/img/icon.png");
-
-        WebDialog feedDialog = (new WebDialog.FeedDialogBuilder(this,
-                Session.getActiveSession(), params)).setOnCompleteListener(
-                new OnCompleteListener() {
-
-                    @Override
-                    public void onComplete(Bundle values,
-                            FacebookException error) {
-                        if (error == null) {
-                            // When the story is posted, echo the success
-                            // and the post Id.
-                            final String postId = values.getString("post_id");
-                            if (postId != null) {
-                                Toast.makeText(DetailsActivity.this,
-                                        "Posted story, id: " + postId,
-                                        Toast.LENGTH_SHORT).show();
-                            } else {
-                                // User clicked the Cancel button
-                                Toast.makeText(getApplicationContext(),
-                                        "Publish cancelled", Toast.LENGTH_SHORT)
-                                        .show();
-                            }
-                        } else if (error instanceof FacebookOperationCanceledException) {
-                            // User clicked the "x" button
-                            Toast.makeText(getApplicationContext(),
-                                    "Publish cancelled", Toast.LENGTH_SHORT)
-                                    .show();
-                        } else {
-                            // Generic, ex: network error
-                            Toast.makeText(getApplicationContext(),
-                                    "Error posting story", Toast.LENGTH_SHORT)
-                                    .show();
-                        }
-                    }
-                }).build();
-        feedDialog.show();
-        Session.getActiveSession().closeAndClearTokenInformation();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Session.getActiveSession().onActivityResult(this, requestCode,
-                resultCode, data);
     }
 
     class UpVoteTask extends AsyncTask<String, String, String> {

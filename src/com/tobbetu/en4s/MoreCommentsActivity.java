@@ -55,9 +55,15 @@ public class MoreCommentsActivity extends Activity {
 
                     @Override
                     public void onClick(View arg0) {
-
-                        new CommentSaveTask().execute(etCommentListNew
-                                .getText().toString());
+                        if (etCommentListNew.getText().toString().length() == 0)
+                            Toast.makeText(
+                                    MoreCommentsActivity.this,
+                                    getResources().getString(
+                                            R.string.dialog_empty_comment),
+                                    Toast.LENGTH_SHORT).show();
+                        else
+                            new CommentSaveTask().execute(etCommentListNew
+                                    .getText().toString());
                     }
                 });
     }
