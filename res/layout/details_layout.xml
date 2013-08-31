@@ -222,7 +222,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
                         android:text="@string/detail_item_comment"
-                        android:textColor="#444444"
+                        android:textColor="#222222"
                         android:textSize="12sp" />
 
                     <LinearLayout
@@ -272,7 +272,7 @@
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
                         android:text="@string/detail_item_comment"
-                        android:textColor="#444444"
+                        android:textColor="#222222"
                         android:textSize="12sp" />
 
                     <LinearLayout

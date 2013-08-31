@@ -216,7 +216,7 @@ public class Complaint implements Serializable {
         }
     }
 
-    public void getImage(int index, String size, ImageView iv) {
+    public void getImage(int index, String size, ImageView iv) throws Exception {
         if (index > imageURLs.size())
             throw new IndexOutOfBoundsException();
 

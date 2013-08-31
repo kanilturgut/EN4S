@@ -20,13 +20,13 @@ import com.tobbetu.en4s.backend.User;
 public class BugListAdapter extends ArrayAdapter<Complaint> {
 
     private final String TAG = "BugListAdapter";
-    private Context context;
-    private List<Complaint> complaints;
-    private int tabPosition;
-    private double latitude;
-    private double longitude;
+    private final Context context;
+    private final List<Complaint> complaints;
+    private final int tabPosition;
+    private final double latitude;
+    private final double longitude;
     private Complaint complaint;
-    private User user = Login.getMe();
+    private final User user = Login.getMe();
     private ImageView ivUp;
 
     public BugListAdapter(Context context, List<Complaint> complaints, int pos,
@@ -84,7 +84,11 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
         // }
 
         problemImage.setImageResource(R.drawable.loading);
-        complaint.getImage(0, Image.SIZE_512, problemImage);
+        try {
+            complaint.getImage(0, Image.SIZE_512, problemImage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         // new ImageTask().execute(complaint, problemImage);
 
         complaintTitle.setText(complaint.getTitle().trim());

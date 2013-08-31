@@ -140,5 +140,9 @@
     <string name="dialog_cancel">Kapat</string>
     <string name="dialog_comment">Yorum</string>
     <string name="dialog_comment_hint">Yorumunuzu giriniz</string>
+    <string name="dialog_comment_is_sending">Yorumunuz gönderiliyor</string>
+    <string name="dialog_comment_please_wait">Lütfen bekleyiniz</string>
+    
+    <string name="warning">Bir hata ile karşılaştık, lütfen tekrar deneyiniz</string>
 
 </resources>

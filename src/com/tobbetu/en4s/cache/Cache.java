@@ -13,44 +13,42 @@ import com.tobbetu.en4s.backend.Image;
 public class Cache {
 
     private static Cache instance = null;
-    private HashMap<String, Image> cache;
-    private final static String TAG = Cache.class.getCanonicalName(); 
-    
+    private final HashMap<String, Image> cache;
+    private final static String TAG = Cache.class.getCanonicalName();
+
     private Cache() {
         cache = new HashMap<String, Image>();
     }
-    
+
     public static Cache getInstance() {
         if (instance == null) {
             instance = new Cache();
         }
         return instance;
     }
-    
-    public void getImage(String url, ImageView iv) {
+
+    public void getImage(String url, ImageView iv) throws Exception {
         Log.d(TAG, "Cache URL: " + url);
         if (cache.containsKey(url)) {
             Log.d(TAG, "Cache HIT: " + url);
             Image img = cache.get(url);
-            try {
-            	iv.setImageBitmap(img.getBmp());
-            } catch (Exception e) {
-            	Log.e(TAG, "Cache den image okuma hatasi");
-            }
-//            iv.setImageBitmap(cropBitmapImage(img));
+
+            iv.setImageBitmap(img.getBmp());
+
+            // iv.setImageBitmap(cropBitmapImage(img));
         } else {
             Log.d(TAG, "Cache MISS: " + url);
             DownloadTask dt = new DownloadTask(url, iv);
             dt.execute();
         }
-        
+
     }
-    
+
     private class DownloadTask extends AsyncTask<String, Image, Image> {
-        
-        private String url;
-        private ImageView iv;
-        
+
+        private final String url;
+        private final ImageView iv;
+
         public DownloadTask(String url, ImageView iv) {
             this.iv = iv;
             this.url = url;
@@ -64,32 +62,36 @@ public class Cache {
                 return null;
             }
         }
-        
+
         @Override
         protected void onPostExecute(Image result) {
             super.onPostExecute(result);
-            if(!isCancelled()) {
+            if (!isCancelled()) {
                 Log.d(TAG, "Cache SET: " + url);
-                if(iv != null && result != null) {
+                if (iv != null && result != null) {
                     cache.put(this.url, result);
                     iv.setImageBitmap(result.getBmp());
-//                    iv.setImageBitmap(cropBitmapImage(result));
+                    // iv.setImageBitmap(cropBitmapImage(result));
                 } else {
                     Log.d(TAG, "RESULT: " + result);
                 }
-                    
+
             }
         }
-        
+
     }
-    
-    /*Onur Can Sert*/
-    
-    private Bitmap cropBitmapImage(Image img){
-    	Bitmap croppedBitmap = img.getBmp();
-    	Log.e("Onur", croppedBitmap.getHeight() + " - " + croppedBitmap.getWidth());
-    	//croppedBitmap = Bitmap.createBitmap(croppedBitmap, 0, 100, 600, 600); // Resized resim üzerinden crop edildi
-    	croppedBitmap = Bitmap.createBitmap(croppedBitmap, 0, (int)(croppedBitmap.getHeight() - croppedBitmap.getWidth())/2, croppedBitmap.getWidth(), croppedBitmap.getWidth());
-    	return croppedBitmap;
+
+    /* Onur Can Sert */
+
+    private Bitmap cropBitmapImage(Image img) {
+        Bitmap croppedBitmap = img.getBmp();
+        Log.e("Onur",
+                croppedBitmap.getHeight() + " - " + croppedBitmap.getWidth());
+        // croppedBitmap = Bitmap.createBitmap(croppedBitmap, 0, 100, 600, 600);
+        // // Resized resim ï¿½zerinden crop edildi
+        croppedBitmap = Bitmap.createBitmap(croppedBitmap, 0,
+                (croppedBitmap.getHeight() - croppedBitmap.getWidth()) / 2,
+                croppedBitmap.getWidth(), croppedBitmap.getWidth());
+        return croppedBitmap;
     }
 }
