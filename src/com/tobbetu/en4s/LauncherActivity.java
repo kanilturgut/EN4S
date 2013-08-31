@@ -15,154 +15,167 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 public class LauncherActivity extends Activity implements OnClickListener {
 
-	private String TAG = "LauncherActivity";
-	private ViewPager mViewPager;
-	private LinearLayout infoLayout;
-	public static SharedPreferences firstTimeControlPref;
-	private AlertDialog alertDialog = null;
+    private final String TAG = "LauncherActivity";
+    private ViewPager mViewPager;
+    private LinearLayout infoLayout;
+    public static SharedPreferences firstTimeControlPref;
+    private AlertDialog alertDialog = null;
 
-	protected static boolean shouldKillThisActivity = false;
+    protected static boolean shouldKillThisActivity = false;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_launcher);
-		getActionBar().hide();
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-		/*
-		 * Bu blok, program cihaza yuklendikten sonra sadece 1 kere calisacak ve
-		 * yeni sikayet ekleme ekraninda kullanacagimiz, cihazin hangi boyutta
-		 * fotograf cekecegini (800x600, 1024x768 ...) belirleyen bilgileri
-		 * bulacak.
-		 */
-		firstTimeControlPref = getSharedPreferences("firstTimeController",
-				MODE_PRIVATE);
-		if (firstTimeControlPref.getBoolean("isThisFirstTime", true)
-				|| !firstTimeControlPref.getBoolean("didLogIn", false)) {
+        if (!Utils.isNetworkAvailable(this)) {
+            Toast.makeText(
+                    getApplicationContext(),
+                    getResources()
+                            .getString(R.string.no_internet_access_dialog),
+                    Toast.LENGTH_LONG).show();
+            finish();
+        } else {
+            setContentView(R.layout.activity_launcher);
+            getActionBar().hide();
 
-			Log.i(TAG,
-					"Bir daha burayi gormeyeceksin. Eger gorursen yanlis birsey var demektir.");
+            /*
+             * Bu blok, program cihaza yuklendikten sonra sadece 1 kere
+             * calisacak ve yeni sikayet ekleme ekraninda kullanacagimiz,
+             * cihazin hangi boyutta fotograf cekecegini (800x600, 1024x768 ...)
+             * belirleyen bilgileri bulacak.
+             */
+            firstTimeControlPref = getSharedPreferences("firstTimeController",
+                    MODE_PRIVATE);
+            if (firstTimeControlPref.getBoolean("isThisFirstTime", true)
+                    || !firstTimeControlPref.getBoolean("didLogIn", false)) {
 
-			int[] sizes = Utils.deviceSupportedScreenSize();
+                Log.i(TAG,
+                        "Bir daha burayi gormeyeceksin. Eger gorursen yanlis birsey var demektir.");
 
-			SharedPreferences.Editor firstTimeEditor = firstTimeControlPref
-					.edit();
-			firstTimeEditor.putBoolean("isThisFirstTime", false);
-			firstTimeEditor.putInt("deviceWidth", sizes[0]);
-			firstTimeEditor.putInt("deviceHeight", sizes[1]);
+                int[] sizes = Utils.deviceSupportedScreenSize();
 
-			firstTimeEditor.apply();
+                SharedPreferences.Editor firstTimeEditor = firstTimeControlPref
+                        .edit();
+                firstTimeEditor.putBoolean("isThisFirstTime", false);
+                firstTimeEditor.putInt("deviceWidth", sizes[0]);
+                firstTimeEditor.putInt("deviceHeight", sizes[1]);
 
-			mViewPager = new HackyViewPager(this);
-			infoLayout = (LinearLayout) findViewById(R.id.enforceInfoImageLayout);
-			infoLayout.addView(mViewPager);
-			// setContentView(infoLayout);
+                firstTimeEditor.apply();
 
-			mViewPager.setAdapter(new SamplePagerAdapter());
+                mViewPager = new HackyViewPager(this);
+                infoLayout = (LinearLayout) findViewById(R.id.enforceInfoImageLayout);
+                infoLayout.addView(mViewPager);
+                // setContentView(infoLayout);
 
-			findViewById(R.id.bLauncherSignup).setOnClickListener(this);
-			findViewById(R.id.bLauncherLogin).setOnClickListener(this);
-		} else {
-			Intent i = new Intent(this, LoginPageActivity.class);
-			startActivity(i);
-		}
-	}
+                mViewPager.setAdapter(new SamplePagerAdapter());
 
-	@Override
-	public void onClick(View v) {
-		Intent i = null;
+                findViewById(R.id.bLauncherSignup).setOnClickListener(this);
+                findViewById(R.id.bLauncherLogin).setOnClickListener(this);
+            } else {
+                Intent i = new Intent(this, LoginPageActivity.class);
+                startActivity(i);
+            }
+        }
+    }
 
-		if (v.getId() == R.id.bLauncherLogin)
-			i = new Intent(this, LoginPageActivity.class);
-		else
-			i = new Intent(this, RegisterPageActivity.class);
+    @Override
+    public void onClick(View v) {
+        Intent i = null;
 
-		startActivity(i);
-	}
+        if (v.getId() == R.id.bLauncherLogin)
+            i = new Intent(this, LoginPageActivity.class);
+        else
+            i = new Intent(this, RegisterPageActivity.class);
 
-	@Override
-	public void onBackPressed() {
-		createAlert();
-	}
+        startActivity(i);
+    }
 
-	@Override
-	protected void onStop() {
-		super.onStop();
+    @Override
+    public void onBackPressed() {
+        createAlert();
+    }
 
-//		if (shouldKillThisActivity)
-		finish();
+    @Override
+    protected void onStop() {
+        super.onStop();
 
-		if (alertDialog != null)
-			alertDialog.dismiss();
-	}
+        // if (shouldKillThisActivity)
+        finish();
 
-	static class SamplePagerAdapter extends PagerAdapter {
+        if (alertDialog != null)
+            alertDialog.dismiss();
+    }
 
-		private static int[] sDrawables = { R.drawable.logo,
-				R.drawable.houston, R.drawable.lakers };
+    static class SamplePagerAdapter extends PagerAdapter {
 
-		@Override
-		public int getCount() {
-			return sDrawables.length;
-		}
+        private static int[] sDrawables = { R.drawable.logo,
+                R.drawable.houston, R.drawable.lakers };
 
-		@Override
-		public View instantiateItem(ViewGroup container, int position) {
-			PhotoView photoView = new PhotoView(container.getContext());
-			photoView.setImageResource(sDrawables[position]);
+        @Override
+        public int getCount() {
+            return sDrawables.length;
+        }
 
-			// Now just add PhotoView to ViewPager and return it
-			container.addView(photoView, LayoutParams.WRAP_CONTENT,
-					LayoutParams.WRAP_CONTENT);
+        @Override
+        public View instantiateItem(ViewGroup container, int position) {
+            PhotoView photoView = new PhotoView(container.getContext());
+            photoView.setImageResource(sDrawables[position]);
 
-			return photoView;
-		}
+            // Now just add PhotoView to ViewPager and return it
+            container.addView(photoView, LayoutParams.WRAP_CONTENT,
+                    LayoutParams.WRAP_CONTENT);
 
-		@Override
-		public void destroyItem(ViewGroup container, int position, Object object) {
-			container.removeView((View) object);
-		}
+            return photoView;
+        }
 
-		@Override
-		public boolean isViewFromObject(View view, Object object) {
-			return view == object;
-		}
-	}
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            container.removeView((View) object);
+        }
 
-	private void createAlert() {
+        @Override
+        public boolean isViewFromObject(View view, Object object) {
+            return view == object;
+        }
+    }
 
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setTitle("Exit ?");
-		builder.setMessage("Do you really want to quit ?");
-		builder.setCancelable(true);
-		builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-			public void onClick(DialogInterface dialog, int id) {
+    private void createAlert() {
 
-				try {
-					System.exit(0);
-				} catch (Throwable e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
-		});
-		builder.setNegativeButton("Cancel",
-				new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog, int id) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Exit ?");
+        builder.setMessage("Do you really want to quit ?");
+        builder.setCancelable(true);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
 
-						try {
-							dialog.dismiss();
-						} catch (Throwable e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-				});
+                try {
+                    System.exit(0);
+                } catch (Throwable e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        });
+        builder.setNegativeButton("Cancel",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
 
-		alertDialog = builder.create();
-		alertDialog.show();
-	}
+                        try {
+                            dialog.dismiss();
+                        } catch (Throwable e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
 }

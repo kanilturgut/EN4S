@@ -17,6 +17,8 @@ import android.hardware.Camera.Size;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -27,7 +29,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class Utils {
 
-	private final static String TAG = "Utils";	
+    private final static String TAG = "Utils";
     private static Marker place = null;
 
     /**
@@ -38,14 +40,14 @@ public class Utils {
      *            Parametre olarak aldigi harita uzerindeki, LatLng ile
      *            gosterilen konuma marker ekler.
      */
-    public static void addAMarker(GoogleMap map, LatLng position, boolean draggable) {
+    public static void addAMarker(GoogleMap map, LatLng position,
+            boolean draggable) {
 
         if (place != null)
             place.remove();
 
-        place = map.addMarker(new MarkerOptions()
-        .position(position)
-        .draggable(draggable));
+        place = map.addMarker(new MarkerOptions().position(position).draggable(
+                draggable));
 
         // map.addMarker(new MarkerOptions()
         // .position(myPos)
@@ -73,23 +75,24 @@ public class Utils {
      * @param context
      * @param position
      * @return Parametre olarak aldigi konumun acik adresini doner.
-     * @throws IOException 
+     * @throws IOException
      */
-    public static String getAddress(Context context, LatLng position) throws IOException {
+    public static String getAddress(Context context, LatLng position)
+            throws IOException {
 
         String address = "";
 
         Geocoder gcd = new Geocoder(context, Locale.getDefault());
-        
-            List<Address> addresses = gcd.getFromLocation(position.latitude,
-                    position.longitude, 1);
 
-            if (addresses.size() > 0) {
-                for (int i = 0; i < addresses.get(0).getMaxAddressLineIndex(); i++) {
-                    address += addresses.get(0).getAddressLine(i) + ",";
-                }
+        List<Address> addresses = gcd.getFromLocation(position.latitude,
+                position.longitude, 1);
+
+        if (addresses.size() > 0) {
+            for (int i = 0; i < addresses.get(0).getMaxAddressLineIndex(); i++) {
+                address += addresses.get(0).getAddressLine(i) + ",";
             }
-        
+        }
+
         return address;
 
     }
@@ -129,21 +132,23 @@ public class Utils {
         if (!posButton.equals("")) {
             alertDialogBuilder.setPositiveButton(posButton,
                     new DialogInterface.OnClickListener() {
+                        @Override
                         public void onClick(DialogInterface dialog, int id) {
                             // if this button is clicked, close
                             // current activity
                             try {
-								finalize();
-							} catch (Throwable e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
+                                finalize();
+                            } catch (Throwable e) {
+                                // TODO Auto-generated catch block
+                                e.printStackTrace();
+                            }
                         }
                     });
         }
         if (!negButton.equals("")) {
             alertDialogBuilder.setNegativeButton(negButton,
                     new DialogInterface.OnClickListener() {
+                        @Override
                         public void onClick(DialogInterface dialog, int id) {
                             // if this button is clicked, just close
                             // the dialog box and do nothing
@@ -193,49 +198,61 @@ public class Utils {
         }
         return loc.toString();
     }
-    
+
     /*
-     * Farkli android cihazlarin destekledigi kamera cozunurluklerine gore ayar yapilir.
-     * Donen deger, Preview sinifinin constructor ina gonderilir.*/
-    public static int[] deviceSupportedScreenSize() { 	
-    	int[] tmp = new int[2];  	
-    	Camera camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK);
-    	Camera.Parameters params = camera.getParameters();
-		ArrayList<Camera.Size>	list = (ArrayList<Size>) params.getSupportedPictureSizes();
-		
-		for (int i = list.size()-1; i >= 0; i--) {
-		
-			if (list.get(i).width == 800 && list.get(i).height == 600) {
-				tmp[0] = 800;
-				tmp[1] = 600;
-				break;
-//			} else if (list.get(i).width == 640 && list.get(i).height == 480) {
-//				tmp[0] = 640;
-//				tmp[1] = 480;
-//				break;
-			} else if (list.get(i).width == 1024 && list.get(i).height == 768) {
-				tmp[0] = 1024;
-				tmp[1] = 768;
-				break;
-			} else if (list.get(i).width == 1280 && list.get(i).height == 960) {
-				tmp[0] = 1280;
-				tmp[1] = 960;
-				break;
-			} else if (list.get(i).width == 1900 && list.get(i).height == 1600) {
-				tmp[0] = 1900;
-				tmp[1] = 1600;
-				break;
-			} else {
-				tmp[0] = 0;
-				tmp[1] = 0;
-			}
-		}
-		
-		camera.release();
-		list = null;
-		
-		Log.i(TAG, "deviceSupportedScreenSize returned " + tmp[0] + "x" + tmp[1]);
-		
-		return tmp;
+     * Farkli android cihazlarin destekledigi kamera cozunurluklerine gore ayar
+     * yapilir. Donen deger, Preview sinifinin constructor ina gonderilir.
+     */
+    public static int[] deviceSupportedScreenSize() {
+        int[] tmp = new int[2];
+        Camera camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK);
+        Camera.Parameters params = camera.getParameters();
+        ArrayList<Camera.Size> list = (ArrayList<Size>) params
+                .getSupportedPictureSizes();
+
+        for (int i = list.size() - 1; i >= 0; i--) {
+
+            if (list.get(i).width == 800 && list.get(i).height == 600) {
+                tmp[0] = 800;
+                tmp[1] = 600;
+                break;
+                // } else if (list.get(i).width == 640 && list.get(i).height ==
+                // 480) {
+                // tmp[0] = 640;
+                // tmp[1] = 480;
+                // break;
+            } else if (list.get(i).width == 1024 && list.get(i).height == 768) {
+                tmp[0] = 1024;
+                tmp[1] = 768;
+                break;
+            } else if (list.get(i).width == 1280 && list.get(i).height == 960) {
+                tmp[0] = 1280;
+                tmp[1] = 960;
+                break;
+            } else if (list.get(i).width == 1900 && list.get(i).height == 1600) {
+                tmp[0] = 1900;
+                tmp[1] = 1600;
+                break;
+            } else {
+                tmp[0] = 0;
+                tmp[1] = 0;
+            }
+        }
+
+        camera.release();
+        list = null;
+
+        Log.i(TAG, "deviceSupportedScreenSize returned " + tmp[0] + "x"
+                + tmp[1]);
+
+        return tmp;
+    }
+
+    protected static boolean isNetworkAvailable(Context c) {
+        ConnectivityManager connectivityManager = (ConnectivityManager) c
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager
+                .getActiveNetworkInfo();
+        return activeNetworkInfo != null;
     }
 }
