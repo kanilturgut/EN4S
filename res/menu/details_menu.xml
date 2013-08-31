@@ -5,10 +5,5 @@
         android:icon="@drawable/facebook_action_bar"
         android:showAsAction="ifRoom|withText"
         android:title="@string/facebook_share"/>
-    <item
-        android:id="@+id/shareOnTwitter"
-        android:icon="@drawable/twitter_action_bar"
-        android:showAsAction="ifRoom|withText"
-        android:title="@string/twitter_share"/>
 
 </menu>

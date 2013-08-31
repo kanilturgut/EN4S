@@ -721,9 +721,6 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
         if (item.getItemId() == R.id.shareOnFacebook)
             startFacebookSession();
-        else if (item.getItemId() == R.id.shareOnTwitter)
-            Toast.makeText(this, "It is not available", Toast.LENGTH_SHORT)
-                    .show();
 
         return super.onOptionsItemSelected(item);
     }

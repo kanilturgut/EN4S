@@ -461,16 +461,26 @@ public class LoginPageActivity extends Activity implements OnClickListener {
 
             @Override
             public void run() {
-                Location lastLocation = lManager
-                        .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
                 try {
+                    Location lastLocation = lManager
+                            .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
                     latitude = lastLocation.getLatitude();
                     longitude = lastLocation.getLongitude();
                 } catch (Exception e) {
-                    Log.e(TAG,
-                            "lastknwon location bile yok (0,0) olarak yolluyorum");
-                    latitude = 0;
-                    longitude = 0;
+                    try {
+                        Location lastLocation = lManager
+                                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+                        latitude = lastLocation.getLatitude();
+                        longitude = lastLocation.getLongitude();
+                    } catch (Exception ex) {
+                        Log.e(TAG,
+                                "lastknwon location bile yok (0,0) olarak yolluyorum");
+                        latitude = 0;
+                        longitude = 0;
+                    }
                 }
 
                 locationFlag = true;
