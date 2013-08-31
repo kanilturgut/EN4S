@@ -104,7 +104,8 @@
     <string name="nc_cat_missing_msg">Lütfen bir kategori seçin.</string>
     <string name="nc_cat_missing_ok">Tamam</string>
     <string name="nc_cat_loading">Yükleniyor</string>
-    <string name="nc_cat_sending">Şikayet Gönderiliyor, beklediğiniz için teşekkür ederiz.</string>
+    <string name="nc_cat_sending">Şikayetiniz gönderiliyor, beklediğiniz için teşekkür ederiz.</string>
+    <string name="nc_compalint_rejected">Üzgünüz fakat şikayetiniz gönderilemedi.</string>
 
     <!-- Complaint -->
     <string name="comp_sec">%d saniye önce</string>

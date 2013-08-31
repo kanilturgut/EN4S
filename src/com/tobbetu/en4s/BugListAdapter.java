@@ -2,9 +2,7 @@ package com.tobbetu.en4s;
 
 import java.util.List;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +17,6 @@ import com.tobbetu.en4s.backend.User;
 
 public class BugListAdapter extends ArrayAdapter<Complaint> {
 
-    private final String TAG = "BugListAdapter";
     private final Context context;
     private final List<Complaint> complaints;
     private final int tabPosition;
@@ -41,7 +38,6 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
         this.longitude = lon;
     }
 
-    @SuppressLint("DefaultLocale")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -60,28 +56,7 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
         TextView tvCommentCount = (TextView) rowView
                 .findViewById(R.id.tvCommentCount);
 
-        // TextView complaintAddress = (TextView) rowView
-        // .findViewById(R.id.tvComplaintAddress);
-        // TextView complaintUpVote = (TextView) rowView
-        // .findViewById(R.id.tvUpVoteCount);
-        // TextView complaintDownVote = (TextView) rowView
-        // .findViewById(R.id.tvDownVoteCount);
-        // TextView tvAdditionalInfo = (TextView) rowView
-        // .findViewById(R.id.tvAdditionalInfo);
-
         complaint = complaints.get(position);
-        Log.e("Type -> ", complaint.getCategory());
-        // if (complaint.getCategory().equals("Traffic")) {
-        // problemImage.setImageResource(R.drawable.type1);
-        // } else if (complaint.getCategory().equals("Infrastructure")) {
-        // problemImage.setImageResource(R.drawable.type2);
-        // } else if (complaint.getCategory().equals("Environment")) {
-        // problemImage.setImageResource(R.drawable.type3);
-        // } else if (complaint.getCategory().equals("Disability Rights")) {
-        // problemImage.setImageResource(R.drawable.type4);
-        // } else {
-        // problemImage.setImageResource(R.drawable.type5);
-        // }
 
         problemImage.setImageResource(R.drawable.loading);
         try {
@@ -89,15 +64,10 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        // new ImageTask().execute(complaint, problemImage);
 
         complaintTitle.setText(complaint.getTitle().trim());
         tvUpVoteCount.setText("" + complaint.getUpVote());
         tvCommentCount.setText("" + complaint.getCommentsCount());
-
-        // complaintAddress.setText("at " + complaint.getCity().toUpperCase());
-        // complaintUpVote.setText(complaint.getUpVote());
-        // complaintDownVote.setText(complaint.getDownVote());
 
         ivUp = (ImageView) rowView.findViewById(R.id.ivUp);
         if (complaint.alreadyUpVoted(user)) {
@@ -118,23 +88,6 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
                             complaint.getUpVote()));
         }
 
-        // ImageView ivComments = (ImageView)
-        // rowView.findViewById(R.id.ivComment);
-        // ivComments.setOnClickListener(new OnClickListener() {
-        // @Override
-        // public void onClick(View v) {
-        // Intent i = new Intent(context, MoreCommentsActivity.class);
-        // i.putExtra("class", complaint);
-        // context.startActivity(i);
-        // }
-        // });
-
-        // complaintVote.setText(complaints.get(position).getDate());
-        // complaintAddress.setText(complaints.get(position).getAddress());
-        // imageArrow.setImageResource(R.drawable.right_arrow);
-
         return rowView;
-
     }
-
 }

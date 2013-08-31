@@ -66,10 +66,9 @@ public class NewComplaint extends Activity implements OnClickListener {
     private byte[] bitmapdata = null;
 
     private Complaint newComplaint = null;
-    private String category;
     private int selectedCategoryIndex = 0;
 
-    private String TAG = "NewComplaint";
+    private final String TAG = "NewComplaint";
 
     private Preview preview;
     ProgressDialog pg = null;
@@ -185,12 +184,12 @@ public class NewComplaint extends Activity implements OnClickListener {
         Utils.centerAndZomm(myMap, position, 15);
 
         try {
-			tvNewComplaintAdress.setText(Utils.getAddress(getBaseContext(),
-			        position));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+            tvNewComplaintAdress.setText(Utils.getAddress(getBaseContext(),
+                    position));
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         categoriesSpinner = (Spinner) findViewById(R.id.spinnerNewComplaintCategory);
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter
@@ -205,13 +204,11 @@ public class NewComplaint extends Activity implements OnClickListener {
                     @Override
                     public void onItemSelected(AdapterView<?> arg0, View arg1,
                             int arg2, long arg3) {
-                        category = arg0.getItemAtPosition(arg2).toString();
                         selectedCategoryIndex = arg2;
                     }
 
                     @Override
                     public void onNothingSelected(AdapterView<?> arg0) {
-                        category = getString(R.string.cat_select);
                         selectedCategoryIndex = 0;
 
                     }
@@ -281,12 +278,12 @@ public class NewComplaint extends Activity implements OnClickListener {
                 newComplaint = new Complaint();
                 newComplaint.setTitle(etComplaintTitle.getText().toString());
                 try {
-					newComplaint.setAddress(Utils.getAddress(getBaseContext(),
-					        position));
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+                    newComplaint.setAddress(Utils.getAddress(getBaseContext(),
+                            position));
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
                 newComplaint.setCity(Utils.getCity(getBaseContext(), position));
                 newComplaint.setCategory(CategoryI18n
                         .getEnglishName(selectedCategoryIndex));
@@ -320,6 +317,7 @@ public class NewComplaint extends Activity implements OnClickListener {
 
     /** Handles data for jpeg picture */
     PictureCallback jpegCallback = new PictureCallback() {
+        @Override
         public void onPictureTaken(byte[] data, Camera camera) {
             if (data != null) {
 
@@ -413,7 +411,7 @@ public class NewComplaint extends Activity implements OnClickListener {
                 String url = img.upload(savedComplaint.getId());
                 savedComplaint.addJustUploadedImage(url);
             } catch (IOException e) {
-                // TODO: handle exception
+                cancel(true);
                 Log.e(TAG, "SaveTask doInBackground");
             }
             return savedComplaint;
@@ -437,6 +435,14 @@ public class NewComplaint extends Activity implements OnClickListener {
             startActivity(anIntent);
         }
 
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+
+            Toast.makeText(NewComplaint.this,
+                    getResources().getString(R.string.nc_compalint_rejected),
+                    Toast.LENGTH_LONG).show();
+        }
     }
 
 }
