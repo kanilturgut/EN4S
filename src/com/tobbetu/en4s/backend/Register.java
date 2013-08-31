@@ -11,7 +11,7 @@ import android.util.Log;
 
 public class Register {
 
-    private String registerInfo;
+    private final String registerInfo;
 
     public Register(String email, String first_name, String last_name,
             String password) {
@@ -46,6 +46,8 @@ public class Register {
     }
 
     public class RegisterFailedException extends Exception {
+
+        private static final long serialVersionUID = -4479773881373169658L;
 
     }
 }

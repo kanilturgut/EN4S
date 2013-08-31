@@ -3,7 +3,6 @@ package com.tobbetu.en4s.cache;
 import java.io.IOException;
 import java.util.HashMap;
 
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
@@ -59,6 +58,7 @@ public class Cache {
             try {
                 return Image.download(this.url);
             } catch (IOException e) {
+                cancel(true);
                 return null;
             }
         }
@@ -79,19 +79,12 @@ public class Cache {
             }
         }
 
-    }
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
 
-    /* Onur Can Sert */
+            // Buraya bir uyari yazabiliriz.
+        }
 
-    private Bitmap cropBitmapImage(Image img) {
-        Bitmap croppedBitmap = img.getBmp();
-        Log.e("Onur",
-                croppedBitmap.getHeight() + " - " + croppedBitmap.getWidth());
-        // croppedBitmap = Bitmap.createBitmap(croppedBitmap, 0, 100, 600, 600);
-        // // Resized resim �zerinden crop edildi
-        croppedBitmap = Bitmap.createBitmap(croppedBitmap, 0,
-                (croppedBitmap.getHeight() - croppedBitmap.getWidth()) / 2,
-                croppedBitmap.getWidth(), croppedBitmap.getWidth());
-        return croppedBitmap;
     }
 }

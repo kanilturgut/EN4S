@@ -17,6 +17,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.Log;
 import android.widget.ImageView;
@@ -27,6 +28,7 @@ import com.tobbetu.en4s.cache.Cache;
 import com.tobbetu.en4s.helpers.CommentRejectedException;
 import com.tobbetu.en4s.helpers.VoteRejectedException;
 
+@SuppressLint("SimpleDateFormat")
 public class Complaint implements Serializable {
 
     private static final long serialVersionUID = -4700299102770387240L;
@@ -44,7 +46,7 @@ public class Complaint implements Serializable {
     private String address;
     private String city;
     private List<String> imageURLs = null;
-    private final List<Image> images = new ArrayList<Image>();
+    // private final List<Image> images = new ArrayList<Image>();
     private List<Comment> comments = null;
     private int comments_count;
     private String public_URL;
