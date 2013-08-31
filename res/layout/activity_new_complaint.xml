@@ -50,7 +50,7 @@
                 android:layout_weight="1"
                 android:background="#FFFFFF"
                 android:gravity="center_vertical|center_horizontal"
-                android:text="100"
+                android:text="@string/dummyNumber"
                 android:textColor="#AAAAAA" />
         </LinearLayout>
 
@@ -101,13 +101,13 @@
             android:id="@+id/bTakeIt"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Çek" />
+            android:text="@string/takePictureButton" />
 
         <Button
             android:id="@+id/bReTake"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Yeniden Çek"
+            android:text="@string/re-takePictureButton"
             android:visibility="gone" />
 
         <LinearLayout
