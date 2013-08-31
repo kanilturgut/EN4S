@@ -26,6 +26,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Point;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
@@ -720,8 +721,18 @@ public class DetailsActivity extends Activity implements OnClickListener {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
+        String url = "";
+
         if (item.getItemId() == R.id.shareOnFacebook)
-            startFacebookSession();
+            url = "https://www.facebook.com/sharer/sharer.php?u="
+                    + comp.getPublicURL();
+
+        else if (item.getItemId() == R.id.shareOnTwitter)
+            url = "https://twitter.com/intent/tweet?url=" + comp.getPublicURL()
+                    + "&text=Problem%20Var!&via=enforceapp";
+
+        Intent twitterIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(twitterIntent);
 
         return super.onOptionsItemSelected(item);
     }
