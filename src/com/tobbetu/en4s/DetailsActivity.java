@@ -453,12 +453,13 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
     private void publishFeedDialog() {
         Bundle params = new Bundle();
-        params.putString("name", "Enforce");
-        params.putString("caption", "Let's Create Better Cities");
-        params.putString("description",
-                "Enforce is a mobile app for creating better cities.");
-        params.putString("link", "http://enforceapp.com");
-        params.putString("picture", "http://enforceapp.com/static/img/icon.png");
+        // params.putString("name", "Enforce");
+        // params.putString("caption", "Let's Create Better Cities");
+        // params.putString("description",
+        // "Enforce is a mobile app for creating better cities.");
+        params.putString("link", comp.getPublicURL());
+        // params.putString("picture",
+        // "http://enforceapp.com/static/img/icon.png");
 
         WebDialog feedDialog = (new WebDialog.FeedDialogBuilder(this,
                 Session.getActiveSession(), params)).setOnCompleteListener(

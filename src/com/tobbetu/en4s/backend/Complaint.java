@@ -47,6 +47,7 @@ public class Complaint implements Serializable {
     private final List<Image> images = new ArrayList<Image>();
     private List<Comment> comments = null;
     private int comments_count;
+    private String public_URL;
 
     public Complaint() {
     }
@@ -148,6 +149,14 @@ public class Complaint implements Serializable {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getPublicURL() {
+        return public_URL;
+    }
+
+    public void setPublicURL(String url) {
+        this.public_URL = "http://enforceapp.com" + url;
     }
 
     public List<Comment> getComments() throws IOException {
@@ -332,6 +341,7 @@ public class Complaint implements Serializable {
         obj.setAddress(elem.optString("address"));
         obj.setCity(elem.optString("city"));
         obj.comments_count = elem.optInt("comments_count");
+        obj.setPublicURL(elem.optString("public_url"));
 
         JSONArray upvoters = elem.optJSONArray("upvoters");
         Set<String> tmp = new HashSet<String>();
