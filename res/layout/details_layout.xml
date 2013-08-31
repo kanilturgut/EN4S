@@ -250,7 +250,8 @@
                             android:layout_marginTop="2dp"
                             android:text="@string/detail_item_comment_user"
                             android:textColor="#444444"
-                            android:textSize="12sp" />
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <View
@@ -300,14 +301,14 @@
                             android:layout_marginTop="2dp"
                             android:text="@string/detail_item_comment_user"
                             android:textColor="#444444"
-                            android:textSize="12sp" />
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
                     </LinearLayout>
 
                     <View
                         android:layout_width="fill_parent"
                         android:layout_height="0.1dp"
                         android:background="#AAAAAA" />
-
                 </LinearLayout>
             </LinearLayout>
 
