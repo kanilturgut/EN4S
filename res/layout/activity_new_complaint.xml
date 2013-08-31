@@ -107,7 +107,7 @@
             android:id="@+id/bReTake"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/re-takePictureButton"
+            android:text="@string/re_takePictureButton"
             android:visibility="gone" />
 
         <LinearLayout

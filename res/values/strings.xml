@@ -19,7 +19,7 @@
     <string name="photoDescription">Fotoğraf</string>
     <string name="adressName">Şikayetin Adresi</string>
     <string name="takePictureButton">Fotoğraf Çek</string>
-    <string name="re-takePictureButton">Yeniden Çek</string>
+    <string name="re_takePictureButton">Yeniden Çek</string>
     <string name="etNewComplaint">Şikayetinizi Girin</string>
     <string name="tvCategories">Kategori Seçin</string>
     <string name="loginButton">Giriş Yap</string>
