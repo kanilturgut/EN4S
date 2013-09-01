@@ -15,7 +15,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
@@ -229,6 +228,14 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                         Toast.LENGTH_SHORT).show();
             } else {
 
+                SharedPreferences.Editor preferencesEditor = loginPreferences
+                        .edit();
+                preferencesEditor.putString("username", etUsername.getText()
+                        .toString());
+                preferencesEditor.putString("password", etPassword.getText()
+                        .toString());
+                preferencesEditor.apply();
+
                 new LoginTask().execute("enforce", etUsername.getText()
                         .toString(), etPassword.getText().toString());
 
@@ -273,13 +280,6 @@ public class LoginPageActivity extends Activity implements OnClickListener {
         super.onActivityResult(requestCode, resultCode, data);
         Session.getActiveSession().onActivityResult(this, requestCode,
                 resultCode, data);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.login_page, menu);
-        return true;
     }
 
     class LoginPageLocationListener implements LocationListener {
@@ -370,17 +370,6 @@ public class LoginPageActivity extends Activity implements OnClickListener {
     private void startIntent() {
         Log.d(getClass().getName(), String.format("Location: %s, Login: %s",
                 locationFlag, loginFlag));
-
-        if ((loginPreferences.getAll().size() == 0)) {
-
-            SharedPreferences.Editor preferencesEditor = loginPreferences
-                    .edit();
-            preferencesEditor.putString("username", etUsername.getText()
-                    .toString());
-            preferencesEditor.putString("password", etPassword.getText()
-                    .toString());
-            preferencesEditor.apply();
-        }
 
         if (locationFlag == true && loginFlag == true) {
 
