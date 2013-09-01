@@ -64,7 +64,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
     private TextView tvComplaintAdress, tvComplaintTitle, tvComplaintCategory,
             tvReporter, tvReporterDate, tvYouAreNotAllowed;
-    private Button bUpVote, bDownVote, bMoreComment /* bShare */;
+    private Button bUpVote, bDownVote, bMoreComment;
     // private LinearLayout viewPagerLayout;
 
     // private ViewPager mViewPager;
@@ -459,7 +459,8 @@ public class DetailsActivity extends Activity implements OnClickListener {
         @Override
         protected void onPostExecute(String result) {
             Log.d(getClass().getName(), "In DownVoteTask onPostExecute");
-            Toast.makeText(getApplicationContext(), "Thanks for your downvote",
+            Toast.makeText(getApplicationContext(),
+                    getResources().getString(R.string.da_voting_accepted),
                     Toast.LENGTH_SHORT).show();
 
             bUpVote.setVisibility(Button.GONE);

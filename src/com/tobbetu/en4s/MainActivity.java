@@ -186,7 +186,7 @@ public class MainActivity extends FragmentActivity {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
                     ld.setCallback(drawableCallback);
                 } else {
-                    getActionBar().setBackgroundDrawable(ld);
+                    // getActionBar().setBackgroundDrawable(ld);
                 }
 
             } else {
@@ -200,7 +200,7 @@ public class MainActivity extends FragmentActivity {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
                     td.setCallback(drawableCallback);
                 } else {
-                    getActionBar().setBackgroundDrawable(td);
+                    // getActionBar().setBackgroundDrawable(td);
                 }
 
                 td.startTransition(200);

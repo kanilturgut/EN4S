@@ -1,27 +1,19 @@
 package com.tobbetu.en4s;
 
-import uk.co.senab.photoview.PhotoView;
-import android.app.ActionBar.LayoutParams;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 public class LauncherActivity extends Activity implements OnClickListener {
 
     private final String TAG = "LauncherActivity";
-    private ViewPager mViewPager;
-    private LinearLayout infoLayout;
     public static SharedPreferences firstTimeControlPref;
     private AlertDialog alertDialog = null;
 
@@ -66,13 +58,6 @@ public class LauncherActivity extends Activity implements OnClickListener {
 
                 firstTimeEditor.apply();
 
-                mViewPager = new HackyViewPager(this);
-                infoLayout = (LinearLayout) findViewById(R.id.enforceInfoImageLayout);
-                infoLayout.addView(mViewPager);
-                // setContentView(infoLayout);
-
-                mViewPager.setAdapter(new SamplePagerAdapter());
-
                 findViewById(R.id.bLauncherSignup).setOnClickListener(this);
                 findViewById(R.id.bLauncherLogin).setOnClickListener(this);
             } else {
@@ -110,58 +95,28 @@ public class LauncherActivity extends Activity implements OnClickListener {
             alertDialog.dismiss();
     }
 
-    static class SamplePagerAdapter extends PagerAdapter {
-
-        private static int[] sDrawables = { R.drawable.logo,
-                R.drawable.houston, R.drawable.lakers };
-
-        @Override
-        public int getCount() {
-            return sDrawables.length;
-        }
-
-        @Override
-        public View instantiateItem(ViewGroup container, int position) {
-            PhotoView photoView = new PhotoView(container.getContext());
-            photoView.setImageResource(sDrawables[position]);
-
-            // Now just add PhotoView to ViewPager and return it
-            container.addView(photoView, LayoutParams.WRAP_CONTENT,
-                    LayoutParams.WRAP_CONTENT);
-
-            return photoView;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View) object);
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return view == object;
-        }
-    }
-
     private void createAlert() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Exit ?");
-        builder.setMessage("Do you really want to quit ?");
+        builder.setTitle(getResources().getString(R.string.ma_quit_title));
+        builder.setMessage(getResources().getString(R.string.ma_quit_msg));
         builder.setCancelable(true);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
+        builder.setPositiveButton(
+                getResources().getString(R.string.ma_quit_ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
 
-                try {
-                    System.exit(0);
-                } catch (Throwable e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        });
-        builder.setNegativeButton("Cancel",
+                        try {
+                            System.exit(0);
+                        } catch (Throwable e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
+                });
+        builder.setNegativeButton(
+                getResources().getString(R.string.ma_quit_cancel),
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
