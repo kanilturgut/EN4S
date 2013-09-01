@@ -1,14 +1,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/shareOnFacebook"
-        android:icon="@drawable/facebook_action_bar"
-        android:showAsAction="ifRoom|withText"
-        android:title="@string/facebook_share"/>
-    <item
-        android:id="@+id/shareOnTwitter"
-        android:icon="@drawable/twitter_action_bar"
-        android:showAsAction="ifRoom|withText"
-        android:title="@string/twitter_share"/>
+        android:id="@+id/shareButton"
+        android:icon="@android:drawable/ic_menu_share"
+        android:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:id="@+id/shareOnFacebook"
+                android:icon="@drawable/facebook_action_bar"
+                android:showAsAction="ifRoom|withText"
+                android:title="@string/facebook_share"/>
+            <item
+                android:id="@+id/shareOnTwitter"
+                android:icon="@drawable/twitter_action_bar"
+                android:showAsAction="ifRoom|withText"
+                android:title="@string/twitter_share"/>
+        </menu>
+    </item>
 
 </menu>

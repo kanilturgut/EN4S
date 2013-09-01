@@ -606,16 +606,22 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
         String url = "";
 
-        if (item.getItemId() == R.id.shareOnFacebook)
+        if (item.getItemId() == R.id.shareOnFacebook) {
             url = "https://www.facebook.com/sharer/sharer.php?u="
                     + comp.getPublicURL();
 
-        else if (item.getItemId() == R.id.shareOnTwitter)
+            Intent twitterIntent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse(url));
+            startActivity(twitterIntent);
+
+        } else if (item.getItemId() == R.id.shareOnTwitter) {
             url = "https://twitter.com/intent/tweet?url=" + comp.getPublicURL()
                     + "&text=Problem%20Var!&via=enforceapp";
 
-        Intent twitterIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        startActivity(twitterIntent);
+            Intent twitterIntent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse(url));
+            startActivity(twitterIntent);
+        }
 
         return super.onOptionsItemSelected(item);
     }
