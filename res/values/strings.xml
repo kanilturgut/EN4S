@@ -149,5 +149,8 @@
     <string name="dialog_empty_comment">Lütfen yorumunuzu ekleyiniz</string>
     
     <string name="warning">Bir hata ile karşılaştık, lütfen tekrar deneyiniz</string>
+    
+    <string name="login_missing_content">Lütfen bütün alanları doldurunuz.</string>
+    <string name="location_failed">Üzgünüz fakat konum bilginize erişemiyoruz</string>
 
 </resources>

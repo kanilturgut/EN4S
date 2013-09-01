@@ -222,22 +222,12 @@ public class LoginPageActivity extends Activity implements OnClickListener {
         if (arg0.getId() == R.id.bLogin) {
             if (etUsername.getText().toString().equals("")
                     || etPassword.getText().toString().equals("")) {
-                Toast.makeText(getApplicationContext(),
-                        "Missing content, please fill username field !",
+                Toast.makeText(
+                        getApplicationContext(),
+                        getResources()
+                                .getString(R.string.login_missing_content),
                         Toast.LENGTH_SHORT).show();
             } else {
-
-                /* Share Share Share Preferences */
-                SharedPreferences.Editor preferencesEditor = loginPreferences
-                        .edit();
-                preferencesEditor.putString("username", etUsername.getText()
-                        .toString());
-                preferencesEditor.putString("password", etPassword.getText()
-                        .toString());
-                preferencesEditor.apply();
-                /* Share Share Share Preferences */
-
-                // unique bir kullanici mi ?
 
                 new LoginTask().execute("enforce", etUsername.getText()
                         .toString(), etPassword.getText().toString());
@@ -380,6 +370,18 @@ public class LoginPageActivity extends Activity implements OnClickListener {
     private void startIntent() {
         Log.d(getClass().getName(), String.format("Location: %s, Login: %s",
                 locationFlag, loginFlag));
+
+        if ((loginPreferences.getAll().size() == 0)) {
+
+            SharedPreferences.Editor preferencesEditor = loginPreferences
+                    .edit();
+            preferencesEditor.putString("username", etUsername.getText()
+                    .toString());
+            preferencesEditor.putString("password", etPassword.getText()
+                    .toString());
+            preferencesEditor.apply();
+        }
+
         if (locationFlag == true && loginFlag == true) {
 
             intentCreated = true;
@@ -485,7 +487,7 @@ public class LoginPageActivity extends Activity implements OnClickListener {
 
                 locationFlag = true;
                 Toast.makeText(getApplicationContext(),
-                        "We couldn't get your current location!",
+                        getResources().getString(R.string.location_failed),
                         Toast.LENGTH_SHORT).show();
                 startIntent();
             }
