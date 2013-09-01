@@ -89,7 +89,7 @@ public class NewComplaint extends Activity implements OnClickListener {
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        int frameWidth = size.x;
+        frameWidth = size.x;
         Log.e("frameWidth", frameWidth + "");
         double birsey = (frameWidth / 3.0);
         int frameHeight = (int) (birsey * 4.0);
@@ -381,6 +381,7 @@ public class NewComplaint extends Activity implements OnClickListener {
             }
         }
     };
+    private int frameWidth;
 
     private void createAlertToChooseACategory() {
 
@@ -444,5 +445,4 @@ public class NewComplaint extends Activity implements OnClickListener {
                     Toast.LENGTH_LONG).show();
         }
     }
-
 }

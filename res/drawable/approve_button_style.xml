@@ -12,7 +12,7 @@
                 android:width="3dp"
                 android:color="@color/approve_button_pressed_stroke" />
             <corners
-                android:radius="0dp" />
+                android:radius="1dp" />
             <padding
                 android:left="10dp"
                 android:top="10dp"
@@ -31,7 +31,7 @@
                 android:width="3dp"
                 android:color="@color/approve_button_stroke" />
             <corners
-                android:radius="0dp" />
+                android:radius="1dp" />
             <padding
                 android:left="10dp"
                 android:top="10dp"

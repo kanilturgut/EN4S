@@ -12,66 +12,68 @@ import com.tobbetu.en4s.LauncherActivity;
 
 public class Preview extends SurfaceView implements SurfaceHolder.Callback {
 
-	SurfaceHolder mHolder;
-	public Camera camera;
-	public static int pictureWidth;
-	public static int pictureHeight;
+    SurfaceHolder mHolder;
+    public Camera camera;
+    public static int pictureWidth;
+    public static int pictureHeight;
 
-	@SuppressWarnings("deprecation")
-	public Preview(Context context) {
-		super(context);
-		// Install a SurfaceHolder.Callback so we get notified when the
-		// underlying surface is created and destroyed.
-		mHolder = getHolder();
-		mHolder.addCallback(this);
-		mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+    @SuppressWarnings("deprecation")
+    public Preview(Context context) {
+        super(context);
+        // Install a SurfaceHolder.Callback so we get notified when the
+        // underlying surface is created and destroyed.
+        mHolder = getHolder();
+        mHolder.addCallback(this);
+        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
-		pictureWidth = LauncherActivity.firstTimeControlPref.getInt("deviceWidth", 0);
-		pictureHeight = LauncherActivity.firstTimeControlPref.getInt("deviceHeight", 0);
-		
-		Log.i("Preview", "Constructor");
-	}
+        pictureWidth = LauncherActivity.firstTimeControlPref.getInt(
+                "deviceWidth", 0);
+        pictureHeight = LauncherActivity.firstTimeControlPref.getInt(
+                "deviceHeight", 0);
 
-	@Override
-	public void surfaceChanged(SurfaceHolder holder, int format, int width,
-			int height) {
-		// TODO Auto-generated method stub
-		camera.setDisplayOrientation(90);
-		camera.startPreview();
-		Log.i("Preview", "surfaceChanged");
-	}
+        Log.i("Preview", "Constructor");
+    }
 
-	@Override
-	public void surfaceCreated(SurfaceHolder holder) {
-		// The Surface has been created, acquire the camera and tell it where
-		// to draw.
-		camera = Camera.open();
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width,
+            int height) {
+        // TODO Auto-generated method stub
+        camera.setDisplayOrientation(90);
+        camera.startPreview();
+        Log.i("Preview", "surfaceChanged");
+    }
 
-		try {
-			camera.setPreviewDisplay(holder);
-			Camera.Parameters parameters = camera.getParameters();
-			// List<Size> sizes=parameters.getSupportedPictureSizes();
-			parameters.setPictureSize(pictureWidth, pictureHeight);
-			camera.setParameters(parameters);
-			camera.startPreview();
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        // The Surface has been created, acquire the camera and tell it where
+        // to draw.
+        camera = Camera.open();
 
-			Log.i("Preview", "surfaceCreated");
+        try {
+            camera.setPreviewDisplay(holder);
+            Camera.Parameters parameters = camera.getParameters();
+            // List<Size> sizes=parameters.getSupportedPictureSizes();
+            parameters.setPictureSize(pictureWidth, pictureHeight);
+            camera.setParameters(parameters);
+            camera.startPreview();
 
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+            Log.i("Preview", "surfaceCreated");
 
-	@Override
-	public void surfaceDestroyed(SurfaceHolder holder) {
-		// Surface will be destroyed when we return, so stop the preview.
-		// Because the CameraDevice object is not a shared resource, it's very
-		// important to release it when the activity is paused.
-		camera.stopPreview();
-		camera.release();
-		camera = null;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
-		Log.i("Preview", "surfaceDestroyed");
-	}
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        // Surface will be destroyed when we return, so stop the preview.
+        // Because the CameraDevice object is not a shared resource, it's very
+        // important to release it when the activity is paused.
+        camera.stopPreview();
+        camera.release();
+        camera = null;
+
+        Log.i("Preview", "surfaceDestroyed");
+    }
 
 }
