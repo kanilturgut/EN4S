@@ -52,7 +52,6 @@ public class NewComplaint extends Activity implements OnClickListener {
     private Button bPush, bTakePhoto, bReTakePhoto, bImproveLocation;
     private ImageView ivTakenPhoto;
     private EditText etComplaintTitle;
-    private TextView tvNewComplaintAdress;
     private Spinner categoriesSpinner;
     private ProgressDialog progressDialog = null;
 
@@ -139,7 +138,6 @@ public class NewComplaint extends Activity implements OnClickListener {
             }
         });
 
-        tvNewComplaintAdress = (TextView) findViewById(R.id.tvNewComplaintAdress);
         ivTakenPhoto = (ImageView) findViewById(R.id.ivTakenPhoto);
 
         bTakePhoto = (Button) findViewById(R.id.bTakeIt);
@@ -182,14 +180,6 @@ public class NewComplaint extends Activity implements OnClickListener {
 
         Utils.addAMarker(myMap, position, false);
         Utils.centerAndZomm(myMap, position, 15);
-
-        try {
-            tvNewComplaintAdress.setText(Utils.getAddress(getBaseContext(),
-                    position));
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
 
         categoriesSpinner = (Spinner) findViewById(R.id.spinnerNewComplaintCategory);
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter
@@ -269,22 +259,21 @@ public class NewComplaint extends Activity implements OnClickListener {
                         "You have to fill title!", Toast.LENGTH_SHORT).show();
             else if (selectedCategoryIndex == 0) {
                 createAlertToChooseACategory();
+            } else if (img == null) {
+                Toast.makeText(NewComplaint.this,
+                        getResources().getString(R.string.nc_missing_title),
+                        Toast.LENGTH_LONG).show();
             } else {
-
                 progressDialog = ProgressDialog.show(NewComplaint.this,
                         getString(R.string.nc_cat_loading),
                         getString(R.string.nc_cat_sending));
 
                 newComplaint = new Complaint();
                 newComplaint.setTitle(etComplaintTitle.getText().toString());
-                try {
-                    newComplaint.setAddress(Utils.getAddress(getBaseContext(),
-                            position));
-                } catch (IOException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-                newComplaint.setCity(Utils.getCity(getBaseContext(), position));
+
+                newComplaint.setAddress("");
+
+                newComplaint.setCity("");
                 newComplaint.setCategory(CategoryI18n
                         .getEnglishName(selectedCategoryIndex));
                 newComplaint.setLatitude(latitude);
@@ -386,7 +375,7 @@ public class NewComplaint extends Activity implements OnClickListener {
     private void createAlertToChooseACategory() {
 
         AlertDialog.Builder alt_dlg_bld = new AlertDialog.Builder(this);
-        alt_dlg_bld.setTitle(R.string.nc_cat_missing_title);
+        alt_dlg_bld.setTitle(R.string.nc_cat_missing_cat);
         alt_dlg_bld.setMessage(R.string.nc_cat_missing_msg).setCancelable(true);
         alt_dlg_bld.setPositiveButton(R.string.nc_cat_missing_ok,
                 new DialogInterface.OnClickListener() {
@@ -425,8 +414,8 @@ public class NewComplaint extends Activity implements OnClickListener {
             progressDialog.dismiss();
 
             Toast.makeText(getApplicationContext(),
-                    "Your complaint is saved succesfully", Toast.LENGTH_SHORT)
-                    .show();
+                    getResources().getString(R.string.nc_accepted),
+                    Toast.LENGTH_SHORT).show();
 
             Intent anIntent = new Intent(NewComplaint.this,
                     DetailsActivity.class);

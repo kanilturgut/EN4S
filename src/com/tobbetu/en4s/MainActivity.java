@@ -25,7 +25,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.astuetz.viewpager.extensions.PagerSlidingTabStrip;
-import com.google.android.gms.maps.model.LatLng;
 
 public class MainActivity extends FragmentActivity {
 
@@ -143,21 +142,15 @@ public class MainActivity extends FragmentActivity {
             // dialog.show(getSupportFragmentManager(), "QuickContactFragment");
             // return true;
 
-            try {
-                Utils.getAddress(this, new LatLng(latitude, longitude));
-
+            if (latitude == 0 && longitude == 0) {
+                Toast.makeText(getApplicationContext(),
+                        getResources().getString(R.string.ma_no_location),
+                        Toast.LENGTH_LONG).show();
+            } else {
                 Intent i = new Intent(MainActivity.this, NewComplaint.class);
                 i.putExtra("user_lat", latitude);
                 i.putExtra("user_lng", longitude);
                 startActivity(i);
-
-            } catch (Exception e) {
-                Log.e(TAG,
-                        "Geocoder calismadigi icin new complaint acilmayacak");
-
-                Toast.makeText(getApplicationContext(),
-                        getResources().getString(R.string.ma_no_location),
-                        Toast.LENGTH_LONG).show();
             }
 
             break;

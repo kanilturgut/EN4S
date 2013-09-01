@@ -2,8 +2,6 @@ package com.tobbetu.en4s;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -14,8 +12,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -77,45 +73,45 @@ public class Utils {
      * @return Parametre olarak aldigi konumun acik adresini doner.
      * @throws IOException
      */
-    public static String getAddress(Context context, LatLng position)
-            throws IOException {
-
-        String address = "";
-
-        Geocoder gcd = new Geocoder(context, Locale.getDefault());
-
-        List<Address> addresses = gcd.getFromLocation(position.latitude,
-                position.longitude, 1);
-
-        if (addresses.size() > 0) {
-            for (int i = 0; i < addresses.get(0).getMaxAddressLineIndex(); i++) {
-                address += addresses.get(0).getAddressLine(i) + ",";
-            }
-        }
-
-        return address;
-
-    }
-
-    public static String getCity(Context context, LatLng position) {
-
-        String city = null;
-
-        Geocoder gcd = new Geocoder(context, Locale.getDefault());
-        List<Address> addresses;
-        try {
-            addresses = gcd.getFromLocation(position.latitude,
-                    position.longitude, 1);
-
-            if (addresses.size() > 0)
-                city = addresses.get(0).getLocality();
-
-        } catch (IOException e) {
-            Log.e(TAG, "Couldn't get city name", e);
-        }
-
-        return city;
-    }
+    // public static String getAddress(Context context, LatLng position)
+    // throws IOException {
+    //
+    // String address = "";
+    //
+    // Geocoder gcd = new Geocoder(context, Locale.getDefault());
+    //
+    // List<Address> addresses = gcd.getFromLocation(position.latitude,
+    // position.longitude, 1);
+    //
+    // if (addresses.size() > 0) {
+    // for (int i = 0; i < addresses.get(0).getMaxAddressLineIndex(); i++) {
+    // address += addresses.get(0).getAddressLine(i) + ",";
+    // }
+    // }
+    //
+    // return address;
+    //
+    // }
+    //
+    // public static String getCity(Context context, LatLng position) {
+    //
+    // String city = null;
+    //
+    // Geocoder gcd = new Geocoder(context, Locale.getDefault());
+    // List<Address> addresses;
+    // try {
+    // addresses = gcd.getFromLocation(position.latitude,
+    // position.longitude, 1);
+    //
+    // if (addresses.size() > 0)
+    // city = addresses.get(0).getLocality();
+    //
+    // } catch (IOException e) {
+    // Log.e(TAG, "Couldn't get city name", e);
+    // }
+    //
+    // return city;
+    // }
 
     public static void createAlert(Context context, String title,
             String message, boolean cancelable, String posButton,
