@@ -11,7 +11,6 @@
     <string name="action_contact">Contact</string>
     <string name="bugListTitle">Şikayetler</string>
     <string name="cName">Şikayet</string>
-    <string name="sendButton">Şikayet Gönder</string>
     <string name="cCategory">Şikayetin Kategorisi</string>
     <string name="voteUp">Şikayeti Onayla</string>
     <string name="voteDown">Vote Down</string>
@@ -38,13 +37,13 @@
     <string name="biggerMapInfo">İmleci sürükleyip bırakabilirsiniz.</string>
     <string name="title_activity_more_comments">Yorumlar</string>
     <string name="clickMapInfo">Saptanan konum hatalıysa, buraya tıklayarak düzeltebilirsiniz</string>
-    <string name="facebook_app_id">543199292406693</string>
+    <string name="facebook_app_id">527748010596076</string>
     <string name="facebook_share">Facebook\'ta Paylaş</string>
     <string name="twitter_share">Twitter\'da Paylaş</string>
     <string name="dummyNumber">0</string>
     <string name="veya">VEYA</string>
     <string name="share">PAYLAŞ</string>
-    
+
     <!-- Onur un yazdiklari -->
     <string name="login_logo">Login Logo</string>
     <string name="hint_login_username">E-Posta</string>
@@ -74,13 +73,6 @@
     <string name="new_item_taken_photo">Kullanıcının Çektiği Fotoğraf</string>
     <string name="new_item_address">Problemin Bulunduğu Konum</string>
     <string name="new_item_send_button">GÖNDER</string>
-
-    <!--
-    <string name="title_hot">Ateşli :)</string>
-    <string name="title_new">Yeni</string>
-    <string name="title_near">Yakın</string>
-    <string name="title_top">Çok Oy Alan</string>
-    -->
 
     <string name="title_hot">GÜNDEM</string>
     <string name="title_new">YENİ</string>
@@ -134,24 +126,19 @@
     <string name="da_already_voted">Bu soruna daha önceden oyunuzu verdiniz</string>
     <string name="da_voting_rejected">Üzgünüz fakat oyunuzu alamıyoruz.</string>
     <string name="da_add_the_first_comment">İlk Yorumu Siz Ekleyin</string>
-    
     <string name="login_failed_msg">Üzgünüz ama giriş yapamadınız.</string>
     <string name="no_internet_access_dialog">Üzgünüz ama internet erişiminiz olmadan bu uygulamayı kullanamazsınız.</string>
-    
     <string name="mca_comment_accepted">Yorumunuz kaydedilmiştir, teşekkür ederiz.</string>
     <string name="mca_comment_rejected">Üzgünüz fakat yorumunuzu kaydedemiyoruz.</string>
-    
     <string name="dialog_cancel">Kapat</string>
     <string name="dialog_comment">Yorum</string>
     <string name="dialog_comment_hint">Yorumunuzu giriniz</string>
     <string name="dialog_comment_is_sending">Yorumunuz gönderiliyor</string>
     <string name="dialog_comment_please_wait">Lütfen bekleyiniz</string>
     <string name="dialog_empty_comment">Lütfen yorumunuzu ekleyiniz</string>
-    
     <string name="warning">Bir hata ile karşılaştık, lütfen tekrar deneyiniz</string>
-    
-    <string name="login_missing_content">Lütfen bütün alanları doldurunuz.</string>
-    <string name="location_failed">Üzgünüz fakat konum bilginize erişemiyoruz</string>
-    <string name="reg_failed">Üzgünüz ama kayıt olamadınız</string>
+    <string name="login_missing_content" translatable="false">Lütfen bütün alanları doldurunuz.</string>
+    <string name="location_failed" translatable="false">Üzgünüz fakat konum bilginize erişemiyoruz</string>
+    <string name="reg_failed" translatable="false">Üzgünüz ama kayıt olamadınız</string>
 
 </resources>
