@@ -34,7 +34,7 @@
     <string name="reportDate">Report Date</string>
     <string name="title_activity_bigger_map">Enforce</string>
     <string name="biggerMapSendButton">Yeni Konumu Kaydet</string>
-    <string name="biggerMapInfo">İmleci sürükleyip bırakabilirsiniz.</string>
+    <string name="biggerMapInfo">İmlece uzun bastıktan sonra sürükleyip bırakabilirsiniz.</string>
     <string name="title_activity_more_comments">Yorumlar</string>
     <string name="clickMapInfo">Saptanan konum hatalıysa, buraya tıklayarak düzeltebilirsiniz</string>
     <string name="facebook_app_id">527748010596076</string>
@@ -102,6 +102,7 @@
     <string name="nc_cat_sending">Şikayetiniz gönderiliyor, beklediğiniz için teşekkür ederiz.</string>
     <string name="nc_compalint_rejected">Üzgünüz fakat şikayetiniz gönderilemedi.</string>
     <string name="nc_accepted">Şikayetiniz kaydedilmiştir, teşekkür ederiz</string>
+    <string name="nc_missing_photo">Fotoğraf çekmeden şikayet bildiriminde bulunamazsınız</string>
 
     <!-- Complaint -->
     <string name="comp_sec">%d saniye önce</string>

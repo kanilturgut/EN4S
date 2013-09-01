@@ -4,9 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -74,6 +72,7 @@ public class NewComplaint extends Activity implements OnClickListener {
 
     private OrientationEventListener mOrientationListener = null;
     private int deviceOrientation, photoOrientation;
+    private int frameWidth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -255,13 +254,16 @@ public class NewComplaint extends Activity implements OnClickListener {
         } else if (v.getId() == R.id.bPush) {
 
             if (etComplaintTitle.getText().toString().equals(""))
-                Toast.makeText(getApplicationContext(),
-                        "You have to fill title!", Toast.LENGTH_SHORT).show();
-            else if (selectedCategoryIndex == 0) {
-                createAlertToChooseACategory();
-            } else if (img == null) {
                 Toast.makeText(NewComplaint.this,
                         getResources().getString(R.string.nc_missing_title),
+                        Toast.LENGTH_LONG).show();
+            else if (selectedCategoryIndex == 0) {
+                Toast.makeText(NewComplaint.this,
+                        getResources().getString(R.string.nc_cat_missing_msg),
+                        Toast.LENGTH_LONG).show();
+            } else if (img == null) {
+                Toast.makeText(NewComplaint.this,
+                        getResources().getString(R.string.nc_missing_photo),
                         Toast.LENGTH_LONG).show();
             } else {
                 progressDialog = ProgressDialog.show(NewComplaint.this,
@@ -370,26 +372,6 @@ public class NewComplaint extends Activity implements OnClickListener {
             }
         }
     };
-    private int frameWidth;
-
-    private void createAlertToChooseACategory() {
-
-        AlertDialog.Builder alt_dlg_bld = new AlertDialog.Builder(this);
-        alt_dlg_bld.setTitle(R.string.nc_cat_missing_cat);
-        alt_dlg_bld.setMessage(R.string.nc_cat_missing_msg).setCancelable(true);
-        alt_dlg_bld.setPositiveButton(R.string.nc_cat_missing_ok,
-                new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-        AlertDialog alt_bld = alt_dlg_bld.create();
-        alt_bld.show();
-
-    }
 
     private class SaveTask extends AsyncTask<String, String, Complaint> {
 
