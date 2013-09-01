@@ -43,7 +43,8 @@
     <string name="twitter_share">Twitter\'da Paylaş</string>
     <string name="dummyNumber">0</string>
     <string name="veya">VEYA</string>
-
+    <string name="share">PAYLAŞ</string>
+    
     <!-- Onur un yazdiklari -->
     <string name="login_logo">Login Logo</string>
     <string name="hint_login_username">E-Posta</string>
