@@ -20,89 +20,104 @@ import com.tobbetu.en4s.backend.User;
 
 public class RegisterPageActivity extends Activity {
 
-	private final String TAG = "RegisterPageActivity";
-	private EditText etRegisterName, etRegisterSurname, etRegisterEmail, etRegisterPassword;
+    private final String TAG = "RegisterPageActivity";
+    private EditText etRegisterName, etRegisterSurname, etRegisterEmail,
+            etRegisterPassword;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_register_page);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_register_page);
 
-		getActionBar().hide();
-		getWindow().setSoftInputMode(
-				WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        getActionBar().hide();
+        getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-		etRegisterName = (EditText) findViewById(R.id.etRegisterName);
-		etRegisterSurname = (EditText) findViewById(R.id.etRegisterSurname);
-		etRegisterEmail = (EditText) findViewById(R.id.etRegisterEmail);
-		etRegisterPassword = (EditText) findViewById(R.id.etRegisterPassword);
+        etRegisterName = (EditText) findViewById(R.id.etRegisterName);
+        etRegisterSurname = (EditText) findViewById(R.id.etRegisterSurname);
+        etRegisterEmail = (EditText) findViewById(R.id.etRegisterEmail);
+        etRegisterPassword = (EditText) findViewById(R.id.etRegisterPassword);
 
-		findViewById(R.id.bSignup).setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View arg0) {
-				new RegisterTask().execute();
-			}
-		});
-	}
+        findViewById(R.id.bSignup).setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
 
-	class RegisterTask extends AsyncTask<String, String, User> {
+                if (etRegisterName.getText().toString().equals("")
+                        || etRegisterSurname.getText().toString().equals("")
+                        || etRegisterEmail.getText().toString().equals("")
+                        || etRegisterPassword.getText().toString().equals("")) {
 
-		String name = etRegisterName.getText().toString().trim();
-		String surname = etRegisterSurname.getText().toString().trim();
-		String email = etRegisterEmail.getText().toString().trim();
-		String password = etRegisterPassword.getText().toString().trim();
+                    Toast.makeText(
+                            getApplicationContext(),
+                            getResources().getString(
+                                    R.string.login_missing_content),
+                            Toast.LENGTH_SHORT).show();
+                } else
+                    new RegisterTask().execute();
+            }
+        });
+    }
 
-		@Override
-		protected User doInBackground(String... arg0) {
+    class RegisterTask extends AsyncTask<String, String, User> {
 
-			Register reg = new Register(email, name, surname, password);
-			try {
-				reg.register();
-			} catch (IOException e) {
-				e.printStackTrace();
-				Log.e(TAG, "failed because of IOException", e);
-				//Need to stop registration task
-				cancel(true);
+        String name = etRegisterName.getText().toString().trim();
+        String surname = etRegisterSurname.getText().toString().trim();
+        String email = etRegisterEmail.getText().toString().trim();
+        String password = etRegisterPassword.getText().toString().trim();
 
-			} catch (RegisterFailedException e) {
-				e.printStackTrace();
-				Log.e(TAG, "failed because of RegisterFailedException", e);
-				//Need to stop registration task
-				cancel(true);
-			}
+        @Override
+        protected User doInBackground(String... arg0) {
 
-			return null;
-		}
+            Register reg = new Register(email, name, surname, password);
+            try {
+                reg.register();
+            } catch (IOException e) {
+                e.printStackTrace();
+                Log.e(TAG, "failed because of IOException", e);
+                // Need to stop registration task
+                cancel(true);
 
-		@Override
-		protected void onPostExecute(User result) {
+            } catch (RegisterFailedException e) {
+                e.printStackTrace();
+                Log.e(TAG, "failed because of RegisterFailedException", e);
+                // Need to stop registration task
+                cancel(true);
+            }
 
-			// to give permission to kill LauncherActivity
-			LauncherActivity.shouldKillThisActivity = true;
+            return null;
+        }
 
-			SharedPreferences sp = getSharedPreferences("loginInfo",
-					MODE_PRIVATE);
-			SharedPreferences.Editor editor = sp.edit();
-			editor.putString("username", email);
-			editor.putString("password", password);
-			editor.apply();
+        @Override
+        protected void onPostExecute(User result) {
 
-			Intent i = new Intent(RegisterPageActivity.this,
-					LoginPageActivity.class);
-			startActivity(i);
-		}
+            // to give permission to kill LauncherActivity
+            LauncherActivity.shouldKillThisActivity = true;
 
-		@Override
-		protected void onCancelled() {
-			super.onCancelled();
-			Toast.makeText(RegisterPageActivity.this, "Oops", Toast.LENGTH_LONG).show();
-		}
-	}
+            SharedPreferences sp = getSharedPreferences("loginInfo",
+                    MODE_PRIVATE);
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putString("username", email);
+            editor.putString("password", password);
+            editor.apply();
 
-	@Override
-	protected void onStop() {
-		super.onStop();
+            Intent i = new Intent(RegisterPageActivity.this,
+                    LoginPageActivity.class);
+            startActivity(i);
+        }
 
-		finish();
-	}
+        @Override
+        protected void onCancelled() {
+            super.onCancelled();
+            Toast.makeText(RegisterPageActivity.this,
+                    getResources().getString(R.string.reg_failed),
+                    Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        finish();
+    }
 }

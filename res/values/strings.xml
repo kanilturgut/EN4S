@@ -152,5 +152,6 @@
     
     <string name="login_missing_content">Lütfen bütün alanları doldurunuz.</string>
     <string name="location_failed">Üzgünüz fakat konum bilginize erişemiyoruz</string>
+    <string name="reg_failed">Üzgünüz ama kayıt olamadınız</string>
 
 </resources>
