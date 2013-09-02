@@ -46,6 +46,7 @@
             android:layout_marginTop="30dp"
             android:background="@drawable/facebook_signup_button_style"
             android:textColor="#FFFFFF"
+            android:visibility="invisible"
             android:textSize="14sp"
             android:textStyle="bold" />
 
@@ -54,6 +55,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/faceButton"
+            android:visibility="invisible"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="20dp"
             android:orientation="vertical" >

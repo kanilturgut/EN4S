@@ -10,11 +10,14 @@ import org.json.JSONObject;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
+import android.provider.Settings;
 import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -250,5 +253,41 @@ public class Utils {
         NetworkInfo activeNetworkInfo = connectivityManager
                 .getActiveNetworkInfo();
         return activeNetworkInfo != null;
+    }
+
+    public static void turnGPSOn(Context c) {
+        Intent intent = new Intent("android.location.GPS_ENABLED_CHANGE");
+        intent.putExtra("enabled", true);
+        c.sendBroadcast(intent);
+
+        String provider = Settings.Secure.getString(c.getContentResolver(),
+                Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+        if (!provider.contains("gps")) { // if gps is disabled
+            final Intent poke = new Intent();
+            poke.setClassName("com.android.settings",
+                    "com.android.settings.widget.SettingsAppWidgetProvider");
+            poke.addCategory(Intent.CATEGORY_ALTERNATIVE);
+            poke.setData(Uri.parse("3"));
+            c.sendBroadcast(poke);
+
+        }
+    }
+
+    // automatic turn off the gps
+    public static void turnGPSOff(Context c) {
+        Intent intent = new Intent("android.location.GPS_ENABLED_CHANGE");
+        intent.putExtra("enabled", false);
+        c.sendBroadcast(intent);
+
+        String provider = Settings.Secure.getString(c.getContentResolver(),
+                Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+        if (provider.contains("gps")) { // if gps is enabled
+            final Intent poke = new Intent();
+            poke.setClassName("com.android.settings",
+                    "com.android.settings.widget.SettingsAppWidgetProvider");
+            poke.addCategory(Intent.CATEGORY_ALTERNATIVE);
+            poke.setData(Uri.parse("3"));
+            c.sendBroadcast(poke);
+        }
     }
 }
