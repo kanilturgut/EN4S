@@ -5,15 +5,18 @@ import java.util.Arrays;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -67,8 +70,10 @@ public class LoginPageActivity extends Activity implements OnClickListener {
 
     private AlertDialog alertDialog = null;
 
-    private Handler myLocationHandler = null;
-    private Runnable locationRunnable = null;
+    private Handler myNetworkLocationHandler = null;
+    private Handler myGPSLocationHandler = null;
+    private Runnable locationNetworkRunnable = null;
+    private Runnable locationGPSRunnable = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,8 +91,13 @@ public class LoginPageActivity extends Activity implements OnClickListener {
 
             lManager = (LocationManager) getSystemService(LOCATION_SERVICE);
             mlocListener = new LoginPageLocationListener();
-            lManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                    0, 0, mlocListener);
+
+            if (!lManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                buildAlertMessageNoGps();
+            } else {
+                lManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                        0, 0, mlocListener);
+            }
 
             setContentView(R.layout.activity_login_page);
             getActionBar().hide();
@@ -126,7 +136,7 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                             loginPreferences.getString("password", ""));
                 }
 
-                loginWithoutCurrentLocation();
+                startGPSThread();
             }
 
             faceButton.setOnErrorListener(new OnErrorListener() {
@@ -203,7 +213,7 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                                                                             "facebook_accessToken",
                                                                             "NONE"));
 
-                                            loginWithoutCurrentLocation();
+                                            startGPSThread();
                                             startIntent();
                                         }
                                     }
@@ -239,7 +249,7 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                 new LoginTask().execute("enforce", etUsername.getText()
                         .toString(), etPassword.getText().toString());
 
-                loginWithoutCurrentLocation();
+                startGPSThread();
             }
         }
 
@@ -250,10 +260,22 @@ public class LoginPageActivity extends Activity implements OnClickListener {
         super.onStop();
 
         if (intentCreated) {
-            myLocationHandler.removeCallbacks(locationRunnable);
-            locationRunnable = null;
-            myLocationHandler = null;
 
+            if (lManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+                turnGPSOff(this);
+            }
+
+            if (myGPSLocationHandler != null) {
+                myGPSLocationHandler.removeCallbacks(locationGPSRunnable);
+                locationGPSRunnable = null;
+                myGPSLocationHandler = null;
+            }
+            if (myNetworkLocationHandler != null) {
+                myNetworkLocationHandler
+                        .removeCallbacks(locationNetworkRunnable);
+                locationNetworkRunnable = null;
+                myNetworkLocationHandler = null;
+            }
             lManager.removeUpdates(mlocListener);
             lManager = null;
             mlocListener = null;
@@ -442,46 +464,127 @@ public class LoginPageActivity extends Activity implements OnClickListener {
         alertDialog.show();
     }
 
-    protected void loginWithoutCurrentLocation() {
+    protected void startGPSThread() {
 
-        Log.i(TAG, "loginWithoutCurrentLocation is started");
-
-        myLocationHandler = new Handler();
-
-        locationRunnable = new Runnable() {
+        Log.e(TAG, "on startGPSThread");
+        myGPSLocationHandler = new Handler();
+        locationGPSRunnable = new Runnable() {
 
             @Override
             public void run() {
+                Log.e(TAG, "on startGPSThread's run()");
+                if (latitude == 0 && longitude == 0) {
+                    lManager.requestLocationUpdates(
+                            LocationManager.NETWORK_PROVIDER, 0, 0,
+                            mlocListener);
+                }
 
-                try {
-                    Location lastLocation = lManager
-                            .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            }
+        };
+        myGPSLocationHandler.postDelayed(locationGPSRunnable, 10000);
+    }
 
-                    latitude = lastLocation.getLatitude();
-                    longitude = lastLocation.getLongitude();
-                } catch (Exception e) {
+    protected void startNetworkThread(long time) {
+        Log.e(TAG, "on startNetworkThread");
+        myNetworkLocationHandler = new Handler();
+        locationNetworkRunnable = new Runnable() {
+
+            @Override
+            public void run() {
+                Log.e(TAG, "on startNetworkThread's run()");
+                if (latitude == 0 && longitude == 0) {
                     try {
                         Location lastLocation = lManager
                                 .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
                         latitude = lastLocation.getLatitude();
                         longitude = lastLocation.getLongitude();
-                    } catch (Exception ex) {
-                        Log.e(TAG,
-                                "lastknwon location bile yok (0,0) olarak yolluyorum");
-                        latitude = 0;
-                        longitude = 0;
+                    } catch (Exception e) {
+                        try {
+                            Location lastLocation = lManager
+                                    .getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+                            latitude = lastLocation.getLatitude();
+                            longitude = lastLocation.getLongitude();
+                        } catch (Exception ex) {
+                            Log.e(TAG,
+                                    "lastknwon location bile yok (0,0) olarak yolluyorum");
+                            latitude = 0;
+                            longitude = 0;
+                        }
                     }
+
+                    locationFlag = true;
+                    Toast.makeText(getApplicationContext(),
+                            getResources().getString(R.string.location_failed),
+                            Toast.LENGTH_SHORT).show();
+                    startIntent();
                 }
 
-                locationFlag = true;
-                Toast.makeText(getApplicationContext(),
-                        getResources().getString(R.string.location_failed),
-                        Toast.LENGTH_SHORT).show();
-                startIntent();
             }
         };
+        myNetworkLocationHandler.postDelayed(locationNetworkRunnable, time);
+    }
 
-        myLocationHandler.postDelayed(locationRunnable, 10000);
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(
+                getResources().getString(R.string.login_gps_disabled))
+                .setCancelable(false)
+                .setPositiveButton(
+                        getResources().getString(R.string.login_yes_openGPS),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(final DialogInterface dialog,
+                                    final int id) {
+                                startActivity(new Intent(
+                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                            }
+                        })
+                .setNegativeButton(
+                        getResources().getString(R.string.login_no_closeGPS),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(final DialogInterface dialog,
+                                    final int id) {
+
+                                startNetworkThread(10000);
+                                lManager.requestLocationUpdates(
+                                        LocationManager.NETWORK_PROVIDER, 0, 0,
+                                        mlocListener);
+
+                                dialog.cancel();
+                            }
+                        });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        lManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0,
+                mlocListener);
+
+        startGPSThread();
+        startNetworkThread(20000);
+    }
+
+    private static void turnGPSOff(Context c) {
+        Intent intent = new Intent("android.location.GPS_ENABLED_CHANGE");
+        intent.putExtra("enabled", false);
+        c.sendBroadcast(intent);
+
+        String provider = Settings.Secure.getString(c.getContentResolver(),
+                Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
+        if (provider.contains("gps")) { // if gps is enabled
+            final Intent poke = new Intent();
+            poke.setClassName("com.android.settings",
+                    "com.android.settings.widget.SettingsAppWidgetProvider");
+            poke.addCategory(Intent.CATEGORY_ALTERNATIVE);
+            poke.setData(Uri.parse("3"));
+            c.sendBroadcast(poke);
+        }
     }
 }

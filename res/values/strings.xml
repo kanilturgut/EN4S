@@ -143,5 +143,10 @@
     <string name="login_missing_content" translatable="false">Lütfen bütün alanları doldurunuz.</string>
     <string name="location_failed" translatable="false">Üzgünüz fakat konum bilginize erişemiyoruz</string>
     <string name="reg_failed" translatable="false">Üzgünüz ama kayıt olamadınız</string>
+    
+    
+    <string name="login_gps_disabled">Daha hassas bir konum ölçümü için GPS\' inizi açmak ister misiniz?</string>
+    <string name="login_yes_openGPS">Evet</string>
+    <string name="login_no_closeGPS">Hayır</string>
 
 </resources>
