@@ -276,9 +276,12 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                 locationNetworkRunnable = null;
                 myNetworkLocationHandler = null;
             }
-            lManager.removeUpdates(mlocListener);
-            lManager = null;
-            mlocListener = null;
+
+            if (lManager != null) {
+                lManager.removeUpdates(mlocListener);
+                lManager = null;
+                mlocListener = null;
+            }
 
             finish();
         }
@@ -401,9 +404,6 @@ public class LoginPageActivity extends Activity implements OnClickListener {
             editor.putBoolean("didLogIn", true);
             editor.apply();
 
-            // after login, we need to stop location listener
-            lManager.removeUpdates(mlocListener);
-
             Intent i = new Intent(LoginPageActivity.this, MainActivity.class);
             i.putExtra("latitude", latitude);
             i.putExtra("longitude", longitude);
@@ -431,22 +431,23 @@ public class LoginPageActivity extends Activity implements OnClickListener {
     private void createAlert() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Exit ?");
-        builder.setMessage("Do you really want to quit ?");
+        builder.setTitle(R.string.ma_quit_title);
+        builder.setMessage(R.string.ma_quit_msg);
         builder.setCancelable(true);
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int id) {
+        builder.setPositiveButton(R.string.ma_quit_ok,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
 
-                try {
-                    System.exit(0);
-                } catch (Throwable e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-        });
-        builder.setNegativeButton("Cancel",
+                        try {
+                            System.exit(0);
+                        } catch (Throwable e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
+                });
+        builder.setNegativeButton(R.string.ma_quit_cancel,
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
