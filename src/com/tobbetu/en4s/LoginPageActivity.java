@@ -27,6 +27,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.facebook.FacebookException;
 import com.facebook.Request;
 import com.facebook.Request.GraphUserCallback;
@@ -99,6 +100,8 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                         0, 0, mlocListener);
             }
 
+            BugSenseHandler.initAndStartSession(LoginPageActivity.this,
+                    "5e2fc2c8");
             setContentView(R.layout.activity_login_page);
             getActionBar().hide();
 
@@ -252,7 +255,6 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                 startGPSThread();
             }
         }
-
     }
 
     @Override
@@ -359,11 +361,11 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                 return newLogin.makeRequest();
             } catch (IOException e) {
                 cancel(true);
-
+                BugSenseHandler.sendException(e);
                 Log.e(getClass().getName(), "IOException", e);
             } catch (LoginFailedException e) {
                 cancel(true);
-
+                BugSenseHandler.sendException(e);
                 Log.e(getClass().getName(), String.format(
                         "[Login Failed] username: %s, passwd: %s", loginArg0,
                         loginArg1), e);
@@ -388,6 +390,12 @@ public class LoginPageActivity extends Activity implements OnClickListener {
             Toast.makeText(LoginPageActivity.this,
                     getResources().getString(R.string.login_failed_msg),
                     Toast.LENGTH_LONG).show();
+
+            loginPreferences.edit().clear().commit();
+            intentCreated = true;
+            Intent i = new Intent(LoginPageActivity.this,
+                    LoginPageActivity.class);
+            startActivity(i);
         }
 
     }
