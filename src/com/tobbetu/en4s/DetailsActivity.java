@@ -129,9 +129,6 @@ public class DetailsActivity extends Activity implements OnClickListener {
         compPos = new LatLng(comp.getLatitude(), comp.getLongitude());
         myPosition = new LatLng(getIntent().getDoubleExtra("latitude", 0),
                 getIntent().getDoubleExtra("longitude", 0));
-        Log.i(TAG, "calisti");
-        Log.d(TAG, "latitude = " + getIntent().getDoubleExtra("latitude", 0));
-        Log.d(TAG, "longitude = " + getIntent().getDoubleExtra("longitude", 0));
 
         // Ipneligine sildim, saygilarimla.
         // Mustafa
