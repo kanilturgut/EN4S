@@ -3,6 +3,7 @@ package com.tobbetu.en4s;
 import java.util.List;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import com.tobbetu.en4s.backend.User;
 
 public class BugListAdapter extends ArrayAdapter<Complaint> {
 
+    private final String TAG = "BugListAdapter";
     private final Context context;
     private final List<Complaint> complaints;
     private final int tabPosition;
@@ -70,8 +72,12 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
         tvCommentCount.setText("" + complaint.getCommentsCount());
 
         ivUp = (ImageView) rowView.findViewById(R.id.ivUp);
-        if (complaint.alreadyUpVoted(user)) {
-            ivUp.setImageResource(R.drawable.up_voted);
+
+        try {
+            if (complaint.alreadyUpVoted(user))
+                ivUp.setImageResource(R.drawable.up_voted);
+        } catch (Exception e) {
+            Log.e(TAG, "alreadyUpVote calismadi");
         }
 
         // position
