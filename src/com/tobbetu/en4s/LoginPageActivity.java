@@ -101,7 +101,8 @@ public class LoginPageActivity extends Activity implements OnClickListener {
             }
 
             BugSenseHandler.initAndStartSession(LoginPageActivity.this,
-                    "5e2fc2c8");
+                    getResources().getString(R.string.bugSense_API_KEY));
+
             setContentView(R.layout.activity_login_page);
             getActionBar().hide();
 

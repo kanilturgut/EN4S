@@ -38,6 +38,7 @@
     <string name="title_activity_more_comments">Yorumlar</string>
     <string name="clickMapInfo">Saptanan konum hatalıysa, buraya tıklayarak düzeltebilirsiniz</string>
     <string name="facebook_app_id">527748010596076</string>
+    <string name="facebook_debug_id">543199292406693</string>
     <string name="facebook_share">Facebook\'ta Paylaş</string>
     <string name="twitter_share">Twitter\'da Paylaş</string>
     <string name="dummyNumber">0</string>
@@ -148,5 +149,7 @@
     <string name="login_gps_disabled">Daha hassas bir konum ölçümü için GPS\' inizi açmak ister misiniz?</string>
     <string name="login_yes_openGPS">Evet</string>
     <string name="login_no_closeGPS">Hayır</string>
+    
+    <string name="bugSense_API_KEY">5e2fc2c8</string>
 
 </resources>

@@ -606,14 +606,14 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
         if (item.getItemId() == R.id.shareOnFacebook) {
             url = "https://www.facebook.com/sharer/sharer.php?u="
-                    + comp.getPublicURL();
+                    + comp.getSlug_URL();
 
             Intent twitterIntent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse(url));
             startActivity(twitterIntent);
 
         } else if (item.getItemId() == R.id.shareOnTwitter) {
-            url = "https://twitter.com/intent/tweet?url=" + comp.getPublicURL()
+            url = "https://twitter.com/intent/tweet?url=" + comp.getSlug_URL()
                     + "&text=Problem%20Var!&via=enforceapp";
 
             Intent twitterIntent = new Intent(Intent.ACTION_VIEW,

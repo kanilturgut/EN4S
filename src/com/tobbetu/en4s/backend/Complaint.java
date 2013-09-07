@@ -50,6 +50,7 @@ public class Complaint implements Serializable {
     private List<Comment> comments = null;
     private int comments_count;
     private String public_URL;
+    private String slug_URL;
 
     public Complaint() {
     }
@@ -159,6 +160,14 @@ public class Complaint implements Serializable {
 
     public void setPublicURL(String url) {
         this.public_URL = "http://enforceapp.com" + url;
+    }
+
+    public String getSlug_URL() {
+        return slug_URL;
+    }
+
+    public void setSlug_URL(String url) {
+        this.slug_URL = "http://enforceapp.com" + url;
     }
 
     public List<Comment> getComments() throws IOException {
@@ -344,6 +353,7 @@ public class Complaint implements Serializable {
         obj.setCity(elem.optString("city"));
         obj.comments_count = elem.optInt("comments_count");
         obj.setPublicURL(elem.optString("public_url"));
+        obj.setSlug_URL(elem.optString("slug_url"));
 
         JSONArray upvoters = elem.optJSONArray("upvoters");
         Set<String> tmp = new HashSet<String>();
