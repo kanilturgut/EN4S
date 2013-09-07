@@ -127,10 +127,16 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                         .equals("null")) {
                     // facebook login
                     Log.d(TAG, "trying login with facebook");
+                    Log.d(TAG, loginPreferences.getString("facebook_email",
+                            "username@facebook.com"));
+                    Log.d(TAG, loginPreferences.getString(
+                            "facebook_accessToken", ""));
+
                     new LoginTask().execute("facebook", loginPreferences
-                            .getString("facebook_email", "NONE"),
-                            loginPreferences.getString("facebook_accessToken",
-                                    "NONE"));
+                            .getString("facebook_email",
+                                    "username@facebook.com"), loginPreferences
+                            .getString("facebook_accessToken", "NONE"));
+
                 } else { // normal login
                     Log.d(TAG, "trying login with username");
                     Log.d(TAG, loginPreferences.getString("username", ""));
@@ -268,23 +274,14 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                 turnGPSOff(this);
             }
 
-            if (myGPSLocationHandler != null) {
-                myGPSLocationHandler.removeCallbacks(locationGPSRunnable);
-                locationGPSRunnable = null;
-                myGPSLocationHandler = null;
-            }
-            if (myNetworkLocationHandler != null) {
-                myNetworkLocationHandler
-                        .removeCallbacks(locationNetworkRunnable);
-                locationNetworkRunnable = null;
-                myNetworkLocationHandler = null;
-            }
-
             if (lManager != null) {
                 lManager.removeUpdates(mlocListener);
                 lManager = null;
                 mlocListener = null;
             }
+
+            stopGPSThread();
+            stopNetworkThread();
 
             finish();
         }
@@ -489,9 +486,18 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                             mlocListener);
                 }
 
+                stopGPSThread();
             }
         };
         myGPSLocationHandler.postDelayed(locationGPSRunnable, 10000);
+    }
+
+    protected void stopGPSThread() {
+        if (myGPSLocationHandler != null) {
+            myGPSLocationHandler.removeCallbacks(locationGPSRunnable);
+            locationGPSRunnable = null;
+            myGPSLocationHandler = null;
+        }
     }
 
     protected void startNetworkThread(long time) {
@@ -536,6 +542,14 @@ public class LoginPageActivity extends Activity implements OnClickListener {
         myNetworkLocationHandler.postDelayed(locationNetworkRunnable, time);
     }
 
+    protected void stopNetworkThread() {
+        if (myNetworkLocationHandler != null) {
+            myNetworkLocationHandler.removeCallbacks(locationNetworkRunnable);
+            locationNetworkRunnable = null;
+            myNetworkLocationHandler = null;
+        }
+    }
+
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(
@@ -558,6 +572,7 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                             public void onClick(final DialogInterface dialog,
                                     final int id) {
 
+                                stopGPSThread();
                                 startNetworkThread(10000);
                                 lManager.requestLocationUpdates(
                                         LocationManager.NETWORK_PROVIDER, 0, 0,
