@@ -152,5 +152,7 @@
     <string name="login_no_closeGPS">Hayır</string>
     
     <string name="bugSense_API_KEY">5e2fc2c8</string>
+    <string name="google_maps_API_KEY">AIzaSyAoVkLARgnf57iAjp8v7JAmtcpI5T4vK30</string>
+    <string name="google_maps_debug_API_KEY">AIzaSyD90tpuXBtUo46E1TQwFJNq6wPd1sV4sy4</string>
 
 </resources>
