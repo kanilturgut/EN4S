@@ -41,6 +41,7 @@
     <string name="facebook_debug_id">543199292406693</string>
     <string name="facebook_share">Facebook\'ta Paylaş</string>
     <string name="twitter_share">Twitter\'da Paylaş</string>
+    <string name="google_plus_share">Google Plus\'da Paylaş</string>
     <string name="dummyNumber">0</string>
     <string name="veya">VEYA</string>
     <string name="share">PAYLAŞ</string>

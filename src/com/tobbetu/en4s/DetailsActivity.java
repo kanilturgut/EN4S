@@ -608,9 +608,9 @@ public class DetailsActivity extends Activity implements OnClickListener {
             url = "https://www.facebook.com/sharer/sharer.php?u="
                     + comp.getSlug_URL();
 
-            Intent twitterIntent = new Intent(Intent.ACTION_VIEW,
+            Intent facebookIntent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse(url));
-            startActivity(twitterIntent);
+            startActivity(facebookIntent);
 
         } else if (item.getItemId() == R.id.shareOnTwitter) {
             url = "https://twitter.com/intent/tweet?url=" + comp.getSlug_URL()
@@ -619,6 +619,12 @@ public class DetailsActivity extends Activity implements OnClickListener {
             Intent twitterIntent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse(url));
             startActivity(twitterIntent);
+        } else if (item.getItemId() == R.id.shareOnGooglePlus) {
+            url = "https://plus.google.com/share?url=" + comp.getSlug_URL();
+
+            Intent googlePlusIntent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse(url));
+            startActivity(googlePlusIntent);
         }
 
         return super.onOptionsItemSelected(item);
