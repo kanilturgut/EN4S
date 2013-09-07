@@ -41,7 +41,6 @@ public class MainActivity extends FragmentActivity {
     private double longitude = 0;
 
     private AlertDialog alertDialog = null;
-    private boolean closeFlag = false;
 
     private final String TAG = "MainActivity";
 
@@ -86,9 +85,6 @@ public class MainActivity extends FragmentActivity {
     @Override
     protected void onStop() {
         super.onStop();
-
-        Log.d(TAG, closeFlag + "");
-
         if (alertDialog != null)
             alertDialog.dismiss();
     }
@@ -105,7 +101,7 @@ public class MainActivity extends FragmentActivity {
                     public void onClick(DialogInterface dialog, int id) {
 
                         try {
-                            closeFlag = true;
+                            Utils.turnGPSOff(MainActivity.this);
                             System.exit(0);
                         } catch (Throwable e) {
                             // TODO Auto-generated catch block
@@ -119,7 +115,6 @@ public class MainActivity extends FragmentActivity {
                     public void onClick(DialogInterface dialog, int id) {
 
                         try {
-                            closeFlag = true;
                             dialog.dismiss();
                         } catch (Throwable e) {
                             // TODO Auto-generated catch block

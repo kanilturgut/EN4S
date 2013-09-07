@@ -131,6 +131,9 @@
     <string name="da_already_voted">Bu soruna daha önceden oyunuzu verdiniz</string>
     <string name="da_voting_rejected">Üzgünüz fakat oyunuzu alamıyoruz.</string>
     <string name="da_add_the_first_comment">İlk Yorumu Siz Ekleyin</string>
+    <string name="da_already_voted_error">Bu yoruma oy veremezsiniz.</string>
+    
+    
     <string name="login_failed_msg">Üzgünüz ama giriş yapamadınız.</string>
     <string name="no_internet_access_dialog">Üzgünüz ama internet erişiminiz olmadan bu uygulamayı kullanamazsınız.</string>
     <string name="mca_comment_accepted">Yorumunuz kaydedilmiştir, teşekkür ederiz.</string>

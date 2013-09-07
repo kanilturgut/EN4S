@@ -147,6 +147,7 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                 }
 
                 startGPSThread();
+                Log.e(TAG, "onCreate(150), startGPSThread");
             }
 
             faceButton.setOnErrorListener(new OnErrorListener() {
@@ -224,6 +225,8 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                                                                             "NONE"));
 
                                             startGPSThread();
+                                            Log.e(TAG,
+                                                    "onFacebook(228), startGPSThread");
                                             startIntent();
                                         }
                                     }
@@ -260,6 +263,7 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                         .toString(), etPassword.getText().toString());
 
                 startGPSThread();
+                Log.e(TAG, "onClick(266), startGPSThread");
             }
         }
     }
@@ -446,6 +450,7 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                     public void onClick(DialogInterface dialog, int id) {
 
                         try {
+                            Utils.turnGPSOff(getApplicationContext());
                             System.exit(0);
                         } catch (Throwable e) {
                             // TODO Auto-generated catch block
@@ -497,6 +502,8 @@ public class LoginPageActivity extends Activity implements OnClickListener {
             myGPSLocationHandler.removeCallbacks(locationGPSRunnable);
             locationGPSRunnable = null;
             myGPSLocationHandler = null;
+
+            Log.e(TAG, "onStopGPSThread");
         }
     }
 
@@ -593,7 +600,9 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                 mlocListener);
 
         startGPSThread();
+        Log.e(TAG, "onRestart, startGPSThread");
         startNetworkThread(20000);
+        Log.e(TAG, "onRestart, startNetworkThread");
     }
 
     private static void turnGPSOff(Context c) {

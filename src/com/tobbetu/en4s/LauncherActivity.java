@@ -108,6 +108,7 @@ public class LauncherActivity extends Activity implements OnClickListener {
                     public void onClick(DialogInterface dialog, int id) {
 
                         try {
+                            Utils.turnGPSOff(LauncherActivity.this);
                             System.exit(0);
                         } catch (Throwable e) {
                             // TODO Auto-generated catch block

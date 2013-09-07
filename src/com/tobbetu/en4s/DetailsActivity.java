@@ -63,7 +63,8 @@ public class DetailsActivity extends Activity implements OnClickListener {
     private final String TAG = "DetailsActivity";
 
     private TextView tvComplaintAdress, tvComplaintTitle, tvComplaintCategory,
-            tvReporter, tvReporterDate, tvYouAreNotAllowed;
+            tvReporter, tvReporterDate, tvYouAreAlreadyVoted,
+            tvYouAreNotAllowed;
     private Button bUpVote, bDownVote, bMoreComment;
     // private LinearLayout viewPagerLayout;
 
@@ -106,16 +107,27 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
         bUpVote = (Button) findViewById(R.id.bUpVote);
         bDownVote = (Button) findViewById(R.id.bDownVote);
-        if (comp.alreadyUpVoted(me)) {
+
+        // alreadyUpVoted en cok patlayan metodumuz :(
+        try {
+            if (comp.alreadyUpVoted(me)) {
+                bUpVote.setVisibility(Button.GONE);
+                bDownVote.setVisibility(Button.GONE);
+                tvYouAreAlreadyVoted = (TextView) findViewById(R.id.tvYouAreAlreadyVoted);
+                tvYouAreAlreadyVoted.setVisibility(TextView.VISIBLE);
+                tvYouAreAlreadyVoted.setText(getResources().getString(
+                        R.string.da_already_voted));
+            } else {
+                bUpVote.setOnClickListener(this);
+                bDownVote.setOnClickListener(this);
+            }
+        } catch (Exception e) {
             bUpVote.setVisibility(Button.GONE);
             bDownVote.setVisibility(Button.GONE);
             tvYouAreNotAllowed = (TextView) findViewById(R.id.tvYouAreNotAllowed);
             tvYouAreNotAllowed.setVisibility(TextView.VISIBLE);
             tvYouAreNotAllowed.setText(getResources().getString(
-                    R.string.da_already_voted));
-        } else {
-            bUpVote.setOnClickListener(this);
-            bDownVote.setOnClickListener(this);
+                    R.string.da_already_voted_error));
         }
         bMoreComment = (Button) findViewById(R.id.bMoreComment);
         bMoreComment.setOnClickListener(this);
@@ -155,7 +167,6 @@ public class DetailsActivity extends Activity implements OnClickListener {
         imageTask.execute(0);
 
         new CommentGetTask().execute();
-
     }
 
     @Override
@@ -419,9 +430,9 @@ public class DetailsActivity extends Activity implements OnClickListener {
             bUpVote.setVisibility(Button.GONE);
             bDownVote.setVisibility(Button.GONE);
 
-            tvYouAreNotAllowed = (TextView) findViewById(R.id.tvYouAreNotAllowed);
-            tvYouAreNotAllowed.setVisibility(TextView.VISIBLE);
-            tvYouAreNotAllowed.setText(getResources().getString(
+            tvYouAreAlreadyVoted = (TextView) findViewById(R.id.tvYouAreAlreadyVoted);
+            tvYouAreAlreadyVoted.setVisibility(TextView.VISIBLE);
+            tvYouAreAlreadyVoted.setText(getResources().getString(
                     R.string.da_already_voted));
         }
 
@@ -463,9 +474,9 @@ public class DetailsActivity extends Activity implements OnClickListener {
             bUpVote.setVisibility(Button.GONE);
             bDownVote.setVisibility(Button.GONE);
 
-            tvYouAreNotAllowed = (TextView) findViewById(R.id.tvYouAreNotAllowed);
-            tvYouAreNotAllowed.setVisibility(TextView.VISIBLE);
-            tvYouAreNotAllowed.setText(getResources().getString(
+            tvYouAreAlreadyVoted = (TextView) findViewById(R.id.tvYouAreAlreadyVoted);
+            tvYouAreAlreadyVoted.setVisibility(TextView.VISIBLE);
+            tvYouAreAlreadyVoted.setText(getResources().getString(
                     R.string.da_already_voted));
         }
 

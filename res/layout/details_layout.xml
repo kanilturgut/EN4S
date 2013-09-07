@@ -90,7 +90,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/tvYouAreNotAllowed"
+                android:id="@+id/tvYouAreAlreadyVoted"
                 android:layout_width="fill_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="10dp"
@@ -98,6 +98,20 @@
                 android:layout_weight="1"
                 android:gravity="center_horizontal"
                 android:text="@string/da_already_voted"
+                android:textColor="#222222"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tvYouAreNotAllowed"
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:text="@string/da_already_voted_error"
                 android:textColor="#222222"
                 android:textSize="14sp"
                 android:textStyle="bold"
