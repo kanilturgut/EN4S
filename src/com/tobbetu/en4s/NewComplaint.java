@@ -16,6 +16,7 @@ import android.hardware.Camera.PictureCallback;
 import android.hardware.SensorManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -33,6 +34,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -94,21 +96,38 @@ public class NewComplaint extends Activity implements OnClickListener {
 
         Log.i("ekran degerleri", frameWidth + "," + birsey + "," + frameHeight);
 
-        preview = new Preview(this);
-
-        if (Preview.pictureWidth == 0 || Preview.pictureHeight == 0) {
-
-            // Create an alert
-
-            finish();
-        }
-
         LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(
                 frameWidth, frameWidth);
         findViewById(R.id.photoButtonLL).setLayoutParams(llParams);
 
-        ((FrameLayout) findViewById(R.id.fLPreview)).addView(preview);
-        findViewById(R.id.fLPreview).setVisibility(View.VISIBLE);
+        // Yeni sikayet activity acilirken yasanan o uzun gecikme bu sekilde
+        // ortadan kalkmiyor ama en azindan kullanici yeni sikayet sayfasini
+        // gorerek bekliyor. ProgressBar, Onur' un yaptigi custom progress bar
+        // ile degistirelecek.
+        previewHandler = new Handler();
+        previewRunnable = new Runnable() {
+
+            @Override
+            public void run() {
+
+                Log.i(TAG, "run started");
+                preview = new Preview(NewComplaint.this);
+
+                if (Preview.pictureWidth == 0 || Preview.pictureHeight == 0) {
+
+                    // Create an alert
+
+                    finish();
+                }
+
+                ((FrameLayout) findViewById(R.id.fLPreview)).addView(preview);
+                findViewById(R.id.fLPreview).setVisibility(View.VISIBLE);
+
+                ProgressBar pbNewComplaintPhoto = (ProgressBar) findViewById(R.id.pbNewComplaintPhoto);
+                pbNewComplaintPhoto.setVisibility(ProgressBar.GONE);
+            }
+        };
+        previewHandler.postDelayed(previewRunnable, 1000);
 
         String savedComplainTitle = getIntent()
                 .getStringExtra("complaintTitle");
@@ -221,6 +240,10 @@ public class NewComplaint extends Activity implements OnClickListener {
     protected void onStop() {
         super.onStop();
         mOrientationListener.disable();
+
+        if (previewHandler != null)
+            previewHandler.removeCallbacks(previewRunnable);
+
         finish();
         Log.d(TAG, "in onStop");
     }
@@ -372,6 +395,8 @@ public class NewComplaint extends Activity implements OnClickListener {
             }
         }
     };
+    private Handler previewHandler;
+    private Runnable previewRunnable;
 
     private class SaveTask extends AsyncTask<String, String, Complaint> {
 

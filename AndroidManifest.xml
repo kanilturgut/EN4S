@@ -60,7 +60,7 @@
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyAoVkLARgnf57iAjp8v7JAmtcpI5T4vK30" />
+            android:value="@string/google_maps_API_KEY" />
 
         <activity
             android:name="com.tobbetu.en4s.NewComplaint"
