@@ -578,14 +578,17 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                             @Override
                             public void onClick(final DialogInterface dialog,
                                     final int id) {
-
-                                stopGPSThread();
-                                startNetworkThread(10000);
-                                lManager.requestLocationUpdates(
-                                        LocationManager.NETWORK_PROVIDER, 0, 0,
-                                        mlocListener);
-
-                                dialog.cancel();
+                                try {
+                                    stopGPSThread();
+                                    startNetworkThread(10000);
+                                    lManager.requestLocationUpdates(
+                                            LocationManager.NETWORK_PROVIDER,
+                                            0, 0, mlocListener);
+                                } catch (Exception e) {
+                                    BugSenseHandler.sendException(e);
+                                } finally {
+                                    dialog.cancel();
+                                }
                             }
                         });
         final AlertDialog alert = builder.create();
