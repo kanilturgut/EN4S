@@ -31,8 +31,7 @@ public class Register {
     }
 
     public void register() throws IOException, RegisterFailedException {
-        HttpResponse loginResponse = Requests.post(
-                "http://en4s.msimav.net/register", registerInfo);
+        HttpResponse loginResponse = Requests.post("/register", registerInfo);
         if (Requests.checkStatusCode(loginResponse, HttpStatus.SC_NOT_FOUND))
             throw new RegisterFailedException();
         if (Requests.checkStatusCode(loginResponse, HttpStatus.SC_CREATED)) {

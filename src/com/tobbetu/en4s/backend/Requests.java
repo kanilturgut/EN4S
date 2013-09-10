@@ -21,7 +21,7 @@ import android.util.Log;
 
 public class Requests {
 
-    public static final String url = "http://en4s.msimav.net/";
+    public static final String domain = "http://api.enforceapp.com";
     private static Requests instance = null;
     private HttpClient httpclient;
 
@@ -45,14 +45,14 @@ public class Requests {
         return httpclient;
     }
 
-    public static HttpResponse get(String uri) throws IOException {
-        return Requests.get(uri, null);
+    public static HttpResponse get(String path) throws IOException {
+        return Requests.get(path, null);
     }
 
-    public static HttpResponse get(String uri, HttpParams params)
+    public static HttpResponse get(String path, HttpParams params)
             throws IOException {
         HttpClient httpclient = Requests.getInstance().getHttpClient();
-        HttpGet getRequest = new HttpGet(uri);
+        HttpGet getRequest = new HttpGet(domain + path);
         if (params != null) {
             getRequest.setParams(params);
         }
@@ -61,10 +61,11 @@ public class Requests {
         return response;
     }
 
-    public static HttpResponse post(String uri, String data) throws IOException {
+    public static HttpResponse post(String path, String data)
+            throws IOException {
         HttpClient httpclient = Requests.getInstance().getHttpClient();
         HttpResponse response;
-        HttpPost postRequest = new HttpPost(uri);
+        HttpPost postRequest = new HttpPost(domain + path);
         postRequest.setHeader("Accept", "application/json");
         StringEntity input = null;
         try {
@@ -81,10 +82,10 @@ public class Requests {
         return response;
     }
 
-    public static HttpResponse put(String uri, String data) throws IOException {
+    public static HttpResponse put(String path, String data) throws IOException {
         HttpClient httpclient = Requests.getInstance().getHttpClient();
         HttpResponse response;
-        HttpPut putRequest = new HttpPut(uri);
+        HttpPut putRequest = new HttpPut(domain + path);
         putRequest.setHeader("Accept", "application/json");
 
         if (data != null) {

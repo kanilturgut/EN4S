@@ -130,8 +130,7 @@ public class Comment implements Serializable {
     public static List<Comment> getComments(Complaint c) throws IOException {
         List<Comment> list = new LinkedList<Comment>();
 
-        HttpResponse get = Requests.get("http://en4s.msimav.net/comments/"
-                + c.getId());
+        HttpResponse get = Requests.get("/comments/" + c.getId());
 
         if (!Requests.checkStatusCode(get, HttpStatus.SC_OK))
             Log.e("Complaint.getHotList", "[ERROR] Status Code: "

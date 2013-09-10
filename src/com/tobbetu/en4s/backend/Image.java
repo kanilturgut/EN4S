@@ -75,8 +75,7 @@ public class Image {
 
     public String upload(String oid) throws IOException {
         Log.d("[JSON]", this.toJSON());
-        HttpResponse post = Requests.post("http://en4s.msimav.net/upload/"
-                + oid, this.toJSON());
+        HttpResponse post = Requests.post("/upload/" + oid, this.toJSON());
         if (!Requests.checkStatusCode(post, HttpStatus.SC_CREATED)) {
             // TODO throw exception
             Log.d(getClass().getName(), "Status Code in not 201");
@@ -101,7 +100,8 @@ public class Image {
     }
 
     public static String getImageURL(String url, String size) {
-        String newUrl = String.format("http://en4s.msimav.net%s%s.jpg", url.substring(0, url.lastIndexOf('.')), size);
+        String newUrl = String.format("%s%s.jpg",
+                url.substring(0, url.lastIndexOf('.')), size);
         Log.d("Image.getSmallImage", newUrl);
         return newUrl;
     }

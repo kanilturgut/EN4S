@@ -246,8 +246,7 @@ public class Complaint implements Serializable {
 
     public Complaint save() throws IOException {
         Log.d("[JSON]", this.toJSON());
-        HttpResponse post = Requests.post("http://en4s.msimav.net/complaint",
-                this.toJSON());
+        HttpResponse post = Requests.post("/complaint", this.toJSON());
         if (!Requests.checkStatusCode(post, HttpStatus.SC_CREATED)) {
             // TODO throw exception
             Log.d(getClass().getName(), "Status Code in not 201");
@@ -264,9 +263,8 @@ public class Complaint implements Serializable {
 
     public void upvote(User me, String location) throws IOException,
             VoteRejectedException {
-        HttpResponse put = Requests.put(String.format(
-                "http://en4s.msimav.net/complaint/%s/upvote", this.id),
-                location);
+        HttpResponse put = Requests.put(
+                String.format("/complaint/%s/upvote", this.id), location);
         if (Requests.checkStatusCode(put, HttpStatus.SC_NOT_ACCEPTABLE)) {
             Log.e(getClass().getName(), "Upvote Rejected");
             throw new VoteRejectedException("Upvote Rejected");
@@ -282,9 +280,8 @@ public class Complaint implements Serializable {
     }
 
     public void downvote(String location) throws IOException {
-        HttpResponse put = Requests.put(String.format(
-                "http://en4s.msimav.net/complaint/%s/downvote", this.id),
-                location);
+        HttpResponse put = Requests.put(
+                String.format("/complaint/%s/downvote", this.id), location);
         if (Requests.checkStatusCode(put, HttpStatus.SC_NOT_ACCEPTABLE)) {
             Log.e(getClass().getName(), "Downvote Rejected");
             // TODO throw new Exception("Upvote Rejected");
@@ -299,8 +296,7 @@ public class Complaint implements Serializable {
         } catch (JSONException e) {
             Log.d("Complaint", "JSONException on comment", e);
         }
-        HttpResponse put = Requests.put(
-                String.format("http://en4s.msimav.net/comments/%s", this.id),
+        HttpResponse put = Requests.put(String.format("/comments/%s", this.id),
                 comment.toString());
 
         if (Requests.checkStatusCode(put, HttpStatus.SC_NOT_ACCEPTABLE)) {
@@ -403,8 +399,7 @@ public class Complaint implements Serializable {
 
     public static List<Complaint> getHotList() throws IOException {
         // TODO not forget to change that
-        HttpResponse get = Requests
-                .get("http://en4s.msimav.net//complaint/hot");
+        HttpResponse get = Requests.get("/complaint/hot");
 
         if (!Requests.checkStatusCode(get, HttpStatus.SC_OK))
             Log.e("Complaint.getHotList", "[ERROR] Status Code: "
@@ -414,8 +409,7 @@ public class Complaint implements Serializable {
     }
 
     public static List<Complaint> getNewList() throws IOException {
-        HttpResponse get = Requests
-                .get("http://en4s.msimav.net/complaint/recent");
+        HttpResponse get = Requests.get("/complaint/recent");
 
         if (!Requests.checkStatusCode(get, HttpStatus.SC_OK))
             Log.e("Complaint.getHotList", "[ERROR] Status Code: "
@@ -425,7 +419,7 @@ public class Complaint implements Serializable {
     }
 
     public static List<Complaint> getTopList() throws IOException {
-        HttpResponse get = Requests.get("http://en4s.msimav.net/complaint/top");
+        HttpResponse get = Requests.get("/complaint/top");
 
         if (!Requests.checkStatusCode(get, HttpStatus.SC_OK))
             Log.e("Complaint.getHotList", "[ERROR] Status Code: "
@@ -436,10 +430,9 @@ public class Complaint implements Serializable {
 
     public static List<Complaint> getNearList(double lat, double lon)
             throws IOException {
-        HttpResponse get = Requests
-                .get(String
-                        .format("http://en4s.msimav.net/complaint/near?latitude=%s&longitude=%s",
-                                Double.toString(lat), Double.toString(lon)));
+        HttpResponse get = Requests.get(String.format(
+                "/complaint/near?latitude=%s&longitude=%s",
+                Double.toString(lat), Double.toString(lon)));
         if (!Requests.checkStatusCode(get, HttpStatus.SC_OK))
             Log.e("Complaint.getHotList", "[ERROR] Status Code: "
                     + get.getStatusLine().getStatusCode());
