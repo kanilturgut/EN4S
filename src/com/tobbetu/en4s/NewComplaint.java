@@ -1,7 +1,6 @@
 package com.tobbetu.en4s;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -14,7 +13,6 @@ import android.graphics.Point;
 import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.SensorManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -44,6 +42,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.tobbetu.en4s.backend.Complaint;
 import com.tobbetu.en4s.backend.Image;
+import com.tobbetu.en4s.helpers.BetterAsyncTask;
 import com.tobbetu.en4s.helpers.CategoryI18n;
 import com.tobbetu.en4s.helpers.Preview;
 
@@ -398,26 +397,18 @@ public class NewComplaint extends Activity implements OnClickListener {
     private Handler previewHandler;
     private Runnable previewRunnable;
 
-    private class SaveTask extends AsyncTask<String, String, Complaint> {
+    private class SaveTask extends BetterAsyncTask<Void, Complaint> {
 
         @Override
-        protected Complaint doInBackground(String... params) {
-            Complaint savedComplaint = null;
-            try {
-                savedComplaint = newComplaint.save();
-                String url = img.upload(savedComplaint.getId());
-                savedComplaint.addJustUploadedImage(url);
-            } catch (IOException e) {
-                cancel(true);
-                Log.e(TAG, "SaveTask doInBackground");
-            }
+        protected Complaint task(Void... arg0) throws Exception {
+            Complaint savedComplaint = newComplaint.save();
+            String url = img.upload(savedComplaint.getId());
+            savedComplaint.addJustUploadedImage(url);
             return savedComplaint;
         }
 
         @Override
-        protected void onPostExecute(Complaint result) {
-            super.onPostExecute(result);
-
+        protected void onSuccess(Complaint result) {
             progressDialog.dismiss();
 
             Toast.makeText(getApplicationContext(),
@@ -433,9 +424,8 @@ public class NewComplaint extends Activity implements OnClickListener {
         }
 
         @Override
-        protected void onCancelled() {
-            super.onCancelled();
-
+        protected void onFailure(Exception error) {
+            Log.e(TAG, "SaveTask Failed", error);
             Toast.makeText(NewComplaint.this,
                     getResources().getString(R.string.nc_compalint_rejected),
                     Toast.LENGTH_LONG).show();

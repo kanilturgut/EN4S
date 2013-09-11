@@ -3,10 +3,11 @@ package com.tobbetu.en4s;
 import java.io.IOException;
 import java.util.List;
 
+import org.json.JSONException;
+
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,9 +17,11 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.google.android.gms.maps.model.LatLng;
 import com.tobbetu.en4s.backend.Comment;
 import com.tobbetu.en4s.backend.Complaint;
+import com.tobbetu.en4s.helpers.BetterAsyncTask;
 import com.tobbetu.en4s.helpers.CommentRejectedException;
 
 public class MoreCommentsActivity extends Activity {
@@ -85,39 +88,39 @@ public class MoreCommentsActivity extends Activity {
         finish();
     }
 
-    private class CommentAsyncTask extends
-            AsyncTask<String, String, List<Comment>> {
+    private class CommentAsyncTask extends BetterAsyncTask<Void, List<Comment>> {
 
         @Override
-        protected List<Comment> doInBackground(String... arg0) {
-            try {
-                return complaint.getComments();
-            } catch (IOException e) {
-                cancel(true);
-
-                e.printStackTrace();
-                return null;
-            }
+        protected List<Comment> task(Void... arg0) throws Exception {
+            return complaint.getComments();
         }
 
         @Override
-        protected void onPostExecute(List<Comment> result) {
+        protected void onSuccess(List<Comment> result) {
             // FIXMEE: I have no idea which context to use, so selected randomly
             lvMoreComments.setAdapter(new CommentListAdapter(getBaseContext(),
                     result));
         }
 
         @Override
-        protected void onCancelled() {
-            super.onCancelled();
+        protected void onFailure(Exception error) {
+            if (error instanceof IOException) {
+                Toast.makeText(getApplicationContext(),
+                        getResources().getString(R.string.network_failed_msg),
+                        Toast.LENGTH_SHORT).show();
+            } else if (error instanceof JSONException) {
+                BugSenseHandler
+                        .sendEvent("CommentAsyncTask failed because of JSONException");
+                BugSenseHandler.sendException(error);
+                Toast.makeText(getApplicationContext(),
+                        getResources().getString(R.string.api_changed),
+                        Toast.LENGTH_SHORT).show();
+            }
 
-            Toast.makeText(getApplicationContext(),
-                    getResources().getString(R.string.mca_comment_rejected),
-                    Toast.LENGTH_SHORT).show();
         }
     }
 
-    private class CommentSaveTask extends AsyncTask<String, String, String> {
+    private class CommentSaveTask extends BetterAsyncTask<String, Void> {
 
         private ProgressDialog pd = null;
 
@@ -133,30 +136,17 @@ public class MoreCommentsActivity extends Activity {
         }
 
         @Override
-        protected String doInBackground(String... arg0) {
-
-            try {
-                complaint.comment(arg0[0]);
-            } catch (IOException e) {
-                e.printStackTrace();
-                cancel(true);
-                Log.e(TAG, "CommentSaveTask IOException ", e);
-            } catch (CommentRejectedException e) {
-                e.printStackTrace();
-                cancel(true);
-                Log.e(TAG, "CommentSaveTask CommentRejectedException ", e);
-            }
-
+        protected Void task(String... arg0) throws Exception {
+            complaint.comment(arg0[0]);
             return null;
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onSuccess(Void result) {
+            pd.dismiss();
             Toast.makeText(getApplicationContext(),
                     getResources().getString(R.string.mca_comment_accepted),
                     Toast.LENGTH_SHORT).show();
-
-            pd.dismiss();
 
             Intent i = new Intent(MoreCommentsActivity.this,
                     MoreCommentsActivity.class);
@@ -167,14 +157,25 @@ public class MoreCommentsActivity extends Activity {
         }
 
         @Override
-        protected void onCancelled() {
-            super.onCancelled();
-
+        protected void onFailure(Exception error) {
             pd.dismiss();
-
-            Toast.makeText(MoreCommentsActivity.this,
-                    getResources().getString(R.string.mca_comment_rejected),
-                    Toast.LENGTH_LONG).show();
+            Log.e(TAG, "CommentSaveTask Failed ", error);
+            if (error instanceof IOException) {
+                BugSenseHandler.sendException(error);
+                Toast.makeText(MoreCommentsActivity.this,
+                        getResources().getString(R.string.network_failed_msg),
+                        Toast.LENGTH_LONG).show();
+            } else if (error instanceof JSONException) {
+                BugSenseHandler.sendException(error);
+                Toast.makeText(MoreCommentsActivity.this,
+                        getResources().getString(R.string.api_changed),
+                        Toast.LENGTH_LONG).show();
+            } else if (error instanceof CommentRejectedException) {
+                Toast.makeText(
+                        MoreCommentsActivity.this,
+                        getResources().getString(R.string.mca_comment_rejected),
+                        Toast.LENGTH_LONG).show();
+            }
         }
 
     }
