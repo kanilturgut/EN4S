@@ -28,16 +28,11 @@ public abstract class BetterAsyncTask<Params, Result> extends
 
     @Override
     protected final void onPostExecute(Boolean result) {
-        super.onPostExecute(result);
-        if (result) {
-            onSuccess(value);
-        } else {
-            onFailure(error);
-        }
+        onSuccess(value);
     }
 
     @Override
-    protected final void onCancelled() {
+    protected final void onCancelled(Boolean result) {
         onFailure(error);
     }
 }
