@@ -37,7 +37,8 @@ public abstract class Login {
         this.loginInfo = login.toString();
     }
 
-    public User makeRequest() throws IOException, LoginFailedException {
+    public User makeRequest() throws IOException, LoginFailedException,
+            JSONException {
         HttpResponse loginResponse = Requests.post(this.url, loginInfo);
         if (Requests.checkStatusCode(loginResponse, HttpStatus.SC_NOT_FOUND))
             throw new LoginFailedException();

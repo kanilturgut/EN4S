@@ -336,22 +336,22 @@ public class Complaint implements Serializable {
         return newObj.toString();
     }
 
-    private static Complaint fromJSON(JSONObject elem) {
+    private static Complaint fromJSON(JSONObject elem) throws JSONException {
         Complaint obj = new Complaint();
 
-        obj.setId(elem.optString("_id"));
-        obj.setTitle(elem.optString("title"));
-        obj.setReporter(User.fromJSON(elem.optJSONObject("user")));
-        obj.setCategory(elem.optString("category"));
-        obj.setUpVote(elem.optInt("upvote_count", 0));
-        obj.setDownVote(elem.optInt("downvote_count", 0));
-        obj.setAddress(elem.optString("address"));
-        obj.setCity(elem.optString("city"));
-        obj.comments_count = elem.optInt("comments_count");
-        obj.setPublicURL(elem.optString("public_url"));
-        obj.setSlug_URL(elem.optString("slug_url"));
+        obj.setId(elem.getString("_id"));
+        obj.setTitle(elem.getString("title"));
+        obj.setReporter(User.fromJSON(elem.getJSONObject("user")));
+        obj.setCategory(elem.getString("category"));
+        obj.setUpVote(elem.getInt("upvote_count"));
+        obj.setDownVote(elem.getInt("downvote_count"));
+        obj.setAddress(elem.getString("address"));
+        obj.setCity(elem.getString("city"));
+        obj.comments_count = elem.getInt("comments_count");
+        obj.setPublicURL(elem.getString("public_url"));
+        obj.setSlug_URL(elem.getString("slug_url"));
 
-        JSONArray upvoters = elem.optJSONArray("upvoters");
+        JSONArray upvoters = elem.getJSONArray("upvoters");
         Set<String> tmp = new HashSet<String>();
         for (int i = 0; i < upvoters.length(); i++) {
             String user = upvoters.optString(i);
@@ -361,18 +361,19 @@ public class Complaint implements Serializable {
 
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
         try {
-            obj.setDate(df.parse(elem.optString("date")));
+            obj.setDate(df.parse(elem.getString("date")));
         } catch (ParseException e) {
             Log.e("Complaint.fromJSON",
-                    "Date Parse Error: " + elem.optString("date"), e);
+                    "Date Parse Error: " + elem.getString("date"), e);
+            obj.setDate(new Date());
         }
 
-        JSONArray geo = elem.optJSONArray("location");
-        obj.setLatitude(geo.optDouble(0, 0));
-        obj.setLongitude(geo.optDouble(1, 0));
+        JSONArray geo = elem.getJSONArray("location");
+        obj.setLatitude(geo.getDouble(0));
+        obj.setLongitude(geo.getDouble(1));
 
         if (elem.has("pics")) {
-            JSONArray pics = elem.optJSONArray("pics");
+            JSONArray pics = elem.getJSONArray("pics");
             ArrayList<String> picsList = new ArrayList<String>();
             for (int i = 0; i < pics.length(); i++) {
                 picsList.add(pics.optString(i));

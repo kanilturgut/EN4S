@@ -107,14 +107,14 @@ public class Comment implements Serializable {
         }
     }
 
-    public static Comment fromJSON(JSONObject elem) {
+    public static Comment fromJSON(JSONObject elem) throws JSONException {
         Comment obj = new Comment();
 
-        obj.setId(elem.optString("_id"));
-        obj.setAuthor(User.fromJSON(elem.optJSONObject("author")));
-        obj.setText(elem.optString("text"));
-        obj.setLike(elem.optInt("like"));
-        obj.setDislike(elem.optInt("dislike"));
+        obj.setId(elem.getString("_id"));
+        obj.setAuthor(User.fromJSON(elem.getJSONObject("author")));
+        obj.setText(elem.getString("text"));
+        obj.setLike(elem.getInt("like"));
+        obj.setDislike(elem.getInt("dislike"));
 
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
         try {
