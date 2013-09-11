@@ -170,7 +170,7 @@ public class Complaint implements Serializable {
         this.slug_URL = "http://enforceapp.com" + url;
     }
 
-    public List<Comment> getComments() throws IOException {
+    public List<Comment> getComments() throws IOException, JSONException {
         if (comments_count == 0) {
             return new LinkedList<Comment>();
         } else if (comments != null) {
@@ -384,60 +384,50 @@ public class Complaint implements Serializable {
         return obj;
     }
 
-    private static List<Complaint> parseList(String jsonResponse) {
+    private static List<Complaint> parseList(String jsonResponse)
+            throws JSONException {
         List<Complaint> list = new LinkedList<Complaint>();
-        try {
-            JSONArray results = new JSONArray(jsonResponse);
-            for (int i = 0; i < results.length(); i++) {
-                JSONObject item = results.getJSONObject(i);
-                list.add(Complaint.fromJSON(item));
-            }
-        } catch (JSONException e) {
-            Log.e("Complaint.parseList", "Unexpected JSON Error", e);
+
+        JSONArray results = new JSONArray(jsonResponse);
+        for (int i = 0; i < results.length(); i++) {
+            JSONObject item = results.getJSONObject(i);
+            list.add(Complaint.fromJSON(item));
         }
         return list;
     }
 
-    public static List<Complaint> getHotList() throws IOException {
+    public static List<Complaint> getList(String url) throws IOException,
+            JSONException {
         // TODO not forget to change that
-        HttpResponse get = Requests.get("/complaint/hot");
+        HttpResponse get = Requests.get(url);
 
         if (!Requests.checkStatusCode(get, HttpStatus.SC_OK))
-            Log.e("Complaint.getHotList", "[ERROR] Status Code: "
+            Log.e("Complaint.getList", "[ERROR] Status Code: "
                     + get.getStatusLine().getStatusCode());
         String response = Requests.readResponse(get);
         return Complaint.parseList(response);
     }
 
-    public static List<Complaint> getNewList() throws IOException {
-        HttpResponse get = Requests.get("/complaint/recent");
+    public static List<Complaint> getHotList() throws IOException,
+            JSONException {
+        return Complaint.getList("/complaint/hot");
 
-        if (!Requests.checkStatusCode(get, HttpStatus.SC_OK))
-            Log.e("Complaint.getHotList", "[ERROR] Status Code: "
-                    + get.getStatusLine().getStatusCode());
-        String response = Requests.readResponse(get);
-        return Complaint.parseList(response);
     }
 
-    public static List<Complaint> getTopList() throws IOException {
-        HttpResponse get = Requests.get("/complaint/top");
+    public static List<Complaint> getNewList() throws IOException,
+            JSONException {
+        return Complaint.getList("/complaint/recent");
+    }
 
-        if (!Requests.checkStatusCode(get, HttpStatus.SC_OK))
-            Log.e("Complaint.getHotList", "[ERROR] Status Code: "
-                    + get.getStatusLine().getStatusCode());
-        String response = Requests.readResponse(get);
-        return Complaint.parseList(response);
+    public static List<Complaint> getTopList() throws IOException,
+            JSONException {
+        return Complaint.getList("/complaint/top");
     }
 
     public static List<Complaint> getNearList(double lat, double lon)
-            throws IOException {
-        HttpResponse get = Requests.get(String.format(
+            throws IOException, JSONException {
+        return Complaint.getList(String.format(
                 "/complaint/near?latitude=%s&longitude=%s",
                 Double.toString(lat), Double.toString(lon)));
-        if (!Requests.checkStatusCode(get, HttpStatus.SC_OK))
-            Log.e("Complaint.getHotList", "[ERROR] Status Code: "
-                    + get.getStatusLine().getStatusCode());
-        String response = Requests.readResponse(get);
-        return Complaint.parseList(response);
     }
 }

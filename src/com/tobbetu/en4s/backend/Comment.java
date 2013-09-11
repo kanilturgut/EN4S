@@ -127,7 +127,8 @@ public class Comment implements Serializable {
         return obj;
     }
 
-    public static List<Comment> getComments(Complaint c) throws IOException {
+    public static List<Comment> getComments(Complaint c) throws IOException,
+            JSONException {
         List<Comment> list = new LinkedList<Comment>();
 
         HttpResponse get = Requests.get("/comments/" + c.getId());
@@ -137,14 +138,10 @@ public class Comment implements Serializable {
                     + get.getStatusLine().getStatusCode());
         String response = Requests.readResponse(get);
 
-        try {
-            JSONArray results = new JSONArray(response);
-            for (int i = 0; i < results.length(); i++) {
-                JSONObject item = results.getJSONObject(i);
-                list.add(Comment.fromJSON(item));
-            }
-        } catch (JSONException e) {
-            Log.e("Complaint.parseList", "Unexpected JSON Error", e);
+        JSONArray results = new JSONArray(response);
+        for (int i = 0; i < results.length(); i++) {
+            JSONObject item = results.getJSONObject(i);
+            list.add(Comment.fromJSON(item));
         }
 
         return list;
