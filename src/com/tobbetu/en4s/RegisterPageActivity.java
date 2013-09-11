@@ -2,10 +2,11 @@ package com.tobbetu.en4s;
 
 import java.io.IOException;
 
+import org.json.JSONException;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,9 +15,12 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.bugsense.trace.BugSenseHandler;
+import com.tobbetu.en4s.backend.Login;
 import com.tobbetu.en4s.backend.Register;
 import com.tobbetu.en4s.backend.Register.RegisterFailedException;
 import com.tobbetu.en4s.backend.User;
+import com.tobbetu.en4s.helpers.BetterAsyncTask;
 
 public class RegisterPageActivity extends Activity {
 
@@ -58,7 +62,7 @@ public class RegisterPageActivity extends Activity {
         });
     }
 
-    class RegisterTask extends AsyncTask<String, String, User> {
+    class RegisterTask extends BetterAsyncTask<Void, User> {
 
         String name = etRegisterName.getText().toString().trim();
         String surname = etRegisterSurname.getText().toString().trim();
@@ -66,30 +70,15 @@ public class RegisterPageActivity extends Activity {
         String password = etRegisterPassword.getText().toString().trim();
 
         @Override
-        protected User doInBackground(String... arg0) {
+        protected User task(Void... arg0) throws Exception {
 
             Register reg = new Register(email, name, surname, password);
-            try {
-                reg.register();
-            } catch (IOException e) {
-                e.printStackTrace();
-                Log.e(TAG, "failed because of IOException", e);
-                // Need to stop registration task
-                cancel(true);
-
-            } catch (RegisterFailedException e) {
-                e.printStackTrace();
-                Log.e(TAG, "failed because of RegisterFailedException", e);
-                // Need to stop registration task
-                cancel(true);
-            }
-
-            return null;
+            reg.register();
+            return Login.getMe();
         }
 
         @Override
-        protected void onPostExecute(User result) {
-
+        protected void onSuccess(User result) {
             // to give permission to kill LauncherActivity
             LauncherActivity.shouldKillThisActivity = true;
 
@@ -106,11 +95,28 @@ public class RegisterPageActivity extends Activity {
         }
 
         @Override
-        protected void onCancelled() {
-            super.onCancelled();
-            Toast.makeText(RegisterPageActivity.this,
-                    getResources().getString(R.string.reg_failed),
-                    Toast.LENGTH_LONG).show();
+        protected void onFailure(Exception error) {
+            Log.e(TAG, "RegisterTask Failed", error);
+            if (error instanceof IOException) {
+                BugSenseHandler.sendException(error);
+                Toast.makeText(RegisterPageActivity.this,
+                        getResources().getString(R.string.network_failed_msg),
+                        Toast.LENGTH_LONG).show();
+            } else if (error instanceof RegisterFailedException) {
+                Toast.makeText(RegisterPageActivity.this,
+                        getResources().getString(R.string.reg_failed),
+                        Toast.LENGTH_LONG).show();
+            } else if (error instanceof JSONException) {
+                BugSenseHandler.sendException(error);
+                Toast.makeText(RegisterPageActivity.this,
+                        getResources().getString(R.string.api_changed),
+                        Toast.LENGTH_LONG).show();
+            } else {
+                // Unexpected Failure
+                BugSenseHandler
+                        .sendEvent("Unexpected Failure in RegisterPageActivity");
+                BugSenseHandler.sendException(error);
+            }
         }
     }
 
