@@ -1,6 +1,7 @@
 package com.tobbetu.en4s.helpers;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 public abstract class BetterAsyncTask<Params, Result> extends
         AsyncTask<Params, Void, Boolean> {
@@ -33,6 +34,8 @@ public abstract class BetterAsyncTask<Params, Result> extends
 
     @Override
     protected final void onCancelled(Boolean result) {
+        Log.d("BetterAsyncTask", String.format("%s failed due to %s",
+                getClass().getSimpleName(), error.getClass().getSimpleName()));
         onFailure(error);
     }
 }
