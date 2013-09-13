@@ -61,11 +61,7 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
         complaint = complaints.get(position);
 
         problemImage.setImageResource(R.drawable.loading);
-        try {
-            complaint.getImage(0, Image.SIZE_512, problemImage);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        complaint.getImage(0, Image.SIZE_512, problemImage);
 
         complaintTitle.setText(complaint.getTitle().trim());
         tvUpVoteCount.setText("" + complaint.getUpVote());

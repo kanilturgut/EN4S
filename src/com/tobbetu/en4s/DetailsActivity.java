@@ -18,6 +18,9 @@ package com.tobbetu.en4s;
 import java.io.IOException;
 import java.util.List;
 
+import org.apache.http.client.HttpResponseException;
+import org.json.JSONException;
+
 import uk.co.senab.photoview.PhotoView;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -26,7 +29,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Point;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.util.Log;
@@ -46,6 +48,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -54,6 +57,7 @@ import com.tobbetu.en4s.backend.Complaint;
 import com.tobbetu.en4s.backend.Image;
 import com.tobbetu.en4s.backend.Login;
 import com.tobbetu.en4s.backend.User;
+import com.tobbetu.en4s.helpers.BetterAsyncTask;
 import com.tobbetu.en4s.helpers.CategoryI18n;
 import com.tobbetu.en4s.helpers.CommentRejectedException;
 import com.tobbetu.en4s.helpers.VoteRejectedException;
@@ -83,7 +87,6 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
     private ImageView ivProblemImage = null;
 
-    private ImageTask imageTask;
     private boolean afterCommentFlag = false;
 
     @Override
@@ -163,8 +166,16 @@ public class DetailsActivity extends Activity implements OnClickListener {
         tvReporter.setText(comp.getReporter().getName());
         tvReporterDate.setText(comp.getDateAsString(this));
 
-        imageTask = new ImageTask();
-        imageTask.execute(0);
+        comp.getImage(0, Image.SIZE_512, ivProblemImage);
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int tmpWidth = size.x;
+
+        LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(
+                tmpWidth, tmpWidth);
+        findViewById(R.id.complaintItemInfoLayout).setLayoutParams(llParams);
+        ivProblemImage.setLayoutParams(llParams);
 
         new CommentGetTask().execute();
     }
@@ -179,13 +190,6 @@ public class DetailsActivity extends Activity implements OnClickListener {
         // oldurulsun
         if (toMoreCommentActivity || afterCommentFlag)
             finish();
-
-        /*
-         * Bu sekilde detay sayfasina girilmis olan bir sikayetin, resmi
-         * yuklenmeden detay sayfasindan cikinca arka plan da calisan resmi
-         * indirme gorevi iptal ediliyor. Boylece kapanma hatasi almiyoruz.
-         */
-        imageTask.cancel(true);
     }
 
     class SamplePagerAdapter extends PagerAdapter {
@@ -248,51 +252,6 @@ public class DetailsActivity extends Activity implements OnClickListener {
             return view == object;
         }
 
-    }
-
-    class ImageTask extends AsyncTask<Integer, String, String> {
-
-        @Override
-        protected String doInBackground(Integer... params) {
-            try {
-                comp.getImage(params[0], Image.SIZE_512, ivProblemImage);
-            } catch (Exception e) {
-                // Bazi durumlarda image cacheden yuklenemiyor. Mesela kucuk
-                // sekilde geliyor, iste bu durumlarda exception atip activity i
-                // olduruyorum
-                cancel(true);
-                Log.e(TAG, "ImageTask hatasi", e);
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-
-            Display display = getWindowManager().getDefaultDisplay();
-            Point size = new Point();
-            display.getSize(size);
-            int tmpWidth = size.x;
-
-            LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(
-                    tmpWidth, tmpWidth);
-            findViewById(R.id.complaintItemInfoLayout)
-                    .setLayoutParams(llParams);
-
-            ivProblemImage.setLayoutParams(llParams);
-        }
-
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-
-            Toast.makeText(DetailsActivity.this,
-                    getResources().getString(R.string.warning),
-                    Toast.LENGTH_LONG).show();
-
-            // Eger bu sorun olusursa activityi oldurup main acitivity e donelim
-            finish();
-        }
     }
 
     // Buttons onClickListener
@@ -379,7 +338,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int id) {
-                            new UpVoteTask().execute();
+                            new VoteTask("upvote").execute();
                         }
                     });
         } else {
@@ -388,7 +347,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int id) {
-                            new DownVoteTask().execute();
+                            new VoteTask("downvote").execute();
                         }
                     });
         }
@@ -398,31 +357,29 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
     }
 
-    class UpVoteTask extends AsyncTask<String, String, String> {
+    class VoteTask extends BetterAsyncTask<Void, Void> {
+
+        private String type = "";
+
+        public VoteTask(String type) {
+            this.type = type;
+        }
 
         @Override
-        protected String doInBackground(String... params) {
+        protected Void task(Void... arg0) throws Exception {
+            String location = Utils.locationToJSON(myPosition.latitude,
+                    myPosition.longitude);
 
-            try {
-                Log.d(getClass().getName(), "In UpVoteTask doInbackground");
-                comp.upvote(me, Utils.locationToJSON(myPosition.latitude,
-                        myPosition.longitude));
-            } catch (IOException e) {
-                cancel(true);
-
-                Log.e(getClass().getName(), "UpVoteTask failed", e);
-            } catch (VoteRejectedException e) {
-                cancel(true);
-
-                Log.e(getClass().getName(), "UpVote rejected", e);
+            if (type.equalsIgnoreCase("upvote")) {
+                comp.upvote(me, location);
+            } else if (type.equalsIgnoreCase("downvote")) {
+                comp.downvote(location);
             }
-
             return null;
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            Log.d(getClass().getName(), "In UpVoteTask onPostExecute");
+        protected void onSuccess(Void result) {
             Toast.makeText(getApplicationContext(),
                     getResources().getString(R.string.da_voting_accepted),
                     Toast.LENGTH_SHORT).show();
@@ -437,67 +394,32 @@ public class DetailsActivity extends Activity implements OnClickListener {
         }
 
         @Override
-        protected void onCancelled() {
-            super.onCancelled();
-
-            // oy verme sirasinda bir sikinti yasanirsa alert verilecek
-            Utils.createAlert(DetailsActivity.this, "Hata", getResources()
-                    .getString(R.string.da_voting_rejected), true, "", "Tamam");
-
+        protected void onFailure(Exception error) {
+            if (error instanceof IOException) {
+                Toast.makeText(getApplicationContext(),
+                        getResources().getString(R.string.network_failed_msg),
+                        Toast.LENGTH_SHORT).show();
+            } else if (error instanceof VoteRejectedException) {
+                Utils.createAlert(DetailsActivity.this, "Hata",
+                        getString(R.string.da_voting_rejected), true, "",
+                        "Tamam");
+            }
         }
 
     }
 
-    class DownVoteTask extends AsyncTask<String, String, String> {
+    private class CommentGetTask extends BetterAsyncTask<Void, List<Comment>> {
 
         @Override
-        protected String doInBackground(String... params) {
-
-            try {
-                Log.d(getClass().getName(), "In DownVoteTask doInbackground");
-                comp.downvote(Utils.locationToJSON(myPosition.latitude,
-                        myPosition.longitude));
-            } catch (IOException e) {
-                Log.e(getClass().getName(), "DownVoteTask failed", e);
-            }
-
-            return null;
+        protected List<Comment> task(Void... arg0) throws Exception {
+            return comp.getComments();
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            Log.d(getClass().getName(), "In DownVoteTask onPostExecute");
-            Toast.makeText(getApplicationContext(),
-                    getResources().getString(R.string.da_voting_accepted),
-                    Toast.LENGTH_SHORT).show();
-
-            bUpVote.setVisibility(Button.GONE);
-            bDownVote.setVisibility(Button.GONE);
-
-            tvYouAreAlreadyVoted = (TextView) findViewById(R.id.tvYouAreAlreadyVoted);
-            tvYouAreAlreadyVoted.setVisibility(TextView.VISIBLE);
-            tvYouAreAlreadyVoted.setText(getResources().getString(
-                    R.string.da_already_voted));
-        }
-
-    }
-
-    private class CommentGetTask extends
-            AsyncTask<String, String, List<Comment>> {
-
-        @Override
-        protected List<Comment> doInBackground(String... arg0) {
-            try {
-                return comp.getComments();
-            } catch (IOException e) {
-                cancel(true);
-                e.printStackTrace();
-                return null;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(List<Comment> result) {
+        protected void onSuccess(List<Comment> result) {
+            // Make comments panel only visible after fetching
+            LinearLayout commentsLayout = (LinearLayout) findViewById(R.id.newComplaintCommentLayout);
+            commentsLayout.setVisibility(View.VISIBLE);
 
             TextView tvComment = (TextView) findViewById(R.id.tvComment);
             TextView tvCommentUser = (TextView) findViewById(R.id.tvCommentUser);
@@ -529,19 +451,24 @@ public class DetailsActivity extends Activity implements OnClickListener {
         }
 
         @Override
-        protected void onCancelled() {
-            super.onCancelled();
-
-            Toast.makeText(DetailsActivity.this,
-                    getResources().getString(R.string.warning),
-                    Toast.LENGTH_LONG).show();
-
-            // Eger bu sorun olusursa activityi oldurup main acitivity e donelim
-            finish();
+        protected void onFailure(Exception error) {
+            if (error instanceof IOException) {
+                Toast.makeText(DetailsActivity.this,
+                        getResources().getString(R.string.network_failed_msg),
+                        Toast.LENGTH_LONG).show();
+            } else if (error instanceof JSONException
+                    || error instanceof HttpResponseException) {
+                BugSenseHandler
+                        .sendEvent("CommentGetTask failed in DetailsActivity");
+                BugSenseHandler.sendException(error);
+                Toast.makeText(DetailsActivity.this,
+                        getResources().getString(R.string.api_changed),
+                        Toast.LENGTH_LONG).show();
+            }
         }
     }
 
-    private class CommentSaveTask extends AsyncTask<String, String, String> {
+    private class CommentSaveTask extends BetterAsyncTask<String, Void> {
 
         private ProgressDialog pd = null;
 
@@ -557,25 +484,13 @@ public class DetailsActivity extends Activity implements OnClickListener {
         }
 
         @Override
-        protected String doInBackground(String... arg0) {
-
-            try {
-                comp.comment(arg0[0]);
-            } catch (IOException e) {
-                e.printStackTrace();
-                cancel(true);
-                Log.e(TAG, "CommentSaveTask IOException ", e);
-            } catch (CommentRejectedException e) {
-                e.printStackTrace();
-                cancel(true);
-                Log.e(TAG, "CommentSaveTask CommentRejectedException ", e);
-            }
-
+        protected Void task(String... arg0) throws Exception {
+            comp.comment(arg0[0]);
             return null;
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onSuccess(Void result) {
             Toast.makeText(getApplicationContext(),
                     getResources().getString(R.string.mca_comment_accepted),
                     Toast.LENGTH_SHORT).show();
@@ -591,16 +506,25 @@ public class DetailsActivity extends Activity implements OnClickListener {
         }
 
         @Override
-        protected void onCancelled() {
-            super.onCancelled();
-
-            pd.dismiss();
-
-            Toast.makeText(DetailsActivity.this,
-                    getResources().getString(R.string.mca_comment_rejected),
-                    Toast.LENGTH_LONG).show();
+        protected void onFailure(Exception error) {
+            if (error instanceof IOException) {
+                Toast.makeText(DetailsActivity.this,
+                        getResources().getString(R.string.network_failed_msg),
+                        Toast.LENGTH_LONG).show();
+            } else if (error instanceof JSONException) {
+                BugSenseHandler
+                        .sendEvent("CommentSaveTask failed in DetailsActivity");
+                BugSenseHandler.sendException(error);
+                Toast.makeText(DetailsActivity.this,
+                        getResources().getString(R.string.api_changed),
+                        Toast.LENGTH_LONG).show();
+            } else if (error instanceof CommentRejectedException) {
+                Toast.makeText(
+                        DetailsActivity.this,
+                        getResources().getString(R.string.mca_comment_rejected),
+                        Toast.LENGTH_LONG).show();
+            }
         }
-
     }
 
     @Override

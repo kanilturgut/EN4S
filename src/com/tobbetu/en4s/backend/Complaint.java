@@ -236,7 +236,8 @@ public class Complaint implements Serializable {
         }
     }
 
-    public void getImage(int index, String size, ImageView iv) throws Exception {
+    public void getImage(int index, String size, ImageView iv)
+            throws IndexOutOfBoundsException {
         if (index > imageURLs.size())
             throw new IndexOutOfBoundsException();
 
@@ -289,13 +290,10 @@ public class Complaint implements Serializable {
     }
 
     public void comment(String text) throws IOException,
-            CommentRejectedException {
+            CommentRejectedException, JSONException {
         JSONObject comment = new JSONObject();
-        try {
-            comment.put("text", text);
-        } catch (JSONException e) {
-            Log.d("Complaint", "JSONException on comment", e);
-        }
+        comment.put("text", text);
+
         HttpResponse put = Requests.put(String.format("/comments/%s", this.id),
                 comment.toString());
 

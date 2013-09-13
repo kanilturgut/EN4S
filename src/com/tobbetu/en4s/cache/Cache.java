@@ -7,6 +7,7 @@ import java.util.NoSuchElementException;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.tobbetu.en4s.R;
 import com.tobbetu.en4s.backend.Image;
 import com.tobbetu.en4s.helpers.BetterAsyncTask;
 
@@ -27,7 +28,7 @@ public class Cache {
         return instance;
     }
 
-    public void getImage(String url, ImageView iv) throws Exception {
+    public void getImage(String url, ImageView iv) {
         Log.d(TAG, "Cache URL: " + url);
         if (cache.containsKey(url)) {
             Log.d(TAG, "Cache HIT: " + url);
@@ -74,7 +75,7 @@ public class Cache {
         protected void onFailure(Exception error) {
             if (error instanceof IOException
                     || error instanceof NoSuchElementException) {
-                // Hata oldugunu belirten imaj goster
+                iv.setImageResource(R.drawable.loading);
             }
         }
 

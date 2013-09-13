@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpResponseException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -98,13 +99,8 @@ public class Comment implements Serializable {
         return obj.toString();
     }
 
-    public static Comment fromJSON(String json) {
-        try {
-            return Comment.fromJSON(new JSONObject(json));
-        } catch (JSONException e) {
-            Log.e("Comment", "JSONException on Comment.fromJSON", e);
-            return null;
-        }
+    public static Comment fromJSON(String json) throws JSONException {
+        return Comment.fromJSON(new JSONObject(json));
     }
 
     public static Comment fromJSON(JSONObject elem) throws JSONException {
@@ -133,9 +129,13 @@ public class Comment implements Serializable {
 
         HttpResponse get = Requests.get("/comments/" + c.getId());
 
-        if (!Requests.checkStatusCode(get, HttpStatus.SC_OK))
+        if (!Requests.checkStatusCode(get, HttpStatus.SC_OK)) {
             Log.e("Complaint.getHotList", "[ERROR] Status Code: "
                     + get.getStatusLine().getStatusCode());
+            throw new HttpResponseException(
+                    get.getStatusLine().getStatusCode(),
+                    "Status is not equal 200");
+        }
         String response = Requests.readResponse(get);
 
         JSONArray results = new JSONArray(response);
@@ -146,5 +146,4 @@ public class Comment implements Serializable {
 
         return list;
     }
-
 }
