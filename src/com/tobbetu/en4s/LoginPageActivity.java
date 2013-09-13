@@ -317,6 +317,7 @@ public class LoginPageActivity extends Activity implements OnClickListener {
 
         @Override
         public void onLocationChanged(Location loc) {
+            Log.d(TAG, "onLocationChanged ->" + loc);
 
             latitude = loc.getLatitude();
             longitude = loc.getLongitude();
@@ -523,6 +524,10 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                         Location lastLocation = lManager
                                 .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
+                        Log.d(TAG, "Network last known location");
+                        Toast.makeText(getApplicationContext(),
+                                "Last Known Location", Toast.LENGTH_LONG)
+                                .show();
                         latitude = lastLocation.getLatitude();
                         longitude = lastLocation.getLongitude();
                     } catch (Exception e) {
@@ -530,6 +535,10 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                             Location lastLocation = lManager
                                     .getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
+                            Log.d(TAG, "GPS last known location");
+                            Toast.makeText(getApplicationContext(),
+                                    "Last Known Location", Toast.LENGTH_LONG)
+                                    .show();
                             latitude = lastLocation.getLatitude();
                             longitude = lastLocation.getLongitude();
                         } catch (Exception ex) {
