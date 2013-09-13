@@ -2,18 +2,19 @@ package com.tobbetu.en4s.cache;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.NoSuchElementException;
 
-import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.ImageView;
 
 import com.tobbetu.en4s.backend.Image;
+import com.tobbetu.en4s.helpers.BetterAsyncTask;
 
 public class Cache {
 
     private static Cache instance = null;
     private final HashMap<String, Image> cache;
-    private final static String TAG = Cache.class.getCanonicalName();
+    private final static String TAG = "Cache";
 
     private Cache() {
         cache = new HashMap<String, Image>();
@@ -43,7 +44,7 @@ public class Cache {
 
     }
 
-    private class DownloadTask extends AsyncTask<String, Image, Image> {
+    private class DownloadTask extends BetterAsyncTask<Void, Image> {
 
         private final String url;
         private final ImageView iv;
@@ -54,36 +55,27 @@ public class Cache {
         }
 
         @Override
-        protected Image doInBackground(String... arg0) {
-            try {
-                return Image.download(this.url);
-            } catch (IOException e) {
-                cancel(true);
-                return null;
+        protected Image task(Void... arg0) throws Exception {
+            return Image.download(this.url);
+        }
+
+        @Override
+        protected void onSuccess(Image result) {
+            Log.d(TAG, "Cache SET: " + url);
+            if (iv != null && result != null) {
+                cache.put(this.url, result);
+                iv.setImageBitmap(result.getBmp());
+            } else {
+                Log.d(TAG, "RESULT: " + result);
             }
         }
 
         @Override
-        protected void onPostExecute(Image result) {
-            super.onPostExecute(result);
-            if (!isCancelled()) {
-                Log.d(TAG, "Cache SET: " + url);
-                if (iv != null && result != null) {
-                    cache.put(this.url, result);
-                    iv.setImageBitmap(result.getBmp());
-                    // iv.setImageBitmap(cropBitmapImage(result));
-                } else {
-                    Log.d(TAG, "RESULT: " + result);
-                }
-
+        protected void onFailure(Exception error) {
+            if (error instanceof IOException
+                    || error instanceof NoSuchElementException) {
+                // Hata oldugunu belirten imaj goster
             }
-        }
-
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-
-            // Buraya bir uyari yazabiliriz.
         }
 
     }

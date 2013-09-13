@@ -3,8 +3,10 @@ package com.tobbetu.en4s.backend;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.util.NoSuchElementException;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
@@ -105,8 +107,13 @@ public class Requests {
         return response;
     }
 
-    public static byte[] download(String image) throws IOException {
+    public static byte[] download(String image) throws IOException,
+            NoSuchElementException {
         HttpResponse get = Requests.get(image);
+
+        if (!Requests.checkStatusCode(get, HttpStatus.SC_OK)) {
+            throw new NoSuchElementException("Status code is not 200");
+        }
 
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         get.getEntity().writeTo(out);
