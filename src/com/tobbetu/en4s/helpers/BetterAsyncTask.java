@@ -6,14 +6,18 @@ import android.util.Log;
 public abstract class BetterAsyncTask<Params, Result> extends
         AsyncTask<Params, Void, Boolean> {
 
-    private Result value;
-    private Exception error;
+    private Result value = null;
+    private Exception error = null;
 
     protected abstract Result task(Params... arg0) throws Exception;
 
     protected abstract void onSuccess(Result result);
 
     protected abstract void onFailure(Exception error);
+
+    protected void onStop() {
+
+    }
 
     @Override
     protected Boolean doInBackground(Params... arg0) {
@@ -34,8 +38,15 @@ public abstract class BetterAsyncTask<Params, Result> extends
 
     @Override
     protected final void onCancelled(Boolean result) {
-        Log.d("BetterAsyncTask", String.format("%s failed due to %s",
-                getClass().getSimpleName(), error.getClass().getSimpleName()));
-        onFailure(error);
+        if (error != null) {
+            Log.d("BetterAsyncTask", String.format("%s failed due to %s",
+                    getClass().getSimpleName(), error.getClass()
+                            .getSimpleName()));
+            onFailure(error);
+        } else {
+            Log.d("BetterAsyncTask", String.format("%s stopped by developer",
+                    getClass().getSimpleName()));
+            onStop();
+        }
     }
 }
