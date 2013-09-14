@@ -2,6 +2,7 @@ package com.tobbetu.en4s;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Map;
 
 import org.json.JSONException;
 
@@ -163,81 +164,7 @@ public class LoginPageActivity extends Activity implements OnClickListener {
             // facebook izinlerini set ediyoruz.
             faceButton.setReadPermissions(Arrays.asList("basic_info", "email"));
 
-            faceButton.setSessionStatusCallback(new StatusCallback() {
-
-                @Override
-                public void call(Session session, SessionState state,
-                        Exception exception) {
-
-                    if (session.isOpened()) {
-                        faceAccessToken = session.getAccessToken();
-                        Log.i(TAG, "Access Token" + session.getAccessToken());
-
-                        Request.executeMeRequestAsync(session,
-                                new GraphUserCallback() {
-
-                                    @Override
-                                    public void onCompleted(GraphUser user,
-                                            Response response) {
-                                        if (user != null) {
-
-                                            SharedPreferences.Editor spEditor = loginPreferences
-                                                    .edit();
-                                            spEditor.putString("facebook_name",
-                                                    user.asMap().get("name")
-                                                            .toString());
-                                            spEditor.putString(
-                                                    "facebook_username",
-                                                    user.asMap()
-                                                            .get("username")
-                                                            .toString());
-                                            spEditor.putString(
-                                                    "facebook_email",
-                                                    user.asMap().get("email")
-                                                            .toString());
-                                            spEditor.putString(
-                                                    "facebook_accessToken",
-                                                    faceAccessToken);
-                                            spEditor.apply();
-
-                                            String userID = user.getId();
-                                            String name = user.asMap()
-                                                    .get("name").toString();
-                                            String username = user.asMap()
-                                                    .get("username").toString();
-                                            String email = user.asMap()
-                                                    .get("email").toString();
-
-                                            Log.i(TAG, userID + "," + name
-                                                    + "," + username + ","
-                                                    + email);
-
-                                            // loginFlag = true;
-
-                                            new LoginTask()
-                                                    .execute(
-                                                            "facebook",
-                                                            loginPreferences
-                                                                    .getString(
-                                                                            "facebook_email",
-                                                                            "NONE"),
-                                                            loginPreferences
-                                                                    .getString(
-                                                                            "facebook_accessToken",
-                                                                            "NONE"));
-
-                                            startGPSThread();
-                                            Log.e(TAG,
-                                                    "onFacebook(228), startGPSThread");
-                                            startIntent();
-                                        }
-                                    }
-                                });
-
-                    }
-
-                }
-            });
+            faceButton.setSessionStatusCallback(facebookCalback);
         }
     }
 
@@ -636,4 +563,59 @@ public class LoginPageActivity extends Activity implements OnClickListener {
             c.sendBroadcast(poke);
         }
     }
+
+    private StatusCallback facebookCalback = new StatusCallback() {
+
+        @Override
+        public void call(Session session, SessionState state,
+                Exception exception) {
+
+            if (session.isOpened()) {
+                faceAccessToken = session.getAccessToken();
+                Log.i(TAG, "Access Token " + session.getAccessToken());
+                Request.executeMeRequestAsync(session, userCallback);
+            }
+
+        }
+
+        private GraphUserCallback userCallback = new GraphUserCallback() {
+
+            @Override
+            public void onCompleted(GraphUser user, Response response) {
+                if (user != null) {
+                    Map<String, Object> userMap = user.asMap();
+                    String userID = user.getId();
+                    String name = user.getName();
+                    String username = user.getUsername();
+                    String email = null;
+
+                    if (userMap.containsKey("email")) {
+                        email = userMap.get("email").toString();
+                    } else {
+                        Log.d(TAG, "Facebook email was null");
+                        email = username + "@facebook.com";
+                        Log.d(TAG, "Facebook email -> " + email);
+                    }
+
+                    Log.i(TAG, userID + "," + name + "," + username + ","
+                            + email);
+
+                    SharedPreferences.Editor spEditor = loginPreferences.edit();
+                    spEditor.putString("facebook_name", name);
+                    spEditor.putString("facebook_username", username);
+                    spEditor.putString("facebook_email", email);
+                    spEditor.putString("facebook_accessToken", faceAccessToken);
+                    spEditor.apply();
+
+                    // loginFlag = true;
+
+                    new LoginTask().execute("facebook", email, faceAccessToken);
+
+                    startGPSThread();
+                    Log.e(TAG, "GraphUserCallback, startGPSThread");
+                    startIntent();
+                }
+            }
+        };
+    };
 }
