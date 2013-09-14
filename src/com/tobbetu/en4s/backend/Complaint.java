@@ -219,8 +219,17 @@ public class Complaint implements Serializable {
         } else if (now - 7 * 24 * 60 * 60 * 1000 < unixtime) { // fucking week
             return String.format(ctx.getString(R.string.comp_day),
                     ((now - unixtime) / 24 / 60 / 60 / 1000));
+        } else if (now - 30 * 7 * 24 * 60 * 60 * 1000 < unixtime) {
+            // fucking month
+            return String.format(ctx.getString(R.string.comp_week),
+                    ((now - unixtime) / 7 / 24 / 60 / 60 / 1000));
+        } else if (now - 12 * 30 * 7 * 24 * 60 * 60 * 1000 < unixtime) {
+            // fucking month
+            return String.format(ctx.getString(R.string.comp_month),
+                    ((now - unixtime) / 30 / 7 / 24 / 60 / 60 / 1000));
         } else {
-            return this.date.toString();
+            SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+            return df.format(date);
         }
     }
 
