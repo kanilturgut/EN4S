@@ -238,11 +238,11 @@ public class Complaint implements Serializable {
                 this.longitude);
         if (distance < 0.0001) {
             return "Just Here!";
-        } else if (distance < 10000) {
+        } else if (distance < 1000) {
             return String.format(ctx.getString(R.string.comp_meter), distance);
         } else {
             return String.format(ctx.getString(R.string.comp_km),
-                    distance / 1000);
+                    distance / 1000.0);
         }
     }
 
