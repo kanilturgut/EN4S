@@ -373,7 +373,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
             if (type.equalsIgnoreCase("upvote")) {
                 comp.upvote(me, location);
             } else if (type.equalsIgnoreCase("downvote")) {
-                comp.downvote(location);
+                comp.downvote(me, location);
             }
             return null;
         }

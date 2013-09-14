@@ -41,6 +41,7 @@ public class Complaint implements Serializable {
     private int upVote;
     private int downVote;
     private Set<String> upvoters;
+    private Set<String> downvoters;
     private double latitude;
     private double longitude;
     private String address;
@@ -280,13 +281,22 @@ public class Complaint implements Serializable {
         this.upvoters.add(me.getId());
     }
 
-    public void downvote(String location) throws IOException {
+    public void downvote(User me, String location) throws IOException,
+            VoteRejectedException {
         HttpResponse put = Requests.put(
                 String.format("/complaint/%s/downvote", this.id), location);
         if (Requests.checkStatusCode(put, HttpStatus.SC_NOT_ACCEPTABLE)) {
-            Log.e(getClass().getName(), "Downvote Rejected");
-            // TODO throw new Exception("Upvote Rejected");
+            Log.e(getClass().getName(), "Upvote Rejected");
+            throw new VoteRejectedException("Upvote Rejected");
+        } else if (Requests.checkStatusCode(put, HttpStatus.SC_NOT_FOUND)) {
+            Log.e(getClass().getName(),
+                    "Upvote Rejected because complaint id is wrong");
+            throw new VoteRejectedException("There is no such complaint");
         }
+
+        // downvote successful
+        this.downVote++;
+        this.downvoters.add(me.getId());
     }
 
     public void comment(String text) throws IOException,
@@ -356,6 +366,14 @@ public class Complaint implements Serializable {
             tmp.add(user);
         }
         obj.upvoters = tmp;
+
+        JSONArray downvoters = elem.optJSONArray("downvoters");
+        tmp = new HashSet<String>();
+        for (int i = 0; i < downvoters.length(); i++) {
+            String user = downvoters.optString(i);
+            tmp.add(user);
+        }
+        obj.downvoters = tmp;
 
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
         try {
