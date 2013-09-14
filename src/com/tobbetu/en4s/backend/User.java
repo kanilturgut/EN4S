@@ -5,8 +5,6 @@ import java.io.Serializable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.util.Log;
-
 public class User implements Serializable {
 
     private static final long serialVersionUID = -8853898204431440970L;
@@ -24,18 +22,13 @@ public class User implements Serializable {
         this.name = name;
     }
 
-    public static User fromJSON(String response) {
-        try {
-            return User.fromJSON(new JSONObject(response));
-        } catch (JSONException e) {
-            Log.d("User", "JSONException throwed", e);
-            return new User();
-        }
+    public static User fromJSON(String response) throws JSONException {
+        return User.fromJSON(new JSONObject(response));
     }
 
-    public static User fromJSON(JSONObject obj) {
-        return new User(obj.optString("_id"), obj.optString("email"),
-                obj.optString("name"));
+    public static User fromJSON(JSONObject obj) throws JSONException {
+        return new User(obj.getString("_id"), obj.getString("email"),
+                obj.getString("name"));
     }
 
     public String getId() {

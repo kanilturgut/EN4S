@@ -2,6 +2,9 @@ package com.tobbetu.en4s;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Map;
+
+import org.json.JSONException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -13,7 +16,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
@@ -43,6 +45,7 @@ import com.tobbetu.en4s.backend.FacebookLogin;
 import com.tobbetu.en4s.backend.Login;
 import com.tobbetu.en4s.backend.Login.LoginFailedException;
 import com.tobbetu.en4s.backend.User;
+import com.tobbetu.en4s.helpers.BetterAsyncTask;
 
 public class LoginPageActivity extends Activity implements OnClickListener {
 
@@ -161,81 +164,7 @@ public class LoginPageActivity extends Activity implements OnClickListener {
             // facebook izinlerini set ediyoruz.
             faceButton.setReadPermissions(Arrays.asList("basic_info", "email"));
 
-            faceButton.setSessionStatusCallback(new StatusCallback() {
-
-                @Override
-                public void call(Session session, SessionState state,
-                        Exception exception) {
-
-                    if (session.isOpened()) {
-                        faceAccessToken = session.getAccessToken();
-                        Log.i(TAG, "Access Token" + session.getAccessToken());
-
-                        Request.executeMeRequestAsync(session,
-                                new GraphUserCallback() {
-
-                                    @Override
-                                    public void onCompleted(GraphUser user,
-                                            Response response) {
-                                        if (user != null) {
-
-                                            SharedPreferences.Editor spEditor = loginPreferences
-                                                    .edit();
-                                            spEditor.putString("facebook_name",
-                                                    user.asMap().get("name")
-                                                            .toString());
-                                            spEditor.putString(
-                                                    "facebook_username",
-                                                    user.asMap()
-                                                            .get("username")
-                                                            .toString());
-                                            spEditor.putString(
-                                                    "facebook_email",
-                                                    user.asMap().get("email")
-                                                            .toString());
-                                            spEditor.putString(
-                                                    "facebook_accessToken",
-                                                    faceAccessToken);
-                                            spEditor.apply();
-
-                                            String userID = user.getId();
-                                            String name = user.asMap()
-                                                    .get("name").toString();
-                                            String username = user.asMap()
-                                                    .get("username").toString();
-                                            String email = user.asMap()
-                                                    .get("email").toString();
-
-                                            Log.i(TAG, userID + "," + name
-                                                    + "," + username + ","
-                                                    + email);
-
-                                            // loginFlag = true;
-
-                                            new LoginTask()
-                                                    .execute(
-                                                            "facebook",
-                                                            loginPreferences
-                                                                    .getString(
-                                                                            "facebook_email",
-                                                                            "NONE"),
-                                                            loginPreferences
-                                                                    .getString(
-                                                                            "facebook_accessToken",
-                                                                            "NONE"));
-
-                                            startGPSThread();
-                                            Log.e(TAG,
-                                                    "onFacebook(228), startGPSThread");
-                                            startIntent();
-                                        }
-                                    }
-                                });
-
-                    }
-
-                }
-            });
+            faceButton.setSessionStatusCallback(facebookCalback);
         }
     }
 
@@ -315,6 +244,7 @@ public class LoginPageActivity extends Activity implements OnClickListener {
 
         @Override
         public void onLocationChanged(Location loc) {
+            Log.d(TAG, "onLocationChanged ->" + loc);
 
             latitude = loc.getLatitude();
             longitude = loc.getLongitude();
@@ -337,7 +267,7 @@ public class LoginPageActivity extends Activity implements OnClickListener {
 
     }
 
-    class LoginTask extends AsyncTask<String, String, User> {
+    class LoginTask extends BetterAsyncTask<String, User> {
 
         @Override
         protected void onPreExecute() {
@@ -345,39 +275,24 @@ public class LoginPageActivity extends Activity implements OnClickListener {
         }
 
         @Override
-        protected User doInBackground(String... arg0) {
+        protected User task(String... arg0) throws Exception {
             String method = arg0[0];
             String loginArg0 = arg0[1];
             String loginArg1 = arg0[2];
 
-            Log.d(getClass().getName(), "username: " + loginArg0);
-            Log.d(getClass().getName(), "passwd: " + loginArg1);
+            Log.d("LoginTask", "username: " + loginArg0);
+            Log.d("LoginTask", "passwd: " + loginArg1);
 
             Login newLogin;
             if (method.equals("facebook"))
                 newLogin = new FacebookLogin(loginArg0, loginArg1);
             else
                 newLogin = new EnforceLogin(loginArg0, loginArg1);
-
-            try {
-                return newLogin.makeRequest();
-            } catch (IOException e) {
-                cancel(true);
-                BugSenseHandler.sendException(e);
-                Log.e(getClass().getName(), "IOException", e);
-            } catch (LoginFailedException e) {
-                cancel(true);
-                BugSenseHandler.sendException(e);
-                Log.e(getClass().getName(), String.format(
-                        "[Login Failed] username: %s, passwd: %s", loginArg0,
-                        loginArg1), e);
-                Log.e(getClass().getName(), "Login olamadik!");
-            }
-            return null;
+            return newLogin.makeRequest();
         }
 
         @Override
-        protected void onPostExecute(User result) {
+        protected void onSuccess(User result) {
             loginFlag = true;
             // to give permission to kill LauncherActivity
             LauncherActivity.shouldKillThisActivity = true;
@@ -386,20 +301,36 @@ public class LoginPageActivity extends Activity implements OnClickListener {
         }
 
         @Override
-        protected void onCancelled() {
-            super.onCancelled();
+        protected void onFailure(Exception error) {
+            Log.e("LoginTask", "Failed to login: " + error.getMessage(), error);
+            if (error instanceof IOException) {
+                BugSenseHandler.sendException(error);
+                Toast.makeText(LoginPageActivity.this,
+                        getResources().getString(R.string.network_failed_msg),
+                        Toast.LENGTH_LONG).show();
+            } else if (error instanceof LoginFailedException) {
+                Toast.makeText(LoginPageActivity.this,
+                        getResources().getString(R.string.login_failed_msg),
+                        Toast.LENGTH_LONG).show();
 
-            Toast.makeText(LoginPageActivity.this,
-                    getResources().getString(R.string.login_failed_msg),
-                    Toast.LENGTH_LONG).show();
+                loginPreferences.edit().clear().commit();
+                intentCreated = true;
+                Intent i = new Intent(LoginPageActivity.this,
+                        LoginPageActivity.class);
+                startActivity(i);
+            } else if (error instanceof JSONException) {
+                BugSenseHandler.sendException(error);
+                Toast.makeText(LoginPageActivity.this,
+                        getResources().getString(R.string.api_changed),
+                        Toast.LENGTH_LONG).show();
+            } else {
+                // Unexpected Failure
+                BugSenseHandler
+                        .sendEvent("Unexpected Failure in RegisterPageActivity");
+                BugSenseHandler.sendException(error);
+            }
 
-            loginPreferences.edit().clear().commit();
-            intentCreated = true;
-            Intent i = new Intent(LoginPageActivity.this,
-                    LoginPageActivity.class);
-            startActivity(i);
         }
-
     }
 
     private void startIntent() {
@@ -520,6 +451,10 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                         Location lastLocation = lManager
                                 .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 
+                        Log.d(TAG, "Network last known location");
+                        Toast.makeText(getApplicationContext(),
+                                "Last Known Location", Toast.LENGTH_LONG)
+                                .show();
                         latitude = lastLocation.getLatitude();
                         longitude = lastLocation.getLongitude();
                     } catch (Exception e) {
@@ -527,6 +462,10 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                             Location lastLocation = lManager
                                     .getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
+                            Log.d(TAG, "GPS last known location");
+                            Toast.makeText(getApplicationContext(),
+                                    "Last Known Location", Toast.LENGTH_LONG)
+                                    .show();
                             latitude = lastLocation.getLatitude();
                             longitude = lastLocation.getLongitude();
                         } catch (Exception ex) {
@@ -624,4 +563,59 @@ public class LoginPageActivity extends Activity implements OnClickListener {
             c.sendBroadcast(poke);
         }
     }
+
+    private StatusCallback facebookCalback = new StatusCallback() {
+
+        @Override
+        public void call(Session session, SessionState state,
+                Exception exception) {
+
+            if (session.isOpened()) {
+                faceAccessToken = session.getAccessToken();
+                Log.i(TAG, "Access Token " + session.getAccessToken());
+                Request.executeMeRequestAsync(session, userCallback);
+            }
+
+        }
+
+        private GraphUserCallback userCallback = new GraphUserCallback() {
+
+            @Override
+            public void onCompleted(GraphUser user, Response response) {
+                if (user != null) {
+                    Map<String, Object> userMap = user.asMap();
+                    String userID = user.getId();
+                    String name = user.getName();
+                    String username = user.getUsername();
+                    String email = null;
+
+                    if (userMap.containsKey("email")) {
+                        email = userMap.get("email").toString();
+                    } else {
+                        Log.d(TAG, "Facebook email was null");
+                        email = username + "@facebook.com";
+                        Log.d(TAG, "Facebook email -> " + email);
+                    }
+
+                    Log.i(TAG, userID + "," + name + "," + username + ","
+                            + email);
+
+                    SharedPreferences.Editor spEditor = loginPreferences.edit();
+                    spEditor.putString("facebook_name", name);
+                    spEditor.putString("facebook_username", username);
+                    spEditor.putString("facebook_email", email);
+                    spEditor.putString("facebook_accessToken", faceAccessToken);
+                    spEditor.apply();
+
+                    // loginFlag = true;
+
+                    new LoginTask().execute("facebook", email, faceAccessToken);
+
+                    startGPSThread();
+                    Log.e(TAG, "GraphUserCallback, startGPSThread");
+                    startIntent();
+                }
+            }
+        };
+    };
 }

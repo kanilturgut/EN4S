@@ -170,7 +170,7 @@ public class Complaint implements Serializable {
         this.slug_URL = "http://enforceapp.com" + url;
     }
 
-    public List<Comment> getComments() throws IOException {
+    public List<Comment> getComments() throws IOException, JSONException {
         if (comments_count == 0) {
             return new LinkedList<Comment>();
         } else if (comments != null) {
@@ -236,7 +236,8 @@ public class Complaint implements Serializable {
         }
     }
 
-    public void getImage(int index, String size, ImageView iv) throws Exception {
+    public void getImage(int index, String size, ImageView iv)
+            throws IndexOutOfBoundsException {
         if (index > imageURLs.size())
             throw new IndexOutOfBoundsException();
 
@@ -289,13 +290,10 @@ public class Complaint implements Serializable {
     }
 
     public void comment(String text) throws IOException,
-            CommentRejectedException {
+            CommentRejectedException, JSONException {
         JSONObject comment = new JSONObject();
-        try {
-            comment.put("text", text);
-        } catch (JSONException e) {
-            Log.d("Complaint", "JSONException on comment", e);
-        }
+        comment.put("text", text);
+
         HttpResponse put = Requests.put(String.format("/comments/%s", this.id),
                 comment.toString());
 
@@ -336,22 +334,22 @@ public class Complaint implements Serializable {
         return newObj.toString();
     }
 
-    private static Complaint fromJSON(JSONObject elem) {
+    private static Complaint fromJSON(JSONObject elem) throws JSONException {
         Complaint obj = new Complaint();
 
-        obj.setId(elem.optString("_id"));
-        obj.setTitle(elem.optString("title"));
-        obj.setReporter(User.fromJSON(elem.optJSONObject("user")));
-        obj.setCategory(elem.optString("category"));
-        obj.setUpVote(elem.optInt("upvote_count", 0));
-        obj.setDownVote(elem.optInt("downvote_count", 0));
-        obj.setAddress(elem.optString("address"));
-        obj.setCity(elem.optString("city"));
-        obj.comments_count = elem.optInt("comments_count");
-        obj.setPublicURL(elem.optString("public_url"));
-        obj.setSlug_URL(elem.optString("slug_url"));
+        obj.setId(elem.getString("_id"));
+        obj.setTitle(elem.getString("title"));
+        obj.setReporter(User.fromJSON(elem.getJSONObject("user")));
+        obj.setCategory(elem.getString("category"));
+        obj.setUpVote(elem.getInt("upvote_count"));
+        obj.setDownVote(elem.getInt("downvote_count"));
+        obj.setAddress(elem.getString("address"));
+        obj.setCity(elem.getString("city"));
+        obj.comments_count = elem.getInt("comments_count");
+        obj.setPublicURL(elem.getString("public_url"));
+        obj.setSlug_URL(elem.getString("slug_url"));
 
-        JSONArray upvoters = elem.optJSONArray("upvoters");
+        JSONArray upvoters = elem.getJSONArray("upvoters");
         Set<String> tmp = new HashSet<String>();
         for (int i = 0; i < upvoters.length(); i++) {
             String user = upvoters.optString(i);
@@ -361,18 +359,19 @@ public class Complaint implements Serializable {
 
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
         try {
-            obj.setDate(df.parse(elem.optString("date")));
+            obj.setDate(df.parse(elem.getString("date")));
         } catch (ParseException e) {
             Log.e("Complaint.fromJSON",
-                    "Date Parse Error: " + elem.optString("date"), e);
+                    "Date Parse Error: " + elem.getString("date"), e);
+            obj.setDate(new Date());
         }
 
-        JSONArray geo = elem.optJSONArray("location");
-        obj.setLatitude(geo.optDouble(0, 0));
-        obj.setLongitude(geo.optDouble(1, 0));
+        JSONArray geo = elem.getJSONArray("location");
+        obj.setLatitude(geo.getDouble(0));
+        obj.setLongitude(geo.getDouble(1));
 
         if (elem.has("pics")) {
-            JSONArray pics = elem.optJSONArray("pics");
+            JSONArray pics = elem.getJSONArray("pics");
             ArrayList<String> picsList = new ArrayList<String>();
             for (int i = 0; i < pics.length(); i++) {
                 picsList.add(pics.optString(i));
@@ -383,60 +382,50 @@ public class Complaint implements Serializable {
         return obj;
     }
 
-    private static List<Complaint> parseList(String jsonResponse) {
+    private static List<Complaint> parseList(String jsonResponse)
+            throws JSONException {
         List<Complaint> list = new LinkedList<Complaint>();
-        try {
-            JSONArray results = new JSONArray(jsonResponse);
-            for (int i = 0; i < results.length(); i++) {
-                JSONObject item = results.getJSONObject(i);
-                list.add(Complaint.fromJSON(item));
-            }
-        } catch (JSONException e) {
-            Log.e("Complaint.parseList", "Unexpected JSON Error", e);
+
+        JSONArray results = new JSONArray(jsonResponse);
+        for (int i = 0; i < results.length(); i++) {
+            JSONObject item = results.getJSONObject(i);
+            list.add(Complaint.fromJSON(item));
         }
         return list;
     }
 
-    public static List<Complaint> getHotList() throws IOException {
+    public static List<Complaint> getList(String url) throws IOException,
+            JSONException {
         // TODO not forget to change that
-        HttpResponse get = Requests.get("/complaint/hot");
+        HttpResponse get = Requests.get(url);
 
         if (!Requests.checkStatusCode(get, HttpStatus.SC_OK))
-            Log.e("Complaint.getHotList", "[ERROR] Status Code: "
+            Log.e("Complaint.getList", "[ERROR] Status Code: "
                     + get.getStatusLine().getStatusCode());
         String response = Requests.readResponse(get);
         return Complaint.parseList(response);
     }
 
-    public static List<Complaint> getNewList() throws IOException {
-        HttpResponse get = Requests.get("/complaint/recent");
+    public static List<Complaint> getHotList() throws IOException,
+            JSONException {
+        return Complaint.getList("/complaint/hot");
 
-        if (!Requests.checkStatusCode(get, HttpStatus.SC_OK))
-            Log.e("Complaint.getHotList", "[ERROR] Status Code: "
-                    + get.getStatusLine().getStatusCode());
-        String response = Requests.readResponse(get);
-        return Complaint.parseList(response);
     }
 
-    public static List<Complaint> getTopList() throws IOException {
-        HttpResponse get = Requests.get("/complaint/top");
+    public static List<Complaint> getNewList() throws IOException,
+            JSONException {
+        return Complaint.getList("/complaint/recent");
+    }
 
-        if (!Requests.checkStatusCode(get, HttpStatus.SC_OK))
-            Log.e("Complaint.getHotList", "[ERROR] Status Code: "
-                    + get.getStatusLine().getStatusCode());
-        String response = Requests.readResponse(get);
-        return Complaint.parseList(response);
+    public static List<Complaint> getTopList() throws IOException,
+            JSONException {
+        return Complaint.getList("/complaint/top");
     }
 
     public static List<Complaint> getNearList(double lat, double lon)
-            throws IOException {
-        HttpResponse get = Requests.get(String.format(
+            throws IOException, JSONException {
+        return Complaint.getList(String.format(
                 "/complaint/near?latitude=%s&longitude=%s",
                 Double.toString(lat), Double.toString(lon)));
-        if (!Requests.checkStatusCode(get, HttpStatus.SC_OK))
-            Log.e("Complaint.getHotList", "[ERROR] Status Code: "
-                    + get.getStatusLine().getStatusCode());
-        String response = Requests.readResponse(get);
-        return Complaint.parseList(response);
     }
 }

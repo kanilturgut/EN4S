@@ -30,7 +30,8 @@ public class Register {
         this.registerInfo = register.toString();
     }
 
-    public void register() throws IOException, RegisterFailedException {
+    public void register() throws IOException, RegisterFailedException,
+            JSONException {
         HttpResponse loginResponse = Requests.post("/register", registerInfo);
         if (Requests.checkStatusCode(loginResponse, HttpStatus.SC_NOT_FOUND))
             throw new RegisterFailedException();

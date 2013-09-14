@@ -135,6 +135,8 @@
     
     
     <string name="login_failed_msg">Üzgünüz ama giriş yapamadınız.</string>
+    <string name="network_failed_msg">İnternet erişiminizdeki sorun nedeniyle işleminizi tamamlayamadık. Lütfen daha sonra tekrar deneyin.</string>
+    <string name="api_changed">Kullandığınız programın versiyonu eski olduğu için işleminizi tamamlayamadık. Lütfen programı güncelledikten sonra tekrar deneyin.</string>
     <string name="no_internet_access_dialog">Üzgünüz ama internet erişiminiz olmadan bu uygulamayı kullanamazsınız.</string>
     <string name="mca_comment_accepted">Yorumunuz kaydedilmiştir, teşekkür ederiz.</string>
     <string name="mca_comment_rejected">Üzgünüz fakat yorumunuzu kaydedemiyoruz.</string>

@@ -19,9 +19,9 @@ package com.tobbetu.en4s;
 import java.io.IOException;
 import java.util.List;
 
-import android.app.Activity;
+import org.json.JSONException;
+
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -34,9 +34,11 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.FrameLayout;
 import android.widget.FrameLayout.LayoutParams;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.tobbetu.en4s.backend.Complaint;
-import com.tobbetu.en4s.helpers.ContentProviderFunction;
+import com.tobbetu.en4s.helpers.BetterAsyncTask;
 
 public class TabCreator extends Fragment {
 
@@ -71,62 +73,6 @@ public class TabCreator extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        if (position == 0) {
-            return createTab(new ContentProviderFunction<Complaint>() {
-
-                @Override
-                public List<Complaint> getContent() {
-                    try {
-                        return Complaint.getHotList();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        return null;
-                    }
-                }
-            });
-        } else if (position == 1) {
-            return createTab(new ContentProviderFunction<Complaint>() {
-
-                @Override
-                public List<Complaint> getContent() {
-                    try {
-                        return Complaint.getNewList();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        return null;
-                    }
-                }
-            });
-        } else if (position == 2) {
-            return createTab(new ContentProviderFunction<Complaint>() {
-
-                @Override
-                public List<Complaint> getContent() {
-                    try {
-                        return Complaint.getNearList(latitude, longitude);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        return null;
-                    }
-                }
-            });
-        } else {
-            return createTab(new ContentProviderFunction<Complaint>() {
-
-                @Override
-                public List<Complaint> getContent() {
-                    try {
-                        return Complaint.getTopList();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        return null;
-                    }
-                }
-            });
-        }
-    }
-
-    public View createTab(ContentProviderFunction<Complaint> func) {
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT,
                 LayoutParams.MATCH_PARENT);
         FrameLayout frameLayout = new FrameLayout(getActivity());
@@ -138,8 +84,8 @@ public class TabCreator extends Fragment {
         params.setMargins(margin, margin, margin, margin);
         bugList.setLayoutParams(params);
 
-        ListAsyncTask hotTask = new ListAsyncTask(getActivity(), func, position);
-        hotTask.execute();
+        ComplaintListTask task = new ComplaintListTask();
+        task.execute();
         frameLayout.addView(bugList);
 
         initListener();
@@ -175,31 +121,47 @@ public class TabCreator extends Fragment {
         // TODO kanil will implement here
     }
 
-    private class ListAsyncTask extends
-            AsyncTask<String, String, List<Complaint>> {
+    private class ComplaintListTask extends
+            BetterAsyncTask<Void, List<Complaint>> {
 
-        private Activity activity;
-        private ContentProviderFunction<Complaint> fn;
-        private int position;
-
-        public ListAsyncTask(Activity activity,
-                ContentProviderFunction<Complaint> fn, int pos) {
-            this.activity = activity;
-            this.fn = fn;
-            this.position = pos;
+        @Override
+        protected List<Complaint> task(Void... arg0) throws Exception {
+            switch (position) {
+            case 0: // Hot
+                return Complaint.getHotList();
+            case 1: // New
+                return Complaint.getNewList();
+            case 2: // Near
+                return Complaint.getNearList(latitude, longitude);
+            case 3: // Top
+                return Complaint.getTopList();
+            default:
+                throw new RuntimeException();
+            }
         }
 
         @Override
-        protected List<Complaint> doInBackground(String... arg0) {
-            return fn.getContent();
+        protected void onSuccess(List<Complaint> result) {
+            bugList.setAdapter(new BugListAdapter(
+                    TabCreator.this.getActivity(), result, position, latitude,
+                    longitude));
         }
 
         @Override
-        protected void onPostExecute(List<Complaint> result) {
-            super.onPostExecute(result);
-            bugList.setAdapter(new BugListAdapter(activity, result, position,
-                    latitude, longitude));
+        protected void onFailure(Exception error) {
+            if (error instanceof IOException) {
+                BugSenseHandler.sendException(error);
+                Toast.makeText(TabCreator.this.getActivity(),
+                        getResources().getString(R.string.network_failed_msg),
+                        Toast.LENGTH_LONG).show();
+            } else if (error instanceof JSONException
+                    || error instanceof RuntimeException) {
+                BugSenseHandler.sendException(error);
+                Toast.makeText(TabCreator.this.getActivity(),
+                        getResources().getString(R.string.api_changed),
+                        Toast.LENGTH_LONG).show();
+            }
         }
-
     }
+
 }
