@@ -371,15 +371,15 @@ public class Complaint implements Serializable {
         JSONArray upvoters = elem.getJSONArray("upvoters");
         Set<String> tmp = new HashSet<String>();
         for (int i = 0; i < upvoters.length(); i++) {
-            String user = upvoters.optString(i);
+            String user = upvoters.getString(i);
             tmp.add(user);
         }
         obj.upvoters = tmp;
 
-        JSONArray downvoters = elem.optJSONArray("downvoters");
+        JSONArray downvoters = elem.getJSONArray("downvoters");
         tmp = new HashSet<String>();
         for (int i = 0; i < downvoters.length(); i++) {
-            String user = downvoters.optString(i);
+            String user = downvoters.getString(i);
             tmp.add(user);
         }
         obj.downvoters = tmp;
