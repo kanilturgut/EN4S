@@ -80,7 +80,7 @@ public class RegisterPageActivity extends Activity {
         @Override
         protected void onSuccess(User result) {
             // to give permission to kill LauncherActivity
-            LauncherActivity.shouldKillThisActivity = true;
+            // LauncherActivity.shouldKillThisActivity = true;
 
             SharedPreferences sp = getSharedPreferences("loginInfo",
                     MODE_PRIVATE);

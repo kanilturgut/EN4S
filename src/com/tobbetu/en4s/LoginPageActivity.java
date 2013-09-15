@@ -1,8 +1,6 @@
 package com.tobbetu.en4s;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Map;
 
 import org.json.JSONException;
 
@@ -26,16 +24,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.bugsense.trace.BugSenseHandler;
-import com.facebook.FacebookException;
-import com.facebook.Request;
-import com.facebook.Request.GraphUserCallback;
-import com.facebook.Response;
 import com.facebook.Session;
-import com.facebook.Session.StatusCallback;
-import com.facebook.SessionState;
-import com.facebook.model.GraphUser;
-import com.facebook.widget.LoginButton;
-import com.facebook.widget.LoginButton.OnErrorListener;
 import com.tobbetu.en4s.backend.EnforceLogin;
 import com.tobbetu.en4s.backend.FacebookLogin;
 import com.tobbetu.en4s.backend.Login;
@@ -51,12 +40,6 @@ public class LoginPageActivity extends Activity implements OnClickListener {
     private Button bLogin = null;
     private EditText etUsername, etPassword;
     private ProgressBar pbLogin = null;
-
-    private LoginButton faceButton = null;
-    private String faceAccessToken = null;
-
-    private final String sharedFileName = "loginInfo";
-    protected static SharedPreferences loginPreferences;
 
     protected static boolean intentCreated = false;
     private LoginTask loginTask = null;
@@ -96,49 +79,39 @@ public class LoginPageActivity extends Activity implements OnClickListener {
             bLogin.setOnClickListener(this);
 
             pbLogin = (ProgressBar) findViewById(R.id.pbLogin);
-            faceButton = (LoginButton) findViewById(R.id.faceButton);
 
-            loginPreferences = getSharedPreferences(sharedFileName,
-                    MODE_PRIVATE);
-            if ((loginPreferences.getAll().size() != 0)) {
-                if (!loginPreferences.getString("facebook_accessToken", "null")
-                        .equals("null")) {
+            if ((LauncherActivity.loginPreferences.getAll().size() != 0)) {
+                if (!LauncherActivity.loginPreferences.getString(
+                        "facebook_accessToken", "null").equals("null")) {
                     // facebook login
                     Log.d(TAG, "trying login with facebook");
-                    Log.d(TAG, loginPreferences.getString("facebook_email",
-                            "username@facebook.com"));
-                    Log.d(TAG, loginPreferences.getString(
+                    Log.d(TAG, LauncherActivity.loginPreferences.getString(
+                            "facebook_email", "username@facebook.com"));
+                    Log.d(TAG, LauncherActivity.loginPreferences.getString(
                             "facebook_accessToken", ""));
 
                     loginTask = new LoginTask();
-                    loginTask.execute("facebook", loginPreferences.getString(
-                            "facebook_email", "NONE"), loginPreferences
-                            .getString("facebook_accessToken", "NONE"));
+                    loginTask.execute("facebook",
+                            LauncherActivity.loginPreferences.getString(
+                                    "facebook_email", "NONE"),
+                            LauncherActivity.loginPreferences.getString(
+                                    "facebook_accessToken", "NONE"));
 
                 } else { // normal login
                     Log.d(TAG, "trying login with username");
-                    Log.d(TAG, loginPreferences.getString("username", ""));
-                    Log.d(TAG, loginPreferences.getString("password", ""));
+                    Log.d(TAG, LauncherActivity.loginPreferences.getString(
+                            "username", ""));
+                    Log.d(TAG, LauncherActivity.loginPreferences.getString(
+                            "password", ""));
 
                     loginTask = new LoginTask();
                     loginTask.execute("enforce",
-                            loginPreferences.getString("username", ""),
-                            loginPreferences.getString("password", ""));
+                            LauncherActivity.loginPreferences.getString(
+                                    "username", ""),
+                            LauncherActivity.loginPreferences.getString(
+                                    "password", ""));
                 }
             }
-
-            faceButton.setOnErrorListener(new OnErrorListener() {
-
-                @Override
-                public void onError(FacebookException error) {
-                    Log.i(TAG, "Error " + error.getMessage());
-                }
-            });
-
-            // facebook izinlerini set ediyoruz.
-            faceButton.setReadPermissions(Arrays.asList("basic_info", "email"));
-
-            faceButton.setSessionStatusCallback(facebookCalback);
         }
     }
 
@@ -154,7 +127,7 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                         Toast.LENGTH_SHORT).show();
             } else {
 
-                SharedPreferences.Editor preferencesEditor = loginPreferences
+                SharedPreferences.Editor preferencesEditor = LauncherActivity.loginPreferences
                         .edit();
                 preferencesEditor.putString("username", etUsername.getText()
                         .toString());
@@ -175,11 +148,9 @@ public class LoginPageActivity extends Activity implements OnClickListener {
         super.onStop();
 
         if (intentCreated) {
-
             if (EnforceService.getGPSStatus()) {
                 turnGPSOff(this);
             }
-
             finish();
         }
 
@@ -187,15 +158,15 @@ public class LoginPageActivity extends Activity implements OnClickListener {
             alertDialog.dismiss();
     }
 
-    @Override
-    public void onBackPressed() {
-        Log.e(TAG, "in onBackPressed");
-
-        if (LauncherActivity.firstTimeControlPref.getBoolean("didLogIn", false))
-            createAlert();
-        else
-            super.onBackPressed();
-    }
+    // @Override
+    // public void onBackPressed() {
+    // Log.e(TAG, "in onBackPressed");
+    //
+    // if (LauncherActivity.firstTimeControlPref.getBoolean("didLogIn", false))
+    // createAlert();
+    // else
+    // super.onBackPressed();
+    // }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -232,7 +203,6 @@ public class LoginPageActivity extends Activity implements OnClickListener {
         @Override
         protected void onSuccess(User result) {
             // to give permission to kill LauncherActivity
-            LauncherActivity.shouldKillThisActivity = true;
 
             startIntent();
         }
@@ -250,7 +220,7 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                         getResources().getString(R.string.login_failed_msg),
                         Toast.LENGTH_LONG).show();
 
-                loginPreferences.edit().clear().commit();
+                LauncherActivity.loginPreferences.edit().clear().commit();
                 intentCreated = true;
                 Intent i = new Intent(LoginPageActivity.this,
                         LoginPageActivity.class);
@@ -266,7 +236,6 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                         .sendEvent("Unexpected Failure in RegisterPageActivity");
                 BugSenseHandler.sendException(error);
             }
-
         }
     }
 
@@ -276,10 +245,6 @@ public class LoginPageActivity extends Activity implements OnClickListener {
             loginTask.cancel(true);
 
         intentCreated = true;
-        SharedPreferences.Editor editor = LauncherActivity.firstTimeControlPref
-                .edit();
-        editor.putBoolean("didLogIn", true);
-        editor.apply();
 
         Intent i = new Intent(LoginPageActivity.this, MainActivity.class);
         startActivity(i);
@@ -292,47 +257,8 @@ public class LoginPageActivity extends Activity implements OnClickListener {
         etUsername.setVisibility(EditText.INVISIBLE);
         etPassword.setVisibility(EditText.INVISIBLE);
         bLogin.setVisibility(Button.INVISIBLE);
-        // bRegister.setVisibility(Button.INVISIBLE);
         pbLogin.setVisibility(ProgressBar.VISIBLE);
-        faceButton.setVisibility(Button.INVISIBLE);
 
-    }
-
-    private void createAlert() {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.ma_quit_title);
-        builder.setMessage(R.string.ma_quit_msg);
-        builder.setCancelable(true);
-        builder.setPositiveButton(R.string.ma_quit_ok,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        try {
-                            Utils.turnGPSOff(getApplicationContext());
-                            System.exit(0);
-                        } catch (Throwable e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                    }
-                });
-        builder.setNegativeButton(R.string.ma_quit_cancel,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-
-                        try {
-                            dialog.dismiss();
-                        } catch (Throwable e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
-        alertDialog = builder.create();
-        alertDialog.show();
     }
 
     private void buildAlertMessageNoGps() {
@@ -379,59 +305,4 @@ public class LoginPageActivity extends Activity implements OnClickListener {
             c.sendBroadcast(poke);
         }
     }
-
-    private final StatusCallback facebookCalback = new StatusCallback() {
-
-        @Override
-        public void call(Session session, SessionState state,
-                Exception exception) {
-
-            if (session.isOpened()
-                    && loginPreferences.getString("facebook_accessToken",
-                            "NONE").equals("NONE")) {
-                faceAccessToken = session.getAccessToken();
-                Log.i(TAG, "Access Token " + session.getAccessToken());
-                Request.executeMeRequestAsync(session, userCallback);
-            }
-
-        }
-
-        private final GraphUserCallback userCallback = new GraphUserCallback() {
-
-            @Override
-            public void onCompleted(GraphUser user, Response response) {
-                if (user != null) {
-                    Map<String, Object> userMap = user.asMap();
-                    String userID = user.getId();
-                    String name = user.getName();
-                    String username = user.getUsername();
-                    String email = null;
-
-                    if (userMap.containsKey("email")) {
-                        email = userMap.get("email").toString();
-                    } else {
-                        Log.d(TAG, "Facebook email was null");
-                        email = username + "@facebook.com";
-                        Log.d(TAG, "Facebook email -> " + email);
-                    }
-
-                    Log.i(TAG, userID + "," + name + "," + username + ","
-                            + email);
-
-                    SharedPreferences.Editor spEditor = loginPreferences.edit();
-                    spEditor.putString("facebook_name", name);
-                    spEditor.putString("facebook_username", username);
-                    spEditor.putString("facebook_email", email);
-                    spEditor.putString("facebook_accessToken", faceAccessToken);
-                    spEditor.apply();
-
-                    // loginFlag = true;
-
-                    Log.e(TAG, "fabutton");
-                    loginTask = new LoginTask();
-                    loginTask.execute("facebook", email, faceAccessToken);
-                }
-            }
-        };
-    };
 }
