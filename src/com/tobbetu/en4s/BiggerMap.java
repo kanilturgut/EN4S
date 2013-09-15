@@ -15,107 +15,104 @@ import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.tobbetu.en4s.service.EnforceService;
 
 public class BiggerMap extends Activity {
 
-	private GoogleMap myBigMap = null;
-	private LatLng markerPosition = null;
+    private GoogleMap myBigMap = null;
+    private LatLng markerPosition = null;
 
-	private Button sendButton = null;
+    private Button sendButton = null;
 
-	private String complaintTitle;
-	private int complaintCategory;
-	private byte[] complaintImage;
+    private String complaintTitle;
+    private int complaintCategory;
+    private byte[] complaintImage;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_bigger_map);
-		getActionBar().hide();
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_bigger_map);
+        getActionBar().hide();
 
-		Log.d("BiggerMap", "onCreate");
+        Log.d("BiggerMap", "onCreate");
 
-		complaintTitle = getIntent().getStringExtra("complaintTitle");
-		complaintCategory = getIntent().getIntExtra("complaintCategory", 0);
-		complaintImage = getIntent().getByteArrayExtra("complaintImage");
+        complaintTitle = getIntent().getStringExtra("complaintTitle");
+        complaintCategory = getIntent().getIntExtra("complaintCategory", 0);
+        complaintImage = getIntent().getByteArrayExtra("complaintImage");
 
-		markerPosition = new LatLng(
-				getIntent().getDoubleExtra("LatLng_Lat", 0), getIntent()
-						.getDoubleExtra("LatLng_Lng", 0));
+        markerPosition = new LatLng(EnforceService.getLocation().getLatitude(),
+                EnforceService.getLocation().getLongitude());
 
-		myBigMap = ((MapFragment) getFragmentManager().findFragmentById(
-				R.id.mapBiggerMap)).getMap();
-		myBigMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        myBigMap = ((MapFragment) getFragmentManager().findFragmentById(
+                R.id.mapBiggerMap)).getMap();
+        myBigMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 
-		Utils.addAMarker(myBigMap, markerPosition, true);
-		Utils.centerAndZomm(myBigMap, markerPosition, 18);
+        Utils.addAMarker(myBigMap, markerPosition, true);
+        Utils.centerAndZomm(myBigMap, markerPosition, 18);
 
-		myBigMap.setOnMarkerDragListener(new OnMarkerDragListener() {
+        myBigMap.setOnMarkerDragListener(new OnMarkerDragListener() {
 
-			@Override
-			public void onMarkerDragStart(Marker marker) {
-				// TODO Auto-generated method stub
+            @Override
+            public void onMarkerDragStart(Marker marker) {
+                // TODO Auto-generated method stub
 
-			}
+            }
 
-			@Override
-			public void onMarkerDragEnd(Marker marker) {
-				// TODO Auto-generated method stub
+            @Override
+            public void onMarkerDragEnd(Marker marker) {
+                // TODO Auto-generated method stub
 
-			}
+            }
 
-			@Override
-			public void onMarkerDrag(Marker marker) {
+            @Override
+            public void onMarkerDrag(Marker marker) {
 
-				markerPosition = new LatLng(marker.getPosition().latitude,
-						marker.getPosition().longitude);
+                markerPosition = new LatLng(marker.getPosition().latitude,
+                        marker.getPosition().longitude);
 
-			}
-		});
+            }
+        });
 
-		myBigMap.setOnMapClickListener(new OnMapClickListener() {
+        myBigMap.setOnMapClickListener(new OnMapClickListener() {
 
-			@Override
-			public void onMapClick(LatLng point) {
+            @Override
+            public void onMapClick(LatLng point) {
 
-				myBigMap.animateCamera(CameraUpdateFactory.newLatLng(point));
+                myBigMap.animateCamera(CameraUpdateFactory.newLatLng(point));
 
-			}
-		});
+            }
+        });
 
-		sendButton = (Button) findViewById(R.id.bBiggerMapSend);
-		sendButton.setOnClickListener(new OnClickListener() {
+        sendButton = (Button) findViewById(R.id.bBiggerMapSend);
+        sendButton.setOnClickListener(new OnClickListener() {
 
-			@Override
-			public void onClick(View arg0) {
-				startIntent();
-			}
-		});
-	}
+            @Override
+            public void onClick(View arg0) {
+                startIntent();
+            }
+        });
+    }
 
-	@Override
-	protected void onPause() {
-		super.onPause();		
-		//kill activity
-		finish();
-	}
-	
-	@Override
-	public void onBackPressed() {
-		startIntent();
-	}
-	
-	private void startIntent() {
-		Intent betterPositionIntent = new Intent(BiggerMap.this,
-				NewComplaint.class);
-		betterPositionIntent.putExtra("user_lat",
-				markerPosition.latitude);
-		betterPositionIntent.putExtra("user_lng",
-				markerPosition.longitude);
-		betterPositionIntent.putExtra("complaintTitle", complaintTitle);
-		betterPositionIntent.putExtra("complaintCategory",
-				complaintCategory);
-		betterPositionIntent.putExtra("complaintImage", complaintImage);
-		startActivity(betterPositionIntent);
-	}
+    @Override
+    protected void onPause() {
+        super.onPause();
+        // kill activity
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        startIntent();
+    }
+
+    private void startIntent() {
+        Intent betterPositionIntent = new Intent(BiggerMap.this,
+                NewComplaint.class);
+        betterPositionIntent.putExtra("user_lat", markerPosition.latitude);
+        betterPositionIntent.putExtra("user_lng", markerPosition.longitude);
+        betterPositionIntent.putExtra("complaintTitle", complaintTitle);
+        betterPositionIntent.putExtra("complaintCategory", complaintCategory);
+        betterPositionIntent.putExtra("complaintImage", complaintImage);
+        startActivity(betterPositionIntent);
+    }
 }

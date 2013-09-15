@@ -61,6 +61,7 @@ import com.tobbetu.en4s.helpers.BetterAsyncTask;
 import com.tobbetu.en4s.helpers.CategoryI18n;
 import com.tobbetu.en4s.helpers.CommentRejectedException;
 import com.tobbetu.en4s.helpers.VoteRejectedException;
+import com.tobbetu.en4s.service.EnforceService;
 
 public class DetailsActivity extends Activity implements OnClickListener {
 
@@ -80,7 +81,6 @@ public class DetailsActivity extends Activity implements OnClickListener {
     private Complaint comp = null;
     private final User me = Login.getMe();
     private LatLng compPos = null;
-    LatLng myPosition = null;
 
     // more comment activitysine gidilip gidilmedigini tutacak.
     private boolean toMoreCommentActivity = false;
@@ -142,11 +142,6 @@ public class DetailsActivity extends Activity implements OnClickListener {
         }
 
         compPos = new LatLng(comp.getLatitude(), comp.getLongitude());
-        myPosition = new LatLng(getIntent().getDoubleExtra("latitude", 0),
-                getIntent().getDoubleExtra("longitude", 0));
-
-        // Ipneligine sildim, saygilarimla.
-        // Mustafa
 
         // mViewPager = new HackyViewPager(this);
         // viewPagerLayout.addView(mViewPager);
@@ -268,8 +263,6 @@ public class DetailsActivity extends Activity implements OnClickListener {
             if (comp.getCommentsCount() != 0) {
                 Intent i = new Intent(this, MoreCommentsActivity.class);
                 i.putExtra("class", comp);
-                i.putExtra("latitude", myPosition.latitude);
-                i.putExtra("longitude", myPosition.longitude);
                 startActivity(i);
             } else {
                 final AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -367,8 +360,9 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
         @Override
         protected Void task(Void... arg0) throws Exception {
-            String location = Utils.locationToJSON(myPosition.latitude,
-                    myPosition.longitude);
+            String location = Utils
+                    .locationToJSON(EnforceService.getLocation().getLatitude(),
+                            EnforceService.getLocation().getLongitude());
 
             if (type.equalsIgnoreCase("upvote")) {
                 comp.upvote(me, location);
@@ -500,8 +494,6 @@ public class DetailsActivity extends Activity implements OnClickListener {
             afterCommentFlag = true;
             Intent i = new Intent(DetailsActivity.this, DetailsActivity.class);
             i.putExtra("class", comp);
-            i.putExtra("latitude", myPosition.latitude);
-            i.putExtra("longitude", myPosition.longitude);
             startActivity(i);
         }
 

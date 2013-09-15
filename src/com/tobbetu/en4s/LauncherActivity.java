@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
 
+import com.tobbetu.en4s.service.EnforceService;
+
 public class LauncherActivity extends Activity implements OnClickListener {
 
     private final String TAG = "LauncherActivity";
@@ -34,6 +36,7 @@ public class LauncherActivity extends Activity implements OnClickListener {
             setContentView(R.layout.activity_launcher);
             getActionBar().hide();
 
+            startService(new Intent(this, EnforceService.class));
             /*
              * Bu blok, program cihaza yuklendikten sonra sadece 1 kere
              * calisacak ve yeni sikayet ekleme ekraninda kullanacagimiz,
@@ -109,6 +112,8 @@ public class LauncherActivity extends Activity implements OnClickListener {
 
                         try {
                             Utils.turnGPSOff(LauncherActivity.this);
+                            stopService(new Intent(LauncherActivity.this,
+                                    EnforceService.class));
                             System.exit(0);
                         } catch (Throwable e) {
                             // TODO Auto-generated catch block

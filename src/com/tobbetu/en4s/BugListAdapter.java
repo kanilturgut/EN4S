@@ -15,6 +15,7 @@ import com.tobbetu.en4s.backend.Complaint;
 import com.tobbetu.en4s.backend.Image;
 import com.tobbetu.en4s.backend.Login;
 import com.tobbetu.en4s.backend.User;
+import com.tobbetu.en4s.service.EnforceService;
 
 public class BugListAdapter extends ArrayAdapter<Complaint> {
 
@@ -22,22 +23,17 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
     private final Context context;
     private final List<Complaint> complaints;
     private final int tabPosition;
-    private final double latitude;
-    private final double longitude;
     private Complaint complaint;
     private final User user = Login.getMe();
     private ImageView ivUp;
 
-    public BugListAdapter(Context context, List<Complaint> complaints, int pos,
-            double lat, double lon) {
-        // super(c, R.layout.bug_list_item, complaints);
+    public BugListAdapter(Context context, List<Complaint> complaints, int pos) {
+
         super(context, R.layout.bug_list_item, complaints);
 
         this.context = context;
         this.complaints = complaints;
         this.tabPosition = pos;
-        this.latitude = lat;
-        this.longitude = lon;
     }
 
     @Override
@@ -83,7 +79,8 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
             tvAdditionalInfo.setText(complaint.getDateAsString(this.context));
         } else if (tabPosition == 2) {
             tvAdditionalInfo.setText(complaint.getDistance(this.context,
-                    latitude, longitude));
+                    EnforceService.getLocation().getLatitude(), EnforceService
+                            .getLocation().getLongitude()));
         } else {
             tvAdditionalInfo
                     .setText(String.format(context.getString(R.string.bla_top),

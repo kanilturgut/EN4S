@@ -25,6 +25,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.astuetz.viewpager.extensions.PagerSlidingTabStrip;
+import com.tobbetu.en4s.service.EnforceService;
 
 public class MainActivity extends FragmentActivity {
 
@@ -37,9 +38,6 @@ public class MainActivity extends FragmentActivity {
     private Drawable oldBackground = null;
     private int currentColor = 0xFF666666;
 
-    private double latitude = 0;
-    private double longitude = 0;
-
     private AlertDialog alertDialog = null;
 
     private final String TAG = "MainActivity";
@@ -48,11 +46,6 @@ public class MainActivity extends FragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        // getActionBar().hide();
-
-        latitude = getIntent().getDoubleExtra("latitude", 0);
-        longitude = getIntent().getDoubleExtra("longitude", 0);
-        Log.e(TAG, "latitude : " + latitude + ", longitude : " + longitude);
 
         tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         pager = (ViewPager) findViewById(R.id.pager);
@@ -99,27 +92,17 @@ public class MainActivity extends FragmentActivity {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-
-                        try {
-                            Utils.turnGPSOff(MainActivity.this);
-                            System.exit(0);
-                        } catch (Throwable e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
+                        Utils.turnGPSOff(MainActivity.this);
+                        stopService(new Intent(MainActivity.this,
+                                EnforceService.class));
+                        System.exit(0);
                     }
                 });
         builder.setNegativeButton(R.string.ma_quit_cancel,
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-
-                        try {
-                            dialog.dismiss();
-                        } catch (Throwable e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
+                        dialog.dismiss();
                     }
                 });
 
@@ -133,23 +116,17 @@ public class MainActivity extends FragmentActivity {
         switch (item.getItemId()) {
 
         case R.id.action_contact:
-            // QuickContactFragment dialog = new QuickContactFragment();
-            // dialog.show(getSupportFragmentManager(), "QuickContactFragment");
-            // return true;
 
-            if (latitude == 0 && longitude == 0) {
+            if (EnforceService.getLocation().getLatitude() == 0
+                    && EnforceService.getLocation().getLongitude() == 0) {
                 Toast.makeText(getApplicationContext(),
                         getResources().getString(R.string.ma_no_location),
                         Toast.LENGTH_LONG).show();
             } else {
                 Intent i = new Intent(MainActivity.this, NewComplaint.class);
-                i.putExtra("user_lat", latitude);
-                i.putExtra("user_lng", longitude);
                 startActivity(i);
             }
-
             break;
-
         }
 
         return super.onOptionsItemSelected(item);

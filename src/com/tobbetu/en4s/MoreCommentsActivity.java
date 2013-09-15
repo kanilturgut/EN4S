@@ -18,7 +18,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.bugsense.trace.BugSenseHandler;
-import com.google.android.gms.maps.model.LatLng;
 import com.tobbetu.en4s.backend.Comment;
 import com.tobbetu.en4s.backend.Complaint;
 import com.tobbetu.en4s.helpers.BetterAsyncTask;
@@ -28,7 +27,6 @@ public class MoreCommentsActivity extends Activity {
 
     private final String TAG = "MoreCommentActivity";
     Complaint complaint = null;
-    LatLng userPosition = null;
     private ListView lvMoreComments;
 
     @Override
@@ -45,9 +43,6 @@ public class MoreCommentsActivity extends Activity {
          * yerlestirmeliyiz.
          */
         complaint = (Complaint) getIntent().getSerializableExtra("class");
-        userPosition = new LatLng(getIntent().getDoubleExtra("latitude", 0),
-                getIntent().getDoubleExtra("longitude", 0));
-
         lvMoreComments = (ListView) findViewById(R.id.commentList);
         new CommentAsyncTask().execute();
 
@@ -75,8 +70,6 @@ public class MoreCommentsActivity extends Activity {
     public void onBackPressed() {
         Intent i = new Intent(MoreCommentsActivity.this, DetailsActivity.class);
         i.putExtra("class", complaint);
-        i.putExtra("latitude", userPosition.latitude);
-        i.putExtra("longitude", userPosition.longitude);
         startActivity(i);
     }
 
@@ -151,8 +144,6 @@ public class MoreCommentsActivity extends Activity {
             Intent i = new Intent(MoreCommentsActivity.this,
                     MoreCommentsActivity.class);
             i.putExtra("class", complaint);
-            i.putExtra("latitude", userPosition.latitude);
-            i.putExtra("longitude", userPosition.longitude);
             startActivity(i);
         }
 

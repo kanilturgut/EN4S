@@ -24,7 +24,6 @@ import org.json.JSONException;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,16 +38,15 @@ import android.widget.Toast;
 import com.bugsense.trace.BugSenseHandler;
 import com.tobbetu.en4s.backend.Complaint;
 import com.tobbetu.en4s.helpers.BetterAsyncTask;
+import com.tobbetu.en4s.service.EnforceService;
 
 public class TabCreator extends Fragment {
 
     private static final String ARG_POSITION = "position";
     private ListView bugList = null;
     private int position;
-    private String TAG = "TabCreator";
 
-    private double latitude = 0;
-    private double longitude = 0;
+    // private String TAG = "TabCreator";
 
     public static TabCreator newInstance(int position) {
         TabCreator f = new TabCreator();
@@ -61,11 +59,6 @@ public class TabCreator extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        latitude = getActivity().getIntent().getDoubleExtra("latitude", 0);
-        longitude = getActivity().getIntent().getDoubleExtra("longitude", 0);
-
-        Log.d(TAG, "latitude : " + latitude + ", longitude : " + longitude);
 
         position = getArguments().getInt(ARG_POSITION);
     }
@@ -105,8 +98,6 @@ public class TabCreator extends Fragment {
                 Intent anIntent = new Intent(getActivity(),
                         DetailsActivity.class);
                 anIntent.putExtra("class", temp);
-                anIntent.putExtra("latitude", latitude);
-                anIntent.putExtra("longitude", longitude);
                 startActivity(anIntent);
             }
 
@@ -132,7 +123,9 @@ public class TabCreator extends Fragment {
             case 1: // New
                 return Complaint.getNewList();
             case 2: // Near
-                return Complaint.getNearList(latitude, longitude);
+                return Complaint.getNearList(EnforceService.getLocation()
+                        .getLatitude(), EnforceService.getLocation()
+                        .getLongitude());
             case 3: // Top
                 return Complaint.getTopList();
             default:
@@ -143,8 +136,7 @@ public class TabCreator extends Fragment {
         @Override
         protected void onSuccess(List<Complaint> result) {
             bugList.setAdapter(new BugListAdapter(
-                    TabCreator.this.getActivity(), result, position, latitude,
-                    longitude));
+                    TabCreator.this.getActivity(), result, position));
         }
 
         @Override

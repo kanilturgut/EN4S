@@ -12,12 +12,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -46,6 +42,7 @@ import com.tobbetu.en4s.backend.Login;
 import com.tobbetu.en4s.backend.Login.LoginFailedException;
 import com.tobbetu.en4s.backend.User;
 import com.tobbetu.en4s.helpers.BetterAsyncTask;
+import com.tobbetu.en4s.service.EnforceService;
 
 public class LoginPageActivity extends Activity implements OnClickListener {
 
@@ -61,23 +58,10 @@ public class LoginPageActivity extends Activity implements OnClickListener {
     private final String sharedFileName = "loginInfo";
     protected static SharedPreferences loginPreferences;
 
-    private LocationManager lManager = null;
-    private LocationListener mlocListener = null;
-    private double latitude = 0;
-    private double longitude = 0;
-
-    private boolean flag = false;
-    private boolean loginFlag = false;
-    private boolean locationFlag = false;
-
     protected static boolean intentCreated = false;
+    private LoginTask loginTask = null;
 
     private AlertDialog alertDialog = null;
-
-    private Handler myNetworkLocationHandler = null;
-    private Handler myGPSLocationHandler = null;
-    private Runnable locationNetworkRunnable = null;
-    private Runnable locationGPSRunnable = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,17 +75,9 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                     Toast.LENGTH_LONG).show();
             finish();
         } else {
-            // startService(new Intent(this, EN4SService.class));
 
-            lManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-            mlocListener = new LoginPageLocationListener();
-
-            if (!lManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if (!EnforceService.getGPSStatus())
                 buildAlertMessageNoGps();
-            } else {
-                lManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                        0, 0, mlocListener);
-            }
 
             BugSenseHandler.initAndStartSession(LoginPageActivity.this,
                     getResources().getString(R.string.bugSense_API_KEY));
@@ -124,8 +100,7 @@ public class LoginPageActivity extends Activity implements OnClickListener {
 
             loginPreferences = getSharedPreferences(sharedFileName,
                     MODE_PRIVATE);
-            if ((loginPreferences.getAll().size() != 0) && flag == false) {
-                flag = true;
+            if ((loginPreferences.getAll().size() != 0)) {
                 if (!loginPreferences.getString("facebook_accessToken", "null")
                         .equals("null")) {
                     // facebook login
@@ -135,22 +110,21 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                     Log.d(TAG, loginPreferences.getString(
                             "facebook_accessToken", ""));
 
-                    new LoginTask().execute("facebook", loginPreferences
-                            .getString("facebook_email",
-                                    "username@facebook.com"), loginPreferences
+                    loginTask = new LoginTask();
+                    loginTask.execute("facebook", loginPreferences.getString(
+                            "facebook_email", "NONE"), loginPreferences
                             .getString("facebook_accessToken", "NONE"));
 
                 } else { // normal login
                     Log.d(TAG, "trying login with username");
                     Log.d(TAG, loginPreferences.getString("username", ""));
                     Log.d(TAG, loginPreferences.getString("password", ""));
-                    new LoginTask().execute("enforce",
+
+                    loginTask = new LoginTask();
+                    loginTask.execute("enforce",
                             loginPreferences.getString("username", ""),
                             loginPreferences.getString("password", ""));
                 }
-
-                startGPSThread();
-                Log.e(TAG, "onCreate(150), startGPSThread");
             }
 
             faceButton.setOnErrorListener(new OnErrorListener() {
@@ -188,11 +162,10 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                         .toString());
                 preferencesEditor.apply();
 
-                new LoginTask().execute("enforce", etUsername.getText()
-                        .toString(), etPassword.getText().toString());
+                loginTask = new LoginTask();
+                loginTask.execute("enforce", etUsername.getText().toString(),
+                        etPassword.getText().toString());
 
-                startGPSThread();
-                Log.e(TAG, "onClick(266), startGPSThread");
             }
         }
     }
@@ -203,18 +176,9 @@ public class LoginPageActivity extends Activity implements OnClickListener {
 
         if (intentCreated) {
 
-            if (lManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            if (EnforceService.getGPSStatus()) {
                 turnGPSOff(this);
             }
-
-            if (lManager != null) {
-                lManager.removeUpdates(mlocListener);
-                lManager = null;
-                mlocListener = null;
-            }
-
-            stopGPSThread();
-            stopNetworkThread();
 
             finish();
         }
@@ -240,33 +204,6 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                 resultCode, data);
     }
 
-    class LoginPageLocationListener implements LocationListener {
-
-        @Override
-        public void onLocationChanged(Location loc) {
-            Log.d(TAG, "onLocationChanged ->" + loc);
-
-            latitude = loc.getLatitude();
-            longitude = loc.getLongitude();
-
-            locationFlag = true;
-            startIntent();
-        }
-
-        @Override
-        public void onProviderDisabled(String arg0) {
-        }
-
-        @Override
-        public void onProviderEnabled(String arg0) {
-        }
-
-        @Override
-        public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
-        }
-
-    }
-
     class LoginTask extends BetterAsyncTask<String, User> {
 
         @Override
@@ -288,12 +225,12 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                 newLogin = new FacebookLogin(loginArg0, loginArg1);
             else
                 newLogin = new EnforceLogin(loginArg0, loginArg1);
+
             return newLogin.makeRequest();
         }
 
         @Override
         protected void onSuccess(User result) {
-            loginFlag = true;
             // to give permission to kill LauncherActivity
             LauncherActivity.shouldKillThisActivity = true;
 
@@ -334,26 +271,18 @@ public class LoginPageActivity extends Activity implements OnClickListener {
     }
 
     private void startIntent() {
-        Log.d(getClass().getName(), String.format("Location: %s, Login: %s",
-                locationFlag, loginFlag));
 
-        if (locationFlag == true && loginFlag == true) {
+        if (loginTask != null)
+            loginTask.cancel(true);
 
-            intentCreated = true;
-            SharedPreferences.Editor editor = LauncherActivity.firstTimeControlPref
-                    .edit();
-            editor.putBoolean("didLogIn", true);
-            editor.apply();
+        intentCreated = true;
+        SharedPreferences.Editor editor = LauncherActivity.firstTimeControlPref
+                .edit();
+        editor.putBoolean("didLogIn", true);
+        editor.apply();
 
-            Intent i = new Intent(LoginPageActivity.this, MainActivity.class);
-            i.putExtra("latitude", latitude);
-            i.putExtra("longitude", longitude);
-
-            startActivity(i);
-
-            loginFlag = false;
-
-        }
+        Intent i = new Intent(LoginPageActivity.this, MainActivity.class);
+        startActivity(i);
     }
 
     private void lockToComponents() {
@@ -379,7 +308,6 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-
                         try {
                             Utils.turnGPSOff(getApplicationContext());
                             System.exit(0);
@@ -407,95 +335,6 @@ public class LoginPageActivity extends Activity implements OnClickListener {
         alertDialog.show();
     }
 
-    protected void startGPSThread() {
-
-        Log.e(TAG, "on startGPSThread");
-        myGPSLocationHandler = new Handler();
-        locationGPSRunnable = new Runnable() {
-
-            @Override
-            public void run() {
-                Log.e(TAG, "on startGPSThread's run()");
-                if (latitude == 0 && longitude == 0) {
-                    lManager.requestLocationUpdates(
-                            LocationManager.NETWORK_PROVIDER, 0, 0,
-                            mlocListener);
-                }
-
-                stopGPSThread();
-            }
-        };
-        myGPSLocationHandler.postDelayed(locationGPSRunnable, 10000);
-    }
-
-    protected void stopGPSThread() {
-        if (myGPSLocationHandler != null) {
-            myGPSLocationHandler.removeCallbacks(locationGPSRunnable);
-            locationGPSRunnable = null;
-            myGPSLocationHandler = null;
-
-            Log.e(TAG, "onStopGPSThread");
-        }
-    }
-
-    protected void startNetworkThread(long time) {
-        Log.e(TAG, "on startNetworkThread");
-        myNetworkLocationHandler = new Handler();
-        locationNetworkRunnable = new Runnable() {
-
-            @Override
-            public void run() {
-                Log.e(TAG, "on startNetworkThread's run()");
-                if (latitude == 0 && longitude == 0) {
-                    try {
-                        Location lastLocation = lManager
-                                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-
-                        Log.d(TAG, "Network last known location");
-                        Toast.makeText(getApplicationContext(),
-                                "Last Known Location", Toast.LENGTH_LONG)
-                                .show();
-                        latitude = lastLocation.getLatitude();
-                        longitude = lastLocation.getLongitude();
-                    } catch (Exception e) {
-                        try {
-                            Location lastLocation = lManager
-                                    .getLastKnownLocation(LocationManager.GPS_PROVIDER);
-
-                            Log.d(TAG, "GPS last known location");
-                            Toast.makeText(getApplicationContext(),
-                                    "Last Known Location", Toast.LENGTH_LONG)
-                                    .show();
-                            latitude = lastLocation.getLatitude();
-                            longitude = lastLocation.getLongitude();
-                        } catch (Exception ex) {
-                            Log.e(TAG,
-                                    "lastknwon location bile yok (0,0) olarak yolluyorum");
-                            latitude = 0;
-                            longitude = 0;
-                        }
-                    }
-
-                    locationFlag = true;
-                    Toast.makeText(getApplicationContext(),
-                            getResources().getString(R.string.location_failed),
-                            Toast.LENGTH_SHORT).show();
-                    startIntent();
-                }
-
-            }
-        };
-        myNetworkLocationHandler.postDelayed(locationNetworkRunnable, time);
-    }
-
-    protected void stopNetworkThread() {
-        if (myNetworkLocationHandler != null) {
-            myNetworkLocationHandler.removeCallbacks(locationNetworkRunnable);
-            locationNetworkRunnable = null;
-            myNetworkLocationHandler = null;
-        }
-    }
-
     private void buildAlertMessageNoGps() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(
@@ -517,34 +356,11 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                             @Override
                             public void onClick(final DialogInterface dialog,
                                     final int id) {
-                                try {
-                                    stopGPSThread();
-                                    startNetworkThread(10000);
-                                    lManager.requestLocationUpdates(
-                                            LocationManager.NETWORK_PROVIDER,
-                                            0, 0, mlocListener);
-                                } catch (Exception e) {
-                                    BugSenseHandler.sendException(e);
-                                } finally {
-                                    dialog.cancel();
-                                }
+                                dialog.cancel();
                             }
                         });
         final AlertDialog alert = builder.create();
         alert.show();
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-
-        lManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0,
-                mlocListener);
-
-        startGPSThread();
-        Log.e(TAG, "onRestart, startGPSThread");
-        startNetworkThread(20000);
-        Log.e(TAG, "onRestart, startNetworkThread");
     }
 
     private static void turnGPSOff(Context c) {
@@ -564,13 +380,15 @@ public class LoginPageActivity extends Activity implements OnClickListener {
         }
     }
 
-    private StatusCallback facebookCalback = new StatusCallback() {
+    private final StatusCallback facebookCalback = new StatusCallback() {
 
         @Override
         public void call(Session session, SessionState state,
                 Exception exception) {
 
-            if (session.isOpened()) {
+            if (session.isOpened()
+                    && loginPreferences.getString("facebook_accessToken",
+                            "NONE").equals("NONE")) {
                 faceAccessToken = session.getAccessToken();
                 Log.i(TAG, "Access Token " + session.getAccessToken());
                 Request.executeMeRequestAsync(session, userCallback);
@@ -578,7 +396,7 @@ public class LoginPageActivity extends Activity implements OnClickListener {
 
         }
 
-        private GraphUserCallback userCallback = new GraphUserCallback() {
+        private final GraphUserCallback userCallback = new GraphUserCallback() {
 
             @Override
             public void onCompleted(GraphUser user, Response response) {
@@ -609,11 +427,9 @@ public class LoginPageActivity extends Activity implements OnClickListener {
 
                     // loginFlag = true;
 
-                    new LoginTask().execute("facebook", email, faceAccessToken);
-
-                    startGPSThread();
-                    Log.e(TAG, "GraphUserCallback, startGPSThread");
-                    startIntent();
+                    Log.e(TAG, "fabutton");
+                    loginTask = new LoginTask();
+                    loginTask.execute("facebook", email, faceAccessToken);
                 }
             }
         };

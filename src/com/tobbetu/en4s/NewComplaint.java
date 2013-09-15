@@ -45,6 +45,7 @@ import com.tobbetu.en4s.backend.Image;
 import com.tobbetu.en4s.helpers.BetterAsyncTask;
 import com.tobbetu.en4s.helpers.CategoryI18n;
 import com.tobbetu.en4s.helpers.Preview;
+import com.tobbetu.en4s.service.EnforceService;
 
 public class NewComplaint extends Activity implements OnClickListener {
 
@@ -56,8 +57,6 @@ public class NewComplaint extends Activity implements OnClickListener {
 
     private GoogleMap myMap;
     private LatLng position = null;
-    private double latitude = 0;
-    private double longitude = 0;
 
     private Image img = null;
     private Bitmap bmp = null;
@@ -132,9 +131,6 @@ public class NewComplaint extends Activity implements OnClickListener {
                 .getStringExtra("complaintTitle");
         selectedCategoryIndex = getIntent().getIntExtra("complaintCategory", 0);
 
-        latitude = getIntent().getDoubleExtra("user_lat", 0);
-        longitude = getIntent().getDoubleExtra("user_lng", 0);
-
         final TextView tvCount = (TextView) findViewById(R.id.tvWordCount);
         etComplaintTitle = (EditText) findViewById(R.id.etNewComplaint);
         etComplaintTitle.addTextChangedListener(new TextWatcher() {
@@ -193,7 +189,16 @@ public class NewComplaint extends Activity implements OnClickListener {
                 R.id.mapNewComplaint)).getMap();
         myMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
-        position = new LatLng(latitude, longitude);
+        position = new LatLng(EnforceService.getLocation().getLatitude(),
+                EnforceService.getLocation().getLongitude());
+
+        // user konumu begenmeyip, biggermap aktivitesini acarak konuma set
+        // ederse, bu kod parcasi calisacak ve konumu user in elle sectigi konum
+        // olarak set edecek
+        if (!Double.isNaN(getIntent().getDoubleExtra("user_lat", Double.NaN)))
+            position = new LatLng(getIntent().getDoubleExtra("user_lat",
+                    Double.NaN), getIntent().getDoubleExtra("user_lng",
+                    Double.NaN));
 
         Utils.addAMarker(myMap, position, false);
         Utils.centerAndZomm(myMap, position, 15);
@@ -300,8 +305,20 @@ public class NewComplaint extends Activity implements OnClickListener {
                 newComplaint.setCity("");
                 newComplaint.setCategory(CategoryI18n
                         .getEnglishName(selectedCategoryIndex));
-                newComplaint.setLatitude(latitude);
-                newComplaint.setLongitude(longitude);
+
+                newComplaint.setLatitude(EnforceService.getLocation()
+                        .getLatitude());
+                newComplaint.setLongitude(EnforceService.getLocation()
+                        .getLongitude());
+
+                if (!Double.isNaN(getIntent().getDoubleExtra("user_lat",
+                        Double.NaN))) {
+                    newComplaint.setLatitude(getIntent().getDoubleExtra(
+                            "user_lat", 0));
+                    newComplaint.setLongitude(getIntent().getDoubleExtra(
+                            "user_lng", 0));
+
+                }
 
                 Log.d("title", newComplaint.getTitle());
                 Log.d("category", newComplaint.getCategory());
@@ -315,8 +332,7 @@ public class NewComplaint extends Activity implements OnClickListener {
         } else { // bImroveLocation
             Intent biggerMapIntent = new Intent(NewComplaint.this,
                     BiggerMap.class);
-            biggerMapIntent.putExtra("LatLng_Lat", latitude);
-            biggerMapIntent.putExtra("LatLng_Lng", longitude);
+
             biggerMapIntent.putExtra("complaintTitle", etComplaintTitle
                     .getText().toString());
             biggerMapIntent
@@ -417,8 +433,6 @@ public class NewComplaint extends Activity implements OnClickListener {
 
             Intent anIntent = new Intent(NewComplaint.this,
                     DetailsActivity.class);
-            anIntent.putExtra("latitude", latitude);
-            anIntent.putExtra("longitude", longitude);
             anIntent.putExtra("class", result);
             startActivity(anIntent);
         }

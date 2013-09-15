@@ -41,6 +41,7 @@ public class Utils {
      */
     public static void addAMarker(GoogleMap map, LatLng position,
             boolean draggable) {
+        Log.d("addAMarker", position.toString());
 
         if (place != null)
             place.remove();
