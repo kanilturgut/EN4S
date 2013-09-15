@@ -51,8 +51,6 @@ public class LauncherActivity extends Activity implements OnClickListener {
 
     private LoginTask loginTask = null;
 
-    public static boolean isLogedIn = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,7 +63,8 @@ public class LauncherActivity extends Activity implements OnClickListener {
                     Toast.LENGTH_LONG).show();
             finish();
         } else {
-            setContentView(R.layout.activity_launcher);
+
+            setContentView(R.layout.splash);
             getActionBar().hide();
 
             startService(new Intent(this, EnforceService.class));
@@ -92,46 +91,45 @@ public class LauncherActivity extends Activity implements OnClickListener {
                 firstTimeEditor.putBoolean("isThisFirstTime", false);
                 firstTimeEditor.putInt("deviceWidth", sizes[0]);
                 firstTimeEditor.putInt("deviceHeight", sizes[1]);
-
                 firstTimeEditor.apply();
 
-                findViewById(R.id.bLauncherSignup).setOnClickListener(this);
-                findViewById(R.id.bLauncherLogin).setOnClickListener(this);
-
-                faceButton = (LoginButton) findViewById(R.id.faceButtonOnLauncherActivity);
-                faceButton.setOnErrorListener(new OnErrorListener() {
-
-                    @Override
-                    public void onError(FacebookException error) {
-                        Log.i(TAG, "Error " + error.getMessage());
-                    }
-                });
-
-                // facebook izinlerini set ediyoruz.
-                faceButton.setReadPermissions(Arrays.asList("basic_info",
-                        "email"));
-
-                faceButton.setSessionStatusCallback(facebookCalback);
+                setupComponents();
 
             } else {
-                // Intent i = new Intent(this, LoginPageActivity.class);
-                // startActivity(i);
-                if (!LauncherActivity.loginPreferences.getString(
-                        "facebook_accessToken", "null").equals("null")) {
-                    // facebook login
-                    Log.d(TAG, "trying login with facebook");
-                    Log.d(TAG, LauncherActivity.loginPreferences.getString(
-                            "facebook_email", "username@facebook.com"));
-                    Log.d(TAG, LauncherActivity.loginPreferences.getString(
-                            "facebook_accessToken", ""));
 
-                    loginTask = new LoginTask();
-                    loginTask.execute("facebook",
-                            LauncherActivity.loginPreferences.getString(
-                                    "facebook_email", "NONE"),
-                            LauncherActivity.loginPreferences.getString(
-                                    "facebook_accessToken", "NONE"));
+                if (loginPreferences.getAll().size() != 0) {
+                    if (!LauncherActivity.loginPreferences.getString(
+                            "facebook_accessToken", "null").equals("null")) {
+                        // facebook login
+                        Log.d(TAG, "trying login with facebook");
+                        Log.d(TAG, LauncherActivity.loginPreferences.getString(
+                                "facebook_email", "username@facebook.com"));
+                        Log.d(TAG, LauncherActivity.loginPreferences.getString(
+                                "facebook_accessToken", ""));
 
+                        loginTask = new LoginTask();
+                        loginTask.execute("facebook",
+                                LauncherActivity.loginPreferences.getString(
+                                        "facebook_email", "NONE"),
+                                LauncherActivity.loginPreferences.getString(
+                                        "facebook_accessToken", "NONE"));
+
+                    } else { // normal login
+                        Log.d(TAG, "trying login with username");
+                        Log.d(TAG, LauncherActivity.loginPreferences.getString(
+                                "username", ""));
+                        Log.d(TAG, LauncherActivity.loginPreferences.getString(
+                                "password", ""));
+
+                        loginTask = new LoginTask();
+                        loginTask.execute("enforce",
+                                LauncherActivity.loginPreferences.getString(
+                                        "username", ""),
+                                LauncherActivity.loginPreferences.getString(
+                                        "password", ""));
+                    }
+                } else {
+                    setupComponents();
                 }
             }
         }
@@ -158,11 +156,10 @@ public class LauncherActivity extends Activity implements OnClickListener {
     protected void onStop() {
         super.onStop();
 
-        if (isLogedIn)
-            finish();
-
         if (alertDialog != null)
             alertDialog.dismiss();
+
+        finish();
     }
 
     @Override
@@ -226,12 +223,7 @@ public class LauncherActivity extends Activity implements OnClickListener {
                 faceAccessToken = session.getAccessToken();
                 Log.i(TAG, "Access Token " + session.getAccessToken());
                 Request.executeMeRequestAsync(session, userCallback);
-            } else {
-                Log.e(TAG, "sesion is not opened");
-                Log.e(TAG, "sesion is : " + session.isOpened());
-
             }
-
         }
 
         private final GraphUserCallback userCallback = new GraphUserCallback() {
@@ -262,7 +254,6 @@ public class LauncherActivity extends Activity implements OnClickListener {
                     spEditor.putString("facebook_email", email);
                     spEditor.putString("facebook_accessToken", faceAccessToken);
                     spEditor.apply();
-                    isLogedIn = true;
 
                     loginTask = new LoginTask();
                     loginTask.execute("facebook", email, faceAccessToken);
@@ -275,7 +266,7 @@ public class LauncherActivity extends Activity implements OnClickListener {
 
         @Override
         protected void onPreExecute() {
-            // lockToComponents();
+            // lockToComponents(); bir turlu dogru duzgun calismadi.
         }
 
         @Override
@@ -298,13 +289,9 @@ public class LauncherActivity extends Activity implements OnClickListener {
 
         @Override
         protected void onSuccess(User result) {
-            // to give permission to kill LauncherActivity
-            // LauncherActivity.shouldKillThisActivity = true;
 
             if (loginTask != null)
                 loginTask.cancel(true);
-
-            isLogedIn = true;
 
             Intent i = new Intent(LauncherActivity.this, MainActivity.class);
             startActivity(i);
@@ -340,5 +327,31 @@ public class LauncherActivity extends Activity implements OnClickListener {
             }
 
         }
+    }
+
+    /*
+     * Kullanici facebook ile login olmadan login page yada register page e
+     * gider, yine herhangi bir login yada register islemi yapmadan launcher
+     * activity e donerse, gerekli layout ve component duzenlemeleri yapilmali.
+     */
+    private void setupComponents() {
+
+        setContentView(R.layout.activity_launcher);
+        findViewById(R.id.bLauncherSignup).setOnClickListener(this);
+        findViewById(R.id.bLauncherLogin).setOnClickListener(this);
+        faceButton = (LoginButton) findViewById(R.id.faceButtonOnLauncherActivity);
+
+        faceButton.setOnErrorListener(new OnErrorListener() {
+
+            @Override
+            public void onError(FacebookException error) {
+                Log.i(TAG, "Error " + error.getMessage());
+            }
+        });
+
+        // facebook izinlerini set ediyoruz.
+        faceButton.setReadPermissions(Arrays.asList("basic_info", "email"));
+
+        faceButton.setSessionStatusCallback(facebookCalback);
     }
 }

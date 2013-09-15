@@ -6,13 +6,10 @@ import org.json.JSONException;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -41,7 +38,6 @@ public class LoginPageActivity extends Activity implements OnClickListener {
     private EditText etUsername, etPassword;
     private ProgressBar pbLogin = null;
 
-    protected static boolean intentCreated = false;
     private LoginTask loginTask = null;
 
     private AlertDialog alertDialog = null;
@@ -147,26 +143,16 @@ public class LoginPageActivity extends Activity implements OnClickListener {
     protected void onStop() {
         super.onStop();
 
-        if (intentCreated) {
-            if (EnforceService.getGPSStatus()) {
-                turnGPSOff(this);
-            }
-            finish();
-        }
+        finish();
 
         if (alertDialog != null)
             alertDialog.dismiss();
     }
 
-    // @Override
-    // public void onBackPressed() {
-    // Log.e(TAG, "in onBackPressed");
-    //
-    // if (LauncherActivity.firstTimeControlPref.getBoolean("didLogIn", false))
-    // createAlert();
-    // else
-    // super.onBackPressed();
-    // }
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(this, LauncherActivity.class));
+    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -221,7 +207,6 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                         Toast.LENGTH_LONG).show();
 
                 LauncherActivity.loginPreferences.edit().clear().commit();
-                intentCreated = true;
                 Intent i = new Intent(LoginPageActivity.this,
                         LoginPageActivity.class);
                 startActivity(i);
@@ -244,8 +229,6 @@ public class LoginPageActivity extends Activity implements OnClickListener {
         if (loginTask != null)
             loginTask.cancel(true);
 
-        intentCreated = true;
-
         Intent i = new Intent(LoginPageActivity.this, MainActivity.class);
         startActivity(i);
     }
@@ -253,7 +236,6 @@ public class LoginPageActivity extends Activity implements OnClickListener {
     private void lockToComponents() {
 
         findViewById(R.id.userInfoLayout).setVisibility(LinearLayout.INVISIBLE);
-        findViewById(R.id.breakLayout).setVisibility(LinearLayout.INVISIBLE);
         etUsername.setVisibility(EditText.INVISIBLE);
         etPassword.setVisibility(EditText.INVISIBLE);
         bLogin.setVisibility(Button.INVISIBLE);
@@ -287,22 +269,5 @@ public class LoginPageActivity extends Activity implements OnClickListener {
                         });
         final AlertDialog alert = builder.create();
         alert.show();
-    }
-
-    private static void turnGPSOff(Context c) {
-        Intent intent = new Intent("android.location.GPS_ENABLED_CHANGE");
-        intent.putExtra("enabled", false);
-        c.sendBroadcast(intent);
-
-        String provider = Settings.Secure.getString(c.getContentResolver(),
-                Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
-        if (provider.contains("gps")) { // if gps is enabled
-            final Intent poke = new Intent();
-            poke.setClassName("com.android.settings",
-                    "com.android.settings.widget.SettingsAppWidgetProvider");
-            poke.addCategory(Intent.CATEGORY_ALTERNATIVE);
-            poke.setData(Uri.parse("3"));
-            c.sendBroadcast(poke);
-        }
     }
 }

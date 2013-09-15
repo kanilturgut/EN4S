@@ -155,10 +155,11 @@
         <Button
             android:id="@+id/bSignup"
             android:layout_width="fill_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:layout_below="@+id/userInfoLayout"
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
+            android:minHeight="50dp"
             android:layout_marginTop="15dp"
             android:background="@drawable/signup_button_style"
             android:text="@string/signIn"

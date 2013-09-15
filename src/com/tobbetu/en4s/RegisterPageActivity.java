@@ -79,8 +79,6 @@ public class RegisterPageActivity extends Activity {
 
         @Override
         protected void onSuccess(User result) {
-            // to give permission to kill LauncherActivity
-            // LauncherActivity.shouldKillThisActivity = true;
 
             SharedPreferences sp = getSharedPreferences("loginInfo",
                     MODE_PRIVATE);
@@ -125,5 +123,10 @@ public class RegisterPageActivity extends Activity {
         super.onStop();
 
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(this, LauncherActivity.class));
     }
 }
