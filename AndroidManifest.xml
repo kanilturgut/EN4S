@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tobbetu.en4s"
     android:versionCode="5"
-    android:versionName="1.04" >
+    android:versionName="1.05" >
 
     <uses-sdk
         android:minSdkVersion="11"
