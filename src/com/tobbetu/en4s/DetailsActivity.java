@@ -111,26 +111,16 @@ public class DetailsActivity extends Activity implements OnClickListener {
         bUpVote = (Button) findViewById(R.id.bUpVote);
         bDownVote = (Button) findViewById(R.id.bDownVote);
 
-        // alreadyUpVoted en cok patlayan metodumuz :(
-        try {
-            if (comp.alreadyUpVoted(me)) {
-                bUpVote.setVisibility(Button.GONE);
-                bDownVote.setVisibility(Button.GONE);
-                tvYouAreAlreadyVoted = (TextView) findViewById(R.id.tvYouAreAlreadyVoted);
-                tvYouAreAlreadyVoted.setVisibility(TextView.VISIBLE);
-                tvYouAreAlreadyVoted.setText(getResources().getString(
-                        R.string.da_already_voted));
-            } else {
-                bUpVote.setOnClickListener(this);
-                bDownVote.setOnClickListener(this);
-            }
-        } catch (Exception e) {
+        if (comp.alreadyVoted(me)) {
             bUpVote.setVisibility(Button.GONE);
             bDownVote.setVisibility(Button.GONE);
-            tvYouAreNotAllowed = (TextView) findViewById(R.id.tvYouAreNotAllowed);
-            tvYouAreNotAllowed.setVisibility(TextView.VISIBLE);
-            tvYouAreNotAllowed.setText(getResources().getString(
-                    R.string.da_already_voted_error));
+            tvYouAreAlreadyVoted = (TextView) findViewById(R.id.tvYouAreAlreadyVoted);
+            tvYouAreAlreadyVoted.setVisibility(TextView.VISIBLE);
+            tvYouAreAlreadyVoted.setText(getResources().getString(
+                    R.string.da_already_voted));
+        } else {
+            bUpVote.setOnClickListener(this);
+            bDownVote.setOnClickListener(this);
         }
         bMoreComment = (Button) findViewById(R.id.bMoreComment);
         bMoreComment.setOnClickListener(this);

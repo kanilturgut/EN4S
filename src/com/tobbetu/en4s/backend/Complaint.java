@@ -86,9 +86,12 @@ public class Complaint implements Serializable {
         this.downVote = downVote;
     }
 
-    public boolean alreadyUpVoted(User me) {
-        // HashSet has O(1) lookup, I hope device has enough memory
-        return upvoters.contains(me.getId());
+    public boolean alreadyVoted(User me) {
+        if (upvoters != null && downvoters != null)
+            return upvoters.contains(me.getId())
+                    || downvoters.contains(me.getId());
+        else
+            return true; // this should never be reachable
     }
 
     public double getLatitude() {
