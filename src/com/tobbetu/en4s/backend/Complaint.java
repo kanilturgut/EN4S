@@ -86,9 +86,12 @@ public class Complaint implements Serializable {
         this.downVote = downVote;
     }
 
-    public boolean alreadyUpVoted(User me) {
-        // HashSet has O(1) lookup, I hope device has enough memory
-        return upvoters.contains(me.getId());
+    public boolean alreadyVoted(User me) {
+        if (upvoters != null && downvoters != null)
+            return upvoters.contains(me.getId())
+                    || downvoters.contains(me.getId());
+        else
+            return true; // this should never be reachable
     }
 
     public double getLatitude() {
@@ -219,8 +222,17 @@ public class Complaint implements Serializable {
         } else if (now - 7 * 24 * 60 * 60 * 1000 < unixtime) { // fucking week
             return String.format(ctx.getString(R.string.comp_day),
                     ((now - unixtime) / 24 / 60 / 60 / 1000));
+        } else if (now - 30 * 7 * 24 * 60 * 60 * 1000 < unixtime) {
+            // fucking month
+            return String.format(ctx.getString(R.string.comp_week),
+                    ((now - unixtime) / 7 / 24 / 60 / 60 / 1000));
+        } else if (now - 12 * 30 * 7 * 24 * 60 * 60 * 1000 < unixtime) {
+            // fucking month
+            return String.format(ctx.getString(R.string.comp_month),
+                    ((now - unixtime) / 30 / 7 / 24 / 60 / 60 / 1000));
         } else {
-            return this.date.toString();
+            SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+            return df.format(date);
         }
     }
 
@@ -229,11 +241,11 @@ public class Complaint implements Serializable {
                 this.longitude);
         if (distance < 0.0001) {
             return "Just Here!";
-        } else if (distance < 10000) {
+        } else if (distance < 1000) {
             return String.format(ctx.getString(R.string.comp_meter), distance);
         } else {
             return String.format(ctx.getString(R.string.comp_km),
-                    distance / 1000);
+                    distance / 1000.0);
         }
     }
 
@@ -362,15 +374,15 @@ public class Complaint implements Serializable {
         JSONArray upvoters = elem.getJSONArray("upvoters");
         Set<String> tmp = new HashSet<String>();
         for (int i = 0; i < upvoters.length(); i++) {
-            String user = upvoters.optString(i);
+            String user = upvoters.getString(i);
             tmp.add(user);
         }
         obj.upvoters = tmp;
 
-        JSONArray downvoters = elem.optJSONArray("downvoters");
+        JSONArray downvoters = elem.getJSONArray("downvoters");
         tmp = new HashSet<String>();
         for (int i = 0; i < downvoters.length(); i++) {
-            String user = downvoters.optString(i);
+            String user = downvoters.getString(i);
             tmp.add(user);
         }
         obj.downvoters = tmp;

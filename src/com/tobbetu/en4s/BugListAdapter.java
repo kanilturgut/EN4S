@@ -3,7 +3,6 @@ package com.tobbetu.en4s;
 import java.util.List;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,12 +64,8 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
 
         ivUp = (ImageView) rowView.findViewById(R.id.ivUp);
 
-        try {
-            if (complaint.alreadyUpVoted(user))
-                ivUp.setImageResource(R.drawable.up_voted);
-        } catch (Exception e) {
-            Log.e(TAG, "alreadyUpVote calismadi");
-        }
+        if (complaint.alreadyVoted(user))
+            ivUp.setImageResource(R.drawable.up_voted);
 
         // position
         if (tabPosition == 0) {
