@@ -67,7 +67,7 @@ public class Cache {
                 cache.put(this.url, result);
                 iv.setImageBitmap(result.getBmp());
             } else {
-                Log.d(TAG, "RESULT: " + result);
+                Log.d(TAG, "iv: " + iv + ", result: " + result);
             }
         }
 
@@ -75,7 +75,7 @@ public class Cache {
         protected void onFailure(Exception error) {
             if (error instanceof IOException
                     || error instanceof NoSuchElementException) {
-                iv.setImageResource(R.drawable.loading);
+                iv.setImageResource(R.drawable.failed);
             }
         }
 

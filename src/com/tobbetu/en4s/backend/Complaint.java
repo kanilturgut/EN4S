@@ -249,13 +249,14 @@ public class Complaint implements Serializable {
         }
     }
 
-    public void getImage(int index, String size, ImageView iv)
-            throws IndexOutOfBoundsException {
-        if (index > imageURLs.size())
-            throw new IndexOutOfBoundsException();
-
-        String url = imageURLs.get(index);
-        Cache.getInstance().getImage(Image.getImageURL(url, size), iv);
+    public void getImage(int index, String size, ImageView iv) {
+        // Instead of throwing exception, set failed image
+        if (index >= imageURLs.size()) {
+            iv.setImageResource(R.drawable.failed);
+        } else {
+            String url = imageURLs.get(index);
+            Cache.getInstance().getImage(Image.getImageURL(url, size), iv);
+        }
     }
 
     public Complaint save() throws IOException {
