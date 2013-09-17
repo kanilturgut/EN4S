@@ -59,7 +59,7 @@
                 android:drawableLeft="@drawable/email_icon"
                 android:ems="10"
                 android:hint="@string/hint_login_username"
-                android:imeOptions="actionDone"
+                android:imeOptions="actionNext"
                 android:inputType="textEmailAddress"
                 android:padding="10dp" >
 
@@ -78,6 +78,7 @@
                 android:background="#FFFFFF"
                 android:drawableLeft="@drawable/lock_icon"
                 android:hint="@string/hint_login_password"
+                android:imeOptions="actionSend"
                 android:inputType="textPassword"
                 android:padding="10dp" />
         </LinearLayout>
