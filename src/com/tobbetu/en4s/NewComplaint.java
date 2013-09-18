@@ -70,6 +70,9 @@ public class NewComplaint extends Activity implements OnClickListener {
     private Preview preview;
     ProgressDialog pg = null;
 
+    private static double latitude = 0;
+    private static double longitude = 0;
+
     private OrientationEventListener mOrientationListener = null;
     private int deviceOrientation, photoOrientation;
     private int frameWidth;
@@ -306,10 +309,8 @@ public class NewComplaint extends Activity implements OnClickListener {
                 newComplaint.setCategory(CategoryI18n
                         .getEnglishName(selectedCategoryIndex));
 
-                newComplaint.setLatitude(EnforceService.getLocation()
-                        .getLatitude());
-                newComplaint.setLongitude(EnforceService.getLocation()
-                        .getLongitude());
+                newComplaint.setLatitude(latitude);
+                newComplaint.setLongitude(longitude);
 
                 if (!Double.isNaN(getIntent().getDoubleExtra("user_lat",
                         Double.NaN))) {
@@ -407,6 +408,13 @@ public class NewComplaint extends Activity implements OnClickListener {
                 bTakePhoto.setVisibility(Button.GONE);
                 bReTakePhoto.setVisibility(Button.VISIBLE);
                 ivTakenPhoto.setImageBitmap(bmp);
+
+                // Lokasyonu, kullanici fotografi cektigi anda alalim. Ornegin
+                // seyahat halinde fotograf ceken bir kisi, hizli sekilde title
+                // yazamazsa konum bilgisi degisip sikayetin yerini yanlis set
+                // etmis olmayiz.
+                latitude = EnforceService.getLocation().getLatitude();
+                longitude = EnforceService.getLocation().getLongitude();
             }
         }
     };
