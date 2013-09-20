@@ -72,49 +72,13 @@
 
         <LinearLayout
             android:id="@+id/photoButtonLL"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:background="#FFFFFF"
             android:orientation="vertical" >
 
-            <FrameLayout
-                android:id="@+id/fLPreview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="visible" >
-
-                <ProgressBar
-                    android:id="@+id/pbNewComplaintPhoto"
-                    style="?android:attr/progressBarStyleLarge"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center" />
-            </FrameLayout>
-
-            <ImageView
-                android:id="@+id/ivTakenPhoto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:background="#FFFFFF"
-                android:contentDescription="@string/new_item_taken_photo"
-                android:src="@drawable/loading_half"
-                android:visibility="gone" />
         </LinearLayout>
-
-        <Button
-            android:id="@+id/bTakeIt"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/takePictureButton" />
-
-        <Button
-            android:id="@+id/bReTake"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/re_takePictureButton"
-            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/newComplaintMapLayout"

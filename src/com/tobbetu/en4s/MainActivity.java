@@ -123,7 +123,7 @@ public class MainActivity extends FragmentActivity {
                         getResources().getString(R.string.ma_no_location),
                         Toast.LENGTH_LONG).show();
             } else {
-                Intent i = new Intent(MainActivity.this, NewComplaint.class);
+                Intent i = new Intent(MainActivity.this, TakePhotoActivity.class);
                 startActivity(i);
             }
             break;

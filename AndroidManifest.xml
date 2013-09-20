@@ -92,8 +92,14 @@
         </activity>
 
         <service
-            android:name=".service.EnforceService"
+            android:name="com.tobbetu.en4s.service.EnforceService"
             android:enabled="true" />
+
+        <activity
+            android:name="com.tobbetu.en4s.TakePhotoActivity"
+            android:label="@string/title_activity_take_photo" 
+            android:screenOrientation="portrait" >
+        </activity>
     </application>
 
 </manifest>

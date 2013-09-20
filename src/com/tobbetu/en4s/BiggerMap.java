@@ -38,7 +38,7 @@ public class BiggerMap extends Activity {
 
         complaintTitle = getIntent().getStringExtra("complaintTitle");
         complaintCategory = getIntent().getIntExtra("complaintCategory", 0);
-        complaintImage = getIntent().getByteArrayExtra("complaintImage");
+        complaintImage = getIntent().getByteArrayExtra("taken_photo");
 
         markerPosition = new LatLng(EnforceService.getLocation().getLatitude(),
                 EnforceService.getLocation().getLongitude());
@@ -112,7 +112,7 @@ public class BiggerMap extends Activity {
         betterPositionIntent.putExtra("user_lng", markerPosition.longitude);
         betterPositionIntent.putExtra("complaintTitle", complaintTitle);
         betterPositionIntent.putExtra("complaintCategory", complaintCategory);
-        betterPositionIntent.putExtra("complaintImage", complaintImage);
+        betterPositionIntent.putExtra("taken_photo", complaintImage);
         startActivity(betterPositionIntent);
     }
 }
