@@ -153,7 +153,7 @@
     <string name="login_yes_openGPS">Evet</string>
     <string name="login_no_closeGPS">Hayır</string>
     <string name="bugSense_API_KEY">5e2fc2c8</string>
-    <string name="google_maps_API_KEY">AIzaSyCIpuB4wgshuYUo2HolL2jXQLb5VvwQihM</string>
+    <string name="google_maps_API_KEY">AIzaSyAoVkLARgnf57iAjp8v7JAmtcpI5T4vK30</string>
     <string name="title_activity_take_photo">TakePhotoActivity</string>
     
     <string name="imageButtonDescription">ImageButton</string>
