@@ -81,18 +81,19 @@ public class EnforceService extends Service {
 
         @Override
         public void onProviderDisabled(String provider) {
-            // TODO Auto-generated method stub
-
+            if (provider.equals(LocationManager.GPS_PROVIDER)) {
+                isGPSEnabled = false;
+            }
         }
 
         @Override
         public void onProviderEnabled(String provider) {
-            if (provider.equals(LocationManager.GPS_PROVIDER))
+            if (provider.equals(LocationManager.GPS_PROVIDER)) {
                 locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                         1000, 1, locListener);
 
-            isGPSEnabled = true;
-
+                isGPSEnabled = true;
+            }
         }
 
         @Override
