@@ -34,7 +34,6 @@ import com.tobbetu.en4s.backend.Login;
 import com.tobbetu.en4s.backend.Login.LoginFailedException;
 import com.tobbetu.en4s.backend.User;
 import com.tobbetu.en4s.helpers.BetterAsyncTask;
-import com.tobbetu.en4s.service.EnforceService;
 
 public class LoginPageActivity extends Activity implements OnClickListener,
         OnEditorActionListener {
@@ -61,9 +60,6 @@ public class LoginPageActivity extends Activity implements OnClickListener,
                     Toast.LENGTH_LONG).show();
             finish();
         } else {
-
-            if (!EnforceService.getGPSStatus())
-                buildAlertMessageNoGps();
 
             BugSenseHandler.initAndStartSession(LoginPageActivity.this,
                     getResources().getString(R.string.bugSense_API_KEY));
@@ -249,34 +245,6 @@ public class LoginPageActivity extends Activity implements OnClickListener,
         bLogin.setVisibility(Button.INVISIBLE);
         pbLogin.setVisibility(ProgressBar.VISIBLE);
 
-    }
-
-    private void buildAlertMessageNoGps() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(
-                getResources().getString(R.string.login_gps_disabled))
-                .setCancelable(false)
-                .setPositiveButton(
-                        getResources().getString(R.string.login_yes_openGPS),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(final DialogInterface dialog,
-                                    final int id) {
-                                startActivity(new Intent(
-                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                            }
-                        })
-                .setNegativeButton(
-                        getResources().getString(R.string.login_no_closeGPS),
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(final DialogInterface dialog,
-                                    final int id) {
-                                dialog.cancel();
-                            }
-                        });
-        final AlertDialog alert = builder.create();
-        alert.show();
     }
 
     @Override

@@ -42,6 +42,8 @@ public class MainActivity extends FragmentActivity {
 
     private final String TAG = "MainActivity";
 
+    protected boolean switchedFromGPSActivity = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,6 +84,16 @@ public class MainActivity extends FragmentActivity {
             alertDialog.dismiss();
     }
 
+    @Override
+    protected void onResume() {
+        if (switchedFromGPSActivity) {
+            switchedFromGPSActivity = false;
+            Intent i = new Intent(MainActivity.this, TakePhotoActivity.class);
+            startActivity(i);
+        }
+        super.onResume();
+    }
+
     private void createAlert() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -110,6 +122,35 @@ public class MainActivity extends FragmentActivity {
         alertDialog.show();
     }
 
+    private void buildAlertMessageNoGps() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.login_gps_disabled)
+                .setCancelable(false)
+                .setPositiveButton(R.string.login_yes_openGPS,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(final DialogInterface dialog,
+                                    final int id) {
+                                switchedFromGPSActivity = true;
+                                startActivity(new Intent(
+                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                            }
+                        })
+                .setNegativeButton(R.string.login_no_closeGPS,
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(final DialogInterface dialog,
+                                    final int id) {
+                                dialog.cancel();
+                                Intent i = new Intent(MainActivity.this,
+                                        TakePhotoActivity.class);
+                                startActivity(i);
+                            }
+                        });
+        final AlertDialog alert = builder.create();
+        alert.show();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -123,8 +164,13 @@ public class MainActivity extends FragmentActivity {
                         getResources().getString(R.string.ma_no_location),
                         Toast.LENGTH_LONG).show();
             } else {
-                Intent i = new Intent(MainActivity.this, TakePhotoActivity.class);
-                startActivity(i);
+                if (!EnforceService.getGPSStatus()) {
+                    buildAlertMessageNoGps();
+                } else {
+                    Intent i = new Intent(MainActivity.this,
+                            TakePhotoActivity.class);
+                    startActivity(i);
+                }
             }
             break;
         }
