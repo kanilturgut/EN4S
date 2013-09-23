@@ -161,5 +161,7 @@
     <string name="tp_iptal">İptal</string>
     
     <string name="abort_new_complaint">Şikayet girme işlemini iptal etmek istiyor musunuz?</string>
+    
+    <string name="capturing">Fotoğraf Çekiliyor...</string>
 
 </resources>

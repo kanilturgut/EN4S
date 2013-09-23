@@ -133,7 +133,7 @@ public class TakePhotoActivity extends Activity implements OnClickListener {
 
         if (v.getId() == R.id.cameraButton) {
             pg = ProgressDialog.show(TakePhotoActivity.this, null,
-                    "Capturing Image..");
+                    getString(R.string.capturing));
             pg.show();
             preview.camera.takePicture(null, null, jpegCallback);
 
