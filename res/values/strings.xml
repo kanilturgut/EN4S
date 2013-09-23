@@ -157,5 +157,9 @@
     <string name="title_activity_take_photo">TakePhotoActivity</string>
     
     <string name="imageButtonDescription">ImageButton</string>
+    
+    <string name="tp_iptal">İptal</string>
+    
+    <string name="abort_new_complaint">Şikayet girme işlemini iptal etmek istiyor musunuz?</string>
 
 </resources>

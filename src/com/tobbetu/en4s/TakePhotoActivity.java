@@ -4,7 +4,9 @@ import java.io.ByteArrayOutputStream;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
@@ -39,6 +41,7 @@ public class TakePhotoActivity extends Activity implements OnClickListener {
     private LinearLayout previewLayout;
     private ImageView takenPhoto;
     private Button takeButton;
+    private Button cancelButton;
 
     private Preview preview;
     private Handler previewHandler;
@@ -56,9 +59,12 @@ public class TakePhotoActivity extends Activity implements OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_take_photo);
+        getActionBar().hide();
 
         takeButton = (Button) findViewById(R.id.cameraButton);
         takeButton.setOnClickListener(this);
+        cancelButton = (Button) findViewById(R.id.cancelButton);
+        cancelButton.setOnClickListener(this);
 
         previewHandler = new Handler();
         previewRunnable = new Runnable() {
@@ -152,6 +158,11 @@ public class TakePhotoActivity extends Activity implements OnClickListener {
             i.putExtra("user_lat", latitude);
             i.putExtra("user_lng", longitude);
             startActivity(i);
+        } else if (v.getId() == R.id.cancelButton) {
+            bmp = null;
+            img = null;
+
+            cancelDialog();
         }
     }
 
@@ -237,10 +248,45 @@ public class TakePhotoActivity extends Activity implements OnClickListener {
             }
         }
     };
+    private AlertDialog alertDialog;
+
+    private void cancelDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.tp_iptal);
+        builder.setMessage(R.string.abort_new_complaint);
+        builder.setCancelable(true);
+        builder.setPositiveButton(R.string.ma_quit_ok,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent i = new Intent(TakePhotoActivity.this,
+                                MainActivity.class);
+                        startActivity(i);
+                    }
+                });
+        builder.setNegativeButton(R.string.ma_quit_cancel,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
 
     @Override
     protected void onStop() {
         super.onStop();
         mOrientationListener.disable();
+        if (alertDialog != null) {
+            alertDialog.dismiss();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        cancelButton.performClick();
     }
 }
