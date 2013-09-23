@@ -1,7 +1,9 @@
 package com.tobbetu.en4s;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -63,6 +65,7 @@ public class NewComplaint extends Activity implements OnClickListener {
     private static double latitude = 0;
     private static double longitude = 0;
     private byte[] bytearrays;
+    private AlertDialog alertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -196,8 +199,10 @@ public class NewComplaint extends Activity implements OnClickListener {
     protected void onStop() {
         super.onStop();
 
-        finish();
         Log.d(TAG, "in onStop");
+        if (alertDialog != null) {
+            alertDialog.dismiss();
+        }
     }
 
     @Override
@@ -307,5 +312,36 @@ public class NewComplaint extends Activity implements OnClickListener {
                     getResources().getString(R.string.nc_compalint_rejected),
                     Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void cancelDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.tp_iptal);
+        builder.setMessage(R.string.abort_new_complaint);
+        builder.setCancelable(true);
+        builder.setPositiveButton(R.string.ma_quit_ok,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        Intent i = new Intent(NewComplaint.this,
+                                MainActivity.class);
+                        startActivity(i);
+                    }
+                });
+        builder.setNegativeButton(R.string.ma_quit_cancel,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+
+        alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        cancelDialog();
     }
 }
