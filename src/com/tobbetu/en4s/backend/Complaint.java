@@ -50,7 +50,6 @@ public class Complaint implements Serializable {
     // private final List<Image> images = new ArrayList<Image>();
     private List<Comment> comments = null;
     private int comments_count;
-    private String public_URL;
     private String slug_URL;
 
     public Complaint() {
@@ -156,14 +155,6 @@ public class Complaint implements Serializable {
 
     public void setCategory(String category) {
         this.category = category;
-    }
-
-    public String getPublicURL() {
-        return public_URL;
-    }
-
-    public void setPublicURL(String url) {
-        this.public_URL = "http://enforceapp.com" + url;
     }
 
     public String getSlug_URL() {
@@ -369,7 +360,6 @@ public class Complaint implements Serializable {
         obj.setAddress(elem.getString("address"));
         obj.setCity(elem.getString("city"));
         obj.comments_count = elem.getInt("comments_count");
-        obj.setPublicURL(elem.getString("public_url"));
         obj.setSlug_URL(elem.getString("slug_url"));
 
         JSONArray upvoters = elem.getJSONArray("upvoters");
