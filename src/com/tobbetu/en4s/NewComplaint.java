@@ -1,5 +1,9 @@
 package com.tobbetu.en4s;
 
+import java.io.IOException;
+
+import org.json.JSONException;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -36,6 +40,7 @@ import com.tobbetu.en4s.backend.Complaint;
 import com.tobbetu.en4s.backend.Image;
 import com.tobbetu.en4s.helpers.BetterAsyncTask;
 import com.tobbetu.en4s.helpers.CategoryI18n;
+import com.tobbetu.en4s.helpers.CommentRejectedException;
 import com.tobbetu.en4s.service.EnforceService;
 
 public class NewComplaint extends Activity implements OnClickListener {
@@ -307,10 +312,23 @@ public class NewComplaint extends Activity implements OnClickListener {
 
         @Override
         protected void onFailure(Exception error) {
+            progressDialog.dismiss();
             Log.e(TAG, "SaveTask Failed", error);
-            Toast.makeText(NewComplaint.this,
-                    getResources().getString(R.string.nc_compalint_rejected),
-                    Toast.LENGTH_LONG).show();
+            if (error instanceof IOException) {
+                Toast.makeText(NewComplaint.this,
+                        getResources().getString(R.string.network_failed_msg),
+                        Toast.LENGTH_LONG).show();
+            } else if (error instanceof JSONException) {
+                Toast.makeText(NewComplaint.this,
+                        getResources().getString(R.string.api_changed),
+                        Toast.LENGTH_LONG).show();
+            } else if (error instanceof CommentRejectedException) {
+                Toast.makeText(
+                        NewComplaint.this,
+                        getResources()
+                                .getString(R.string.nc_compalint_rejected),
+                        Toast.LENGTH_LONG).show();
+            }
         }
     }
 

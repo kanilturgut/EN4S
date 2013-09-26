@@ -26,6 +26,7 @@ import com.tobbetu.en4s.R;
 import com.tobbetu.en4s.Utils;
 import com.tobbetu.en4s.cache.Cache;
 import com.tobbetu.en4s.helpers.CommentRejectedException;
+import com.tobbetu.en4s.helpers.ComplaintRejectedException;
 import com.tobbetu.en4s.helpers.VoteRejectedException;
 
 @SuppressLint("SimpleDateFormat")
@@ -250,21 +251,16 @@ public class Complaint implements Serializable {
         }
     }
 
-    public Complaint save() throws IOException {
+    public Complaint save() throws IOException, JSONException,
+            ComplaintRejectedException {
         Log.d("[JSON]", this.toJSON());
         HttpResponse post = Requests.post("/complaint", this.toJSON());
         if (!Requests.checkStatusCode(post, HttpStatus.SC_CREATED)) {
-            // TODO throw exception
             Log.d(getClass().getName(), "Status Code in not 201");
+            throw new ComplaintRejectedException();
         }
-        try {
-            return fromJSON(new JSONObject(Requests.readResponse(post)));
-        } catch (JSONException e) {
-            Log.e(getClass().getName(), "Impossible JSONException throwed", e);
-            Log.e("[WARNING]",
-                    "FYI, you are going to fucked up becuse newly created complaint object is null");
-            return null;
-        }
+        return fromJSON(new JSONObject(Requests.readResponse(post)));
+
     }
 
     public void upvote(User me, String location) throws IOException,
