@@ -387,6 +387,15 @@ public class DetailsActivity extends Activity implements OnClickListener {
                 Utils.createAlert(DetailsActivity.this, "Hata",
                         getString(R.string.da_voting_rejected), true, "",
                         "Tamam");
+
+                // Vote kabul edilmediyse hata goster
+                bUpVote.setVisibility(Button.GONE);
+                bDownVote.setVisibility(Button.GONE);
+
+                tvYouAreAlreadyVoted = (TextView) findViewById(R.id.tvYouAreAlreadyVoted);
+                tvYouAreAlreadyVoted.setVisibility(TextView.VISIBLE);
+                tvYouAreAlreadyVoted.setText(getResources().getString(
+                        R.string.da_voting_rejected));
             }
         }
 
