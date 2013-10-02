@@ -185,12 +185,6 @@ public class Complaint implements Serializable {
         this.imageURLs = images;
     }
 
-    public void addJustUploadedImage(String url) {
-        if (this.imageURLs == null)
-            this.imageURLs = new ArrayList<String>();
-        imageURLs.add(url);
-    }
-
     public int imageCount() {
         return imageURLs.size();
     }
@@ -251,10 +245,10 @@ public class Complaint implements Serializable {
         }
     }
 
-    public Complaint save() throws IOException, JSONException,
+    public Complaint save(Image img) throws IOException, JSONException,
             ComplaintRejectedException {
-        Log.d("[JSON]", this.toJSON());
-        HttpResponse post = Requests.post("/complaint", this.toJSON());
+        Log.d("[JSON]", this.title);
+        HttpResponse post = Requests.post("/complaint", this.toJSON(img));
         if (!Requests.checkStatusCode(post, HttpStatus.SC_CREATED)) {
             Log.d(getClass().getName(), "Status Code in not 201");
             throw new ComplaintRejectedException();
@@ -326,13 +320,14 @@ public class Complaint implements Serializable {
         this.comments_count++;
     }
 
-    public String toJSON() {
+    public String toJSON(Image img) {
         JSONObject newObj = new JSONObject();
         try {
             newObj.put("title", this.title);
             newObj.put("category", this.category);
             newObj.put("city", this.city);
             newObj.put("address", this.address);
+            newObj.put("pic", img.base64image());
 
             JSONArray geo = new JSONArray();
             geo.put(this.latitude);

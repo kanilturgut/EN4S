@@ -1,6 +1,5 @@
 package com.tobbetu.en4s.service;
 
-import tasks.SaveComplaintTask;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +12,7 @@ import android.util.Log;
 
 import com.tobbetu.en4s.backend.Complaint;
 import com.tobbetu.en4s.backend.Image;
+import com.tobbetu.en4s.tasks.SaveComplaintTask;
 
 public class EnforceService extends Service {
 

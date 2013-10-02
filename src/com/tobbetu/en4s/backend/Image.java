@@ -6,11 +6,6 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.HttpStatus;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
@@ -57,38 +52,9 @@ public class Image {
         return hash;
     }
 
-    private String base64image() {
+    public String base64image() {
         return Base64.encodeToString(bitmapToByteArray(this.bmp),
                 Base64.DEFAULT);
-    }
-
-    private String toJSON() {
-        JSONObject image = new JSONObject();
-        try {
-            image.put("hash", sha256hash());
-            image.put("pic", base64image());
-        } catch (JSONException e) {
-            Log.e("Complaint.toJSON", "Unexpected JSONException", e);
-        }
-        return image.toString();
-    }
-
-    public String upload(String oid) throws IOException {
-        Log.d("[JSON]", this.toJSON());
-        HttpResponse post = Requests.post("/upload/" + oid, this.toJSON());
-        if (!Requests.checkStatusCode(post, HttpStatus.SC_CREATED)) {
-            // TODO throw exception
-            Log.d(getClass().getName(), "Status Code in not 201");
-        } else {
-            String response = Requests.readResponse(post);
-            try {
-                JSONObject img = new JSONObject(response);
-                return img.optString("path", "");
-            } catch (JSONException e) {
-                Log.e(getClass().getName(), "JSONException throwed", e);
-            }
-        }
-        return "";
     }
 
     public static Image download(String url) throws IOException {

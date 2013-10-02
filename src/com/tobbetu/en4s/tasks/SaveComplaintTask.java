@@ -1,4 +1,4 @@
-package tasks;
+package com.tobbetu.en4s.tasks;
 
 import java.io.IOException;
 
@@ -29,11 +29,7 @@ public class SaveComplaintTask extends BetterAsyncTask<Void, Complaint> {
 
     @Override
     protected Complaint task(Void... arg0) throws Exception {
-
-        Complaint savedComplaint = complaint.save();
-        String url = image.upload(savedComplaint.getId());
-        savedComplaint.addJustUploadedImage(url);
-
+        Complaint savedComplaint = complaint.save(image);
         return savedComplaint;
     }
 
@@ -44,10 +40,7 @@ public class SaveComplaintTask extends BetterAsyncTask<Void, Complaint> {
                 context.getResources().getString(R.string.nc_accepted),
                 Toast.LENGTH_SHORT).show();
 
-        // Intent anIntent = new Intent(context, DetailsActivity.class);
-        // anIntent.putExtra("class", result);
-        // context.startActivity(anIntent);
-        // Kullaniciya notification yollanacak
+        // TODO implement notification (mustafa)
     }
 
     @Override
