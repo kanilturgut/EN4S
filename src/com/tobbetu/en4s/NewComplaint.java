@@ -1,9 +1,5 @@
 package com.tobbetu.en4s;
 
-import java.io.IOException;
-
-import org.json.JSONException;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -38,9 +34,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.tobbetu.en4s.backend.Complaint;
 import com.tobbetu.en4s.backend.Image;
-import com.tobbetu.en4s.helpers.BetterAsyncTask;
 import com.tobbetu.en4s.helpers.CategoryI18n;
-import com.tobbetu.en4s.helpers.CommentRejectedException;
 import com.tobbetu.en4s.service.EnforceService;
 
 public class NewComplaint extends Activity implements OnClickListener {
@@ -49,7 +43,6 @@ public class NewComplaint extends Activity implements OnClickListener {
     private ImageView ivTakenPhoto;
     private EditText etComplaintTitle;
     private Spinner categoriesSpinner;
-    private ProgressDialog progressDialog = null;
 
     private LinearLayout photoButtonLL;
 
@@ -235,10 +228,6 @@ public class NewComplaint extends Activity implements OnClickListener {
                         getResources().getString(R.string.nc_missing_photo),
                         Toast.LENGTH_LONG).show();
             } else {
-                progressDialog = ProgressDialog.show(NewComplaint.this,
-                        getString(R.string.nc_cat_loading),
-                        getString(R.string.nc_cat_sending));
-
                 newComplaint = new Complaint();
                 newComplaint.setTitle(etComplaintTitle.getText().toString());
 
@@ -267,7 +256,16 @@ public class NewComplaint extends Activity implements OnClickListener {
                 Log.d("location", newComplaint.getLatitude() + ","
                         + newComplaint.getLongitude());
 
-                new SaveTask().execute();
+                EnforceService.startSaveComplaintTask(NewComplaint.this,
+                        newComplaint, img);
+
+                Intent i = new Intent(NewComplaint.this, MainActivity.class);
+                startActivity(i);
+
+                Toast.makeText(getApplicationContext(),
+                        getResources().getString(R.string.nc_cat_sending),
+                        Toast.LENGTH_LONG).show();
+
             }
         } else { // bImroveLocation
             Intent biggerMapIntent = new Intent(NewComplaint.this,
@@ -284,52 +282,6 @@ public class NewComplaint extends Activity implements OnClickListener {
             startActivity(biggerMapIntent);
         }
 
-    }
-
-    private class SaveTask extends BetterAsyncTask<Void, Complaint> {
-
-        @Override
-        protected Complaint task(Void... arg0) throws Exception {
-            Complaint savedComplaint = newComplaint.save();
-            String url = img.upload(savedComplaint.getId());
-            savedComplaint.addJustUploadedImage(url);
-            return savedComplaint;
-        }
-
-        @Override
-        protected void onSuccess(Complaint result) {
-            progressDialog.dismiss();
-
-            Toast.makeText(getApplicationContext(),
-                    getResources().getString(R.string.nc_accepted),
-                    Toast.LENGTH_SHORT).show();
-
-            Intent anIntent = new Intent(NewComplaint.this,
-                    DetailsActivity.class);
-            anIntent.putExtra("class", result);
-            startActivity(anIntent);
-        }
-
-        @Override
-        protected void onFailure(Exception error) {
-            progressDialog.dismiss();
-            Log.e(TAG, "SaveTask Failed", error);
-            if (error instanceof IOException) {
-                Toast.makeText(NewComplaint.this,
-                        getResources().getString(R.string.network_failed_msg),
-                        Toast.LENGTH_LONG).show();
-            } else if (error instanceof JSONException) {
-                Toast.makeText(NewComplaint.this,
-                        getResources().getString(R.string.api_changed),
-                        Toast.LENGTH_LONG).show();
-            } else if (error instanceof CommentRejectedException) {
-                Toast.makeText(
-                        NewComplaint.this,
-                        getResources()
-                                .getString(R.string.nc_compalint_rejected),
-                        Toast.LENGTH_LONG).show();
-            }
-        }
     }
 
     private void cancelDialog() {

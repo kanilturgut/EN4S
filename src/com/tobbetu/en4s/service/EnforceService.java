@@ -1,6 +1,8 @@
 package com.tobbetu.en4s.service;
 
+import tasks.SaveComplaintTask;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationListener;
@@ -8,6 +10,9 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+
+import com.tobbetu.en4s.backend.Complaint;
+import com.tobbetu.en4s.backend.Image;
 
 public class EnforceService extends Service {
 
@@ -166,5 +171,12 @@ public class EnforceService extends Service {
 
     public static boolean getGPSStatus() {
         return isGPSEnabled;
+    }
+
+    public static void startSaveComplaintTask(Context c,
+            Complaint newComplaint2, Image img) {
+        SaveComplaintTask newSaveComplaint = new SaveComplaintTask(c,
+                newComplaint2, img);
+        newSaveComplaint.execute();
     }
 }
