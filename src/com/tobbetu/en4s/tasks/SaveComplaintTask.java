@@ -12,7 +12,7 @@ import com.tobbetu.en4s.R;
 import com.tobbetu.en4s.backend.Complaint;
 import com.tobbetu.en4s.backend.Image;
 import com.tobbetu.en4s.helpers.BetterAsyncTask;
-import com.tobbetu.en4s.helpers.CommentRejectedException;
+import com.tobbetu.en4s.helpers.ComplaintRejectedException;
 
 public class SaveComplaintTask extends BetterAsyncTask<Void, Complaint> {
 
@@ -36,9 +36,8 @@ public class SaveComplaintTask extends BetterAsyncTask<Void, Complaint> {
     @Override
     protected void onSuccess(Complaint result) {
 
-        Toast.makeText(context,
-                context.getResources().getString(R.string.nc_accepted),
-                Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, R.string.nc_accepted, Toast.LENGTH_SHORT)
+                .show();
 
         // TODO implement notification (mustafa)
     }
@@ -47,21 +46,15 @@ public class SaveComplaintTask extends BetterAsyncTask<Void, Complaint> {
     protected void onFailure(Exception error) {
         Log.e(TAG, "SaveTask Failed", error);
         if (error instanceof IOException) {
-            Toast.makeText(
-                    context,
-                    context.getResources().getString(
-                            R.string.network_failed_msg), Toast.LENGTH_LONG)
-                    .show();
-        } else if (error instanceof JSONException) {
-            Toast.makeText(context,
-                    context.getResources().getString(R.string.api_changed),
+            // TODO save complaint to send in future (mustafa)
+            Toast.makeText(context, R.string.network_failed_msg,
                     Toast.LENGTH_LONG).show();
-        } else if (error instanceof CommentRejectedException) {
-            Toast.makeText(
-                    context,
-                    context.getResources().getString(
-                            R.string.nc_compalint_rejected), Toast.LENGTH_LONG)
+        } else if (error instanceof JSONException) {
+            Toast.makeText(context, R.string.api_changed, Toast.LENGTH_LONG)
                     .show();
+        } else if (error instanceof ComplaintRejectedException) {
+            Toast.makeText(context, R.string.nc_compalint_rejected,
+                    Toast.LENGTH_LONG).show();
         }
     }
 
