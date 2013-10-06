@@ -259,13 +259,14 @@ public class NewComplaint extends Activity implements OnClickListener {
                 EnforceService.startSaveComplaintTask(NewComplaint.this,
                         newComplaint, img);
 
-                Intent i = new Intent(NewComplaint.this, MainActivity.class);
-                startActivity(i);
+                // Intent i = new Intent(NewComplaint.this, MainActivity.class);
+                // startActivity(i);
 
                 Toast.makeText(getApplicationContext(),
                         getResources().getString(R.string.nc_cat_sending),
                         Toast.LENGTH_SHORT).show();
 
+                finish();
             }
         } else { // bImroveLocation
             Intent biggerMapIntent = new Intent(NewComplaint.this,
@@ -293,9 +294,11 @@ public class NewComplaint extends Activity implements OnClickListener {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        Intent i = new Intent(NewComplaint.this,
-                                MainActivity.class);
-                        startActivity(i);
+                        // Intent i = new Intent(NewComplaint.this,
+                        // MainActivity.class);
+                        // startActivity(i);
+                        dialog.dismiss();
+                        finish();
                     }
                 });
         builder.setNegativeButton(R.string.ma_quit_cancel,

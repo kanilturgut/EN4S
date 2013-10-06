@@ -259,9 +259,8 @@ public class TakePhotoActivity extends Activity implements OnClickListener {
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        Intent i = new Intent(TakePhotoActivity.this,
-                                MainActivity.class);
-                        startActivity(i);
+                        dialog.dismiss();
+                        finish();
                     }
                 });
         builder.setNegativeButton(R.string.ma_quit_cancel,
@@ -283,6 +282,8 @@ public class TakePhotoActivity extends Activity implements OnClickListener {
         if (alertDialog != null) {
             alertDialog.dismiss();
         }
+
+        finish();
     }
 
     @Override
