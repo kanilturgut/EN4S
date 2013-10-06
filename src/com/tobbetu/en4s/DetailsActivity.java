@@ -540,7 +540,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
         } else if (item.getItemId() == R.id.shareOnTwitter) {
             url = "https://twitter.com/intent/tweet?url=" + comp.getSlug_URL()
-                    + "&text=Problem%20Var!&via=enforceapp";
+                    + "&text=" + comp.getTitle() + "&via=enforceapp";
 
             Intent twitterIntent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse(url));
