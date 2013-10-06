@@ -27,6 +27,7 @@ import android.widget.Toast;
 
 import com.bugsense.trace.BugSenseHandler;
 import com.facebook.Session;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.tobbetu.en4s.backend.EnforceLogin;
 import com.tobbetu.en4s.backend.FacebookLogin;
 import com.tobbetu.en4s.backend.Login;
@@ -177,14 +178,26 @@ public class LoginPageActivity extends Activity implements OnClickListener,
             String loginArg0 = arg0[1];
             String loginArg1 = arg0[2];
 
+            GoogleCloudMessaging gcm = GoogleCloudMessaging
+                    .getInstance(getApplicationContext());
+
+            String regId = null;
+
+            try {
+                regId = gcm.register(getApplicationContext().getResources()
+                        .getString(R.string.gcm_SENDER_ID));
+            } catch (IOException e) {
+                Log.e("GCM", "IOException while registering", e);
+            }
+
             Log.d("LoginTask", "username: " + loginArg0);
             Log.d("LoginTask", "passwd: " + loginArg1);
 
             Login newLogin;
             if (method.equals("facebook"))
-                newLogin = new FacebookLogin(loginArg0, loginArg1);
+                newLogin = new FacebookLogin(loginArg0, loginArg1, regId);
             else
-                newLogin = new EnforceLogin(loginArg0, loginArg1);
+                newLogin = new EnforceLogin(loginArg0, loginArg1, regId);
 
             return newLogin.makeRequest();
         }

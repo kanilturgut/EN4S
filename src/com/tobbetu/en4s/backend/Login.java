@@ -24,13 +24,16 @@ public abstract class Login {
             Login.me = me;
     }
 
-    public Login(String url, String arg0name, String arg0, String arg1name,
-            String arg1) {
+    public Login(String url, String regid, String arg0name, String arg0,
+            String arg1name, String arg1) {
         this.url = url;
         JSONObject login = new JSONObject();
         try {
             login.put(arg0name, arg0);
             login.put(arg1name, arg1);
+            if (regid != null) {
+                login.put("android_notification", regid);
+            }
         } catch (JSONException e) {
             Log.e(getClass().getName(), "JSONException", e);
         }
