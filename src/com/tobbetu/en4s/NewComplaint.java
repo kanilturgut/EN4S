@@ -264,7 +264,7 @@ public class NewComplaint extends Activity implements OnClickListener {
 
                 Toast.makeText(getApplicationContext(),
                         getResources().getString(R.string.nc_cat_sending),
-                        Toast.LENGTH_LONG).show();
+                        Toast.LENGTH_SHORT).show();
 
             }
         } else { // bImroveLocation
