@@ -107,7 +107,7 @@
     <string name="nc_missing_title">Lütfen başlık giriniz</string>
     <string name="nc_cat_missing_ok">Tamam</string>
     <string name="nc_cat_loading">Yükleniyor</string>
-    <string name="nc_cat_sending">Şikayetiniz gönderme talebiniz işleme alınmıştır, teşekkür ederiz.</string>
+    <string name="nc_cat_sending">Şikayetiniz gönderiliyor.</string>
     <string name="nc_compalint_rejected">Üzgünüz fakat şikayetiniz gönderilemedi.</string>
     <string name="nc_accepted">Şikayetiniz kaydedilmiştir, teşekkür ederiz</string>
     <string name="nc_missing_photo">Fotoğraf çekmeden şikayet bildiriminde bulunamazsınız</string>
