@@ -60,6 +60,7 @@ import com.tobbetu.en4s.backend.User;
 import com.tobbetu.en4s.helpers.BetterAsyncTask;
 import com.tobbetu.en4s.helpers.CategoryI18n;
 import com.tobbetu.en4s.helpers.CommentRejectedException;
+import com.tobbetu.en4s.helpers.ComplaintRejectedException;
 import com.tobbetu.en4s.helpers.VoteRejectedException;
 import com.tobbetu.en4s.service.EnforceService;
 
@@ -88,6 +89,8 @@ public class DetailsActivity extends Activity implements OnClickListener {
     private ImageView ivProblemImage = null;
 
     private boolean afterCommentFlag = false;
+
+    private AlertDialog deleteDialog;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -518,39 +521,103 @@ public class DetailsActivity extends Activity implements OnClickListener {
         }
     }
 
+    private class ComplaintDeleteTask extends BetterAsyncTask<Void, Void> {
+
+        @Override
+        protected Void task(Void... arg0) throws Exception {
+            comp.delete();
+            return null;
+        }
+
+        @Override
+        protected void onSuccess(Void result) {
+            Toast.makeText(DetailsActivity.this, R.string.da_complaint_deleted,
+                    Toast.LENGTH_LONG).show();
+            finish();
+        }
+
+        @Override
+        protected void onFailure(Exception error) {
+            if (error instanceof IOException) {
+                Toast.makeText(DetailsActivity.this,
+                        getResources().getString(R.string.network_failed_msg),
+                        Toast.LENGTH_LONG).show();
+            } else if (error instanceof ComplaintRejectedException) {
+                Toast.makeText(getApplicationContext(),
+                        R.string.da_complaint_delete_rejected,
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.details_menu, menu);
+        if (comp.getReporter().getId().equals(Login.getMe().getId())) {
+            menu.findItem(R.id.da_action_delete).setVisible(true);
+        }
         return true;
+    }
+
+    private void deleteDialog() {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.da_delete_title);
+        builder.setMessage(R.string.da_delete_msg);
+        builder.setCancelable(true);
+        builder.setPositiveButton(R.string.ma_quit_ok,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        new ComplaintDeleteTask().execute();
+                    }
+                });
+        builder.setNegativeButton(R.string.ma_quit_cancel,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.dismiss();
+                    }
+                });
+
+        deleteDialog = builder.create();
+        deleteDialog.show();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         String url = "";
 
-        if (item.getItemId() == R.id.shareOnFacebook) {
+        switch (item.getItemId()) {
+        case R.id.da_action_delete:
+            deleteDialog();
+            return true;
+
+        case R.id.shareOnFacebook:
             url = "https://www.facebook.com/sharer/sharer.php?u="
                     + comp.getSlug_URL();
 
             Intent facebookIntent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse(url));
             startActivity(facebookIntent);
-
-        } else if (item.getItemId() == R.id.shareOnTwitter) {
+            return true;
+        case R.id.shareOnTwitter:
             url = "https://twitter.com/intent/tweet?url=" + comp.getSlug_URL()
                     + "&text=" + comp.getTitle() + "&via=enforceapp";
 
             Intent twitterIntent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse(url));
             startActivity(twitterIntent);
-        } else if (item.getItemId() == R.id.shareOnGooglePlus) {
+            return true;
+        case R.id.shareOnGooglePlus:
             url = "https://plus.google.com/share?url=" + comp.getSlug_URL();
 
             Intent googlePlusIntent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse(url));
             startActivity(googlePlusIntent);
+            return true;
         }
 
         return super.onOptionsItemSelected(item);

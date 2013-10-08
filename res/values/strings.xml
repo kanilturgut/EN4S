@@ -140,6 +140,11 @@
     <string name="da_voting_rejected">Üzgünüz fakat oyunuzu alamıyoruz.</string>
     <string name="da_add_the_first_comment">İlk Yorumu Siz Ekleyin</string>
     <string name="da_already_voted_error">Bu yoruma oy veremezsiniz.</string>
+    <string name="da_complaint_deleted">Şikayetiz başarıyla silinmiştir.</string>
+    <string name="da_complaint_delete_rejected">Bu şikayeti silmeye yetkili değilsiniz.</string>
+    <string name="da_delete_title">Silme</string>
+    <string name="da_delete_msg">Bu şikayeti silmek istediğinizden emin misiniz?</string>
+
     <string name="login_failed_msg">Üzgünüz ama giriş yapamadınız.</string>
     <string name="network_failed_msg">İnternet erişiminizdeki sorun nedeniyle işleminizi tamamlayamadık. Lütfen daha sonra tekrar deneyin.</string>
     <string name="api_changed">Kullandığınız programın versiyonu eski olduğu için işleminizi tamamlayamadık. Lütfen programı güncelledikten sonra tekrar deneyin.</string>
@@ -171,4 +176,5 @@
 
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
+    <string name="sil">Şikayeti Sil</string>
 </resources>
