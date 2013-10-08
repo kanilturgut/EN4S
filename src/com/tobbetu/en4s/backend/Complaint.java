@@ -257,6 +257,15 @@ public class Complaint implements Serializable {
 
     }
 
+    public void delete() throws IOException, ComplaintRejectedException {
+        Log.d("Deleting", this.title);
+        HttpResponse delete = Requests.delete("/complaint/" + this.id);
+        if (!Requests.checkStatusCode(delete, HttpStatus.SC_NO_CONTENT)) {
+            Log.d(getClass().getName(), "Status Code in not 204");
+            throw new ComplaintRejectedException();
+        }
+    }
+
     public void upvote(User me, String location) throws IOException,
             VoteRejectedException {
         HttpResponse put = Requests.put(
