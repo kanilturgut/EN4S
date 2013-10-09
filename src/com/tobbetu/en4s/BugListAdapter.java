@@ -3,11 +3,15 @@ package com.tobbetu.en4s;
 import java.util.List;
 
 import android.content.Context;
+import android.graphics.Point;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.tobbetu.en4s.backend.Complaint;
@@ -38,50 +42,87 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 
+        ViewHolder holder;
+
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        View rowView = inflater.inflate(R.layout.bug_list_item, parent, false);
+        if (convertView == null) {
+            convertView = inflater.inflate(R.layout.bug_list_item, parent,
+                    false);
 
-        ImageView problemImage = (ImageView) rowView
-                .findViewById(R.id.ivProblemImage);
-        TextView complaintTitle = (TextView) rowView.findViewById(R.id.tvItem);
-        TextView tvAdditionalInfo = (TextView) rowView
-                .findViewById(R.id.tvDate);
-        TextView tvUpVoteCount = (TextView) rowView
-                .findViewById(R.id.tvUpVoteCount);
-        TextView tvCommentCount = (TextView) rowView
-                .findViewById(R.id.tvCommentCount);
+            holder = new ViewHolder();
+            holder.problemImage = (ImageView) convertView
+                    .findViewById(R.id.ivProblemImage);
+            holder.complaintTitle = (TextView) convertView
+                    .findViewById(R.id.tvItem);
+            holder.tvAdditionalInfo = (TextView) convertView
+                    .findViewById(R.id.tvDate);
+            holder.tvUpVoteCount = (TextView) convertView
+                    .findViewById(R.id.tvUpVoteCount);
+            holder.tvCommentCount = (TextView) convertView
+                    .findViewById(R.id.tvCommentCount);
+
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
 
         complaint = complaints.get(position);
 
-        problemImage.setImageResource(R.drawable.loading);
-        complaint.getImage(0, Image.SIZE_512, problemImage);
+        holder.problemImage.setImageResource(R.drawable.loading);
+        complaint.getImage(0, Image.SIZE_512, holder.problemImage);
 
-        complaintTitle.setText(complaint.getTitle().trim());
-        tvUpVoteCount.setText("" + complaint.getUpVote());
-        tvCommentCount.setText("" + complaint.getCommentsCount());
+        WindowManager wm = (WindowManager) context
+                .getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int tmpWidth = size.x;
 
-        ivUp = (ImageView) rowView.findViewById(R.id.ivUp);
+        LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(
+                tmpWidth, tmpWidth);
+        convertView.findViewById(R.id.complaintItemInfoLayout).setLayoutParams(
+                llParams);
+        holder.problemImage.setLayoutParams(llParams);
+
+        holder.complaintTitle.setText(complaint.getTitle().substring(0, 1)
+                .toUpperCase()
+                + complaint.getTitle().substring(1).trim());
+        holder.tvUpVoteCount.setText("" + complaint.getUpVote());
+        holder.tvCommentCount.setText("" + complaint.getCommentsCount());
+
+        ivUp = (ImageView) convertView.findViewById(R.id.ivUp);
 
         if (complaint.alreadyVoted(user))
             ivUp.setImageResource(R.drawable.up_voted);
 
         // position
         if (tabPosition == 0) {
-            tvAdditionalInfo.setText(R.string.bla_hot);
+            holder.tvAdditionalInfo.setText(R.string.bla_hot);
         } else if (tabPosition == 1) {
-            tvAdditionalInfo.setText(complaint.getDateAsString(this.context));
+            holder.tvAdditionalInfo.setText(complaint
+                    .getDateAsString(this.context));
         } else if (tabPosition == 2) {
-            tvAdditionalInfo.setText(complaint.getDistance(this.context,
+            holder.tvAdditionalInfo.setText(complaint.getDistance(this.context,
                     EnforceService.getLocation().getLatitude(), EnforceService
                             .getLocation().getLongitude()));
         } else {
-            tvAdditionalInfo
+            holder.tvAdditionalInfo
                     .setText(String.format(context.getString(R.string.bla_top),
                             complaint.getUpVote()));
         }
 
-        return rowView;
+        return convertView;
+    }
+
+    static class ViewHolder {
+
+        ImageView problemImage;
+        TextView complaintTitle;
+        TextView tvAdditionalInfo;
+        TextView tvUpVoteCount;
+        TextView tvCommentCount;
+
     }
 }

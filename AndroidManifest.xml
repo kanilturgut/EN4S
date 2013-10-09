@@ -97,7 +97,12 @@
 
         <activity
             android:name="com.tobbetu.en4s.TakePhotoActivity"
-            android:label="@string/title_activity_take_photo" 
+            android:label="@string/title_activity_take_photo"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="com.tobbetu.en4s.ListActivity"
+            android:label="@string/title_activity_list"
             android:screenOrientation="portrait" >
         </activity>
     </application>

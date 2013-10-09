@@ -28,8 +28,8 @@
                 android:id="@+id/tvItem"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
                 android:layout_weight="8"
                 android:text="@string/bug_list_item_title"
                 android:textColor="#222222"
@@ -39,8 +39,8 @@
                 android:id="@+id/tvDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp"
                 android:layout_weight="2"
                 android:gravity="right"
                 android:text="@string/bug_list_item_date"
@@ -54,13 +54,21 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
-            <ImageView
-                android:id="@+id/ivProblemImage"
-                android:layout_width="fill_parent"
+            <LinearLayout
+                android:id="@+id/complaintItemInfoLayout"
+                android:layout_width="match_parent"
                 android:layout_height="290dp"
-                android:layout_gravity="center"
-                android:contentDescription="@string/bug_list_loading_image"
-                android:src="@drawable/loading" />
+                android:background="#FFFFFF"
+                android:orientation="vertical" >
+
+                <ImageView
+                    android:id="@+id/ivProblemImage"
+                    android:layout_width="fill_parent"
+                    android:layout_height="290dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/bug_list_loading_image"
+                    android:src="@drawable/loading" />
+            </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/complaintActionsLayout"

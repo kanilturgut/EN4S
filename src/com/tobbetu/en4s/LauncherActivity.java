@@ -293,7 +293,7 @@ public class LauncherActivity extends Activity implements OnClickListener {
             if (loginTask != null)
                 loginTask.cancel(true);
 
-            Intent i = new Intent(LauncherActivity.this, MainActivity.class);
+            Intent i = new Intent(LauncherActivity.this, ListActivity.class);
             startActivity(i);
         }
 

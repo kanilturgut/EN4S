@@ -232,7 +232,7 @@ public class LoginPageActivity extends Activity implements OnClickListener,
         if (loginTask != null)
             loginTask.cancel(true);
 
-        Intent i = new Intent(LoginPageActivity.this, MainActivity.class);
+        Intent i = new Intent(LoginPageActivity.this, ListActivity.class);
         startActivity(i);
     }
 
