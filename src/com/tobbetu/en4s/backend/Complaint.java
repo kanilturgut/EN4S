@@ -427,26 +427,41 @@ public class Complaint implements Serializable {
         return Complaint.parseList(response);
     }
 
-    public static List<Complaint> getHotList() throws IOException,
-            JSONException {
-        return Complaint.getList("/complaint/hot");
-
-    }
-
-    public static List<Complaint> getNewList() throws IOException,
-            JSONException {
-        return Complaint.getList("/complaint/recent");
-    }
-
-    public static List<Complaint> getTopList() throws IOException,
-            JSONException {
-        return Complaint.getList("/complaint/top");
-    }
-
-    public static List<Complaint> getNearList(double lat, double lon)
+    public static List<Complaint> getHotList(String sinceId)
             throws IOException, JSONException {
-        return Complaint.getList(String.format(
-                "/complaint/near?latitude=%s&longitude=%s",
-                Double.toString(lat), Double.toString(lon)));
+        String url = "/complaint/hot";
+        if (sinceId != null) {
+            url += "?sinceid=" + sinceId;
+        }
+        return Complaint.getList(url);
+
+    }
+
+    public static List<Complaint> getNewList(String sinceId)
+            throws IOException, JSONException {
+        String url = "/complaint/recent";
+        if (sinceId != null) {
+            url += "?sinceid=" + sinceId;
+        }
+        return Complaint.getList(url);
+    }
+
+    public static List<Complaint> getTopList(String sinceId)
+            throws IOException, JSONException {
+        String url = "/complaint/top";
+        if (sinceId != null) {
+            url += "?sinceid=" + sinceId;
+        }
+        return Complaint.getList(url);
+    }
+
+    public static List<Complaint> getNearList(String sinceId, double lat,
+            double lon) throws IOException, JSONException {
+        String url = String.format("/complaint/near?latitude=%s&longitude=%s",
+                Double.toString(lat), Double.toString(lon));
+        if (sinceId != null) {
+            url += "&sinceid=" + sinceId;
+        }
+        return Complaint.getList(url);
     }
 }

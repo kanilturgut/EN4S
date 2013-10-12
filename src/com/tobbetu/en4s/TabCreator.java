@@ -119,15 +119,15 @@ public class TabCreator extends Fragment {
         protected List<Complaint> task(Void... arg0) throws Exception {
             switch (position) {
             case 0: // Hot
-                return Complaint.getHotList();
+                return Complaint.getHotList(null);
             case 1: // New
-                return Complaint.getNewList();
+                return Complaint.getNewList(null);
             case 2: // Near
-                return Complaint.getNearList(EnforceService.getLocation()
+                return Complaint.getNearList(null, EnforceService.getLocation()
                         .getLatitude(), EnforceService.getLocation()
                         .getLongitude());
             case 3: // Top
-                return Complaint.getTopList();
+                return Complaint.getTopList(null);
             default:
                 throw new RuntimeException();
             }

@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.content.Context;
 import android.graphics.Point;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +19,7 @@ import com.tobbetu.en4s.backend.Complaint;
 import com.tobbetu.en4s.backend.Image;
 import com.tobbetu.en4s.backend.Login;
 import com.tobbetu.en4s.backend.User;
+import com.tobbetu.en4s.helpers.BetterAsyncTask;
 import com.tobbetu.en4s.service.EnforceService;
 
 public class BugListAdapter extends ArrayAdapter<Complaint> {
@@ -44,10 +46,14 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
 
         ViewHolder holder;
 
-        LayoutInflater inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        if (position == complaints.size() - 1) {
+            loadMore();
+        }
 
         if (convertView == null) {
+            LayoutInflater inflater = (LayoutInflater) context
+                    .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
             convertView = inflater.inflate(R.layout.bug_list_item, parent,
                     false);
 
@@ -114,6 +120,46 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
         }
 
         return convertView;
+    }
+
+    private void loadMore() {
+        new ComplaintListTask().execute();
+    }
+
+    private class ComplaintListTask extends
+            BetterAsyncTask<Void, List<Complaint>> {
+
+        @Override
+        protected List<Complaint> task(Void... arg0) throws Exception {
+            String sinceId = complaints.get(complaints.size() - 1).getId();
+            Log.d(TAG, "Loading more -> " + sinceId);
+
+            switch (tabPosition) {
+            case 0: // Hot
+                return Complaint.getHotList(sinceId);
+            case 1: // New
+                return Complaint.getNewList(sinceId);
+            case 2: // Near
+                return Complaint.getNearList(sinceId, EnforceService
+                        .getLocation().getLatitude(), EnforceService
+                        .getLocation().getLongitude());
+            case 3: // Top
+                return Complaint.getTopList(sinceId);
+            default:
+                throw new RuntimeException();
+            }
+        }
+
+        @Override
+        protected void onSuccess(List<Complaint> result) {
+            complaints.addAll(result);
+            BugListAdapter.this.notifyDataSetChanged();
+        }
+
+        @Override
+        protected void onFailure(Exception error) {
+            // TODO Auto-generated method stub
+        }
     }
 
     static class ViewHolder {
