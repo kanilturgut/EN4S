@@ -64,6 +64,8 @@ public class ListActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
+        getActionBar().setTitle(R.string.app_name);
+
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         TITLES = getResources().getStringArray(R.array.title_array);
@@ -86,15 +88,13 @@ public class ListActivity extends Activity {
         ) {
             @Override
             public void onDrawerClosed(View view) {
-                getActionBar().setTitle(mTitle);
+                getActionBar().setSubtitle(mTitle);
                 invalidateOptionsMenu(); // creates call to
                                          // onPrepareOptionsMenu()
             }
 
             @Override
             public void onDrawerOpened(View drawerView) {
-                getActionBar().setTitle(
-                        getResources().getString(R.string.app_name));
                 invalidateOptionsMenu(); // creates call to
                                          // onPrepareOptionsMenu()
             }
@@ -186,7 +186,7 @@ public class ListActivity extends Activity {
     @Override
     public void setTitle(CharSequence title) {
         mTitle = title;
-        getActionBar().setTitle(mTitle);
+        getActionBar().setSubtitle(mTitle);
     }
 
     /**
