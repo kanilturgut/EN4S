@@ -32,7 +32,8 @@ public class Register {
 
     public void register() throws IOException, RegisterFailedException,
             JSONException {
-        HttpResponse loginResponse = Requests.post("/register", registerInfo);
+        HttpResponse loginResponse = Requests.post("/user/register",
+                registerInfo);
         if (Requests.checkStatusCode(loginResponse, HttpStatus.SC_NOT_FOUND))
             throw new RegisterFailedException();
         if (Requests.checkStatusCode(loginResponse, HttpStatus.SC_CREATED)) {

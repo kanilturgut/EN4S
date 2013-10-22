@@ -248,7 +248,7 @@ public class Complaint implements Serializable {
     public Complaint save(Image img) throws IOException, JSONException,
             ComplaintRejectedException {
         Log.d("[JSON]", this.title);
-        HttpResponse post = Requests.post("/complaint", this.toJSON(img));
+        HttpResponse post = Requests.post("/complaint/new", this.toJSON(img));
         if (!Requests.checkStatusCode(post, HttpStatus.SC_CREATED)) {
             Log.d(getClass().getName(), "Status Code in not 201");
             throw new ComplaintRejectedException();
@@ -266,10 +266,10 @@ public class Complaint implements Serializable {
         }
     }
 
-    public void upvote(User me, String location) throws IOException,
-            VoteRejectedException {
+    public Complaint upvote(User me, String location) throws IOException,
+            VoteRejectedException, JSONException {
         HttpResponse put = Requests.put(
-                String.format("/complaint/%s/upvote", this.id), location);
+                String.format("/complaint/upvote/%s", this.id), location);
         if (Requests.checkStatusCode(put, HttpStatus.SC_NOT_ACCEPTABLE)) {
             Log.e(getClass().getName(), "Upvote Rejected");
             throw new VoteRejectedException("Upvote Rejected");
@@ -279,15 +279,13 @@ public class Complaint implements Serializable {
             throw new VoteRejectedException("There is no such complaint");
         }
 
-        // upvote successful
-        this.upVote++;
-        this.upvoters.add(me.getId());
+        return Complaint.fromJSON(new JSONObject(Requests.readResponse(put)));
     }
 
-    public void downvote(User me, String location) throws IOException,
-            VoteRejectedException {
+    public Complaint downvote(User me, String location) throws IOException,
+            VoteRejectedException, JSONException {
         HttpResponse put = Requests.put(
-                String.format("/complaint/%s/downvote", this.id), location);
+                String.format("/complaint/downvote/%s", this.id), location);
         if (Requests.checkStatusCode(put, HttpStatus.SC_NOT_ACCEPTABLE)) {
             Log.e(getClass().getName(), "Upvote Rejected");
             throw new VoteRejectedException("Upvote Rejected");
@@ -297,9 +295,7 @@ public class Complaint implements Serializable {
             throw new VoteRejectedException("There is no such complaint");
         }
 
-        // downvote successful
-        this.downVote++;
-        this.downvoters.add(me.getId());
+        return Complaint.fromJSON(new JSONObject(Requests.readResponse(put)));
     }
 
     public void comment(String text) throws IOException,
@@ -336,7 +332,7 @@ public class Complaint implements Serializable {
             newObj.put("category", this.category);
             newObj.put("city", this.city);
             newObj.put("address", this.address);
-            newObj.put("pic", img.base64image());
+            newObj.put("pic_arr", img.base64image());
 
             JSONArray geo = new JSONArray();
             geo.put(this.latitude);
