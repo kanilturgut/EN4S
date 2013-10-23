@@ -19,6 +19,7 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
     <permission android:name="com.tobbetu.en4s.permission.C2D_MESSAGE"
@@ -109,6 +110,16 @@
             android:label="@string/title_activity_list"
             android:screenOrientation="portrait" >
         </activity>
+
+        <receiver
+            android:name="com.tobbetu.en4s.NotificationReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                <category android:name="com.tobbetu.en4s" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
