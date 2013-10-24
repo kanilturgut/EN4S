@@ -1,18 +1,3 @@
-/*******************************************************************************
- * Copyright 2011, 2012 Chris Banes.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *******************************************************************************/
 package com.tobbetu.en4s;
 
 import java.io.IOException;
@@ -21,7 +6,6 @@ import java.util.List;
 import org.apache.http.client.HttpResponseException;
 import org.json.JSONException;
 
-import uk.co.senab.photoview.PhotoView;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -30,7 +14,6 @@ import android.content.Intent;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.view.PagerAdapter;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -38,12 +21,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -73,9 +53,6 @@ public class DetailsActivity extends Activity implements OnClickListener {
             tvYouAreNotAllowed;
     private Button bUpVote, bDownVote, bMoreComment;
     // private LinearLayout viewPagerLayout;
-
-    // private ViewPager mViewPager;
-    private PhotoView photoView;
 
     private GoogleMap myMap;
 
@@ -178,68 +155,6 @@ public class DetailsActivity extends Activity implements OnClickListener {
         // oldurulsun
         if (toMoreCommentActivity || afterCommentFlag)
             finish();
-    }
-
-    class SamplePagerAdapter extends PagerAdapter {
-
-        // private int[] sDrawables = { R.drawable.img1, R.drawable.img2,
-        // R.drawable.img3 };
-
-        @Override
-        public int getCount() {
-            return comp.imageCount();
-        }
-
-        @Override
-        public View instantiateItem(final ViewGroup container,
-                final int position) {
-            photoView = new PhotoView(container.getContext());
-
-            // photoView.setOnPhotoTapListener(new OnPhotoTapListener() {
-            // @Override
-            // public void onPhotoTap(View view, float x, float y) {
-            // Toast.makeText(container.getContext(), "t�kland�",
-            // Toast.LENGTH_SHORT).show();
-            // //Log.e("image", "tik");
-            // Intent intent = new Intent(getApplication(),
-            // FullScreenPhotoActivity.class);
-            //
-            // ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            // bmp.compress(Bitmap.CompressFormat.PNG, 0, stream);
-            // byte[] byteArray = stream.toByteArray();
-            // intent.putExtra("image", byteArray);
-            // startActivity(intent);
-            // }
-            // });
-
-            // photoView.setOnTouchListener(new OnTouchListener() {
-            //
-            // @Override
-            // public boolean onTouch(View v, MotionEvent event) {
-            // ScrollView scrollView = (ScrollView) findViewById(R.id.scroller);
-            // scrollView.setEnabled(false);
-            // return false;
-            // }
-            // });
-
-            // Now just add PhotoView to ViewPager and return it
-            photoView.setScaleType(ScaleType.FIT_XY);
-            container.addView(photoView, LayoutParams.MATCH_PARENT,
-                    LayoutParams.MATCH_PARENT);
-            photoView.setImageResource(R.drawable.content_picture);
-            return photoView;
-        }
-
-        @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
-            container.removeView((View) object);
-        }
-
-        @Override
-        public boolean isViewFromObject(View view, Object object) {
-            return view == object;
-        }
-
     }
 
     // Buttons onClickListener

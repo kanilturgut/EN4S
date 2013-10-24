@@ -109,7 +109,7 @@ public class ListActivity extends Activity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main, menu);
+        inflater.inflate(R.menu.list, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
