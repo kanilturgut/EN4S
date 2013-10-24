@@ -248,7 +248,7 @@ public class Complaint implements Serializable {
     public Complaint save(Image img) throws IOException, JSONException,
             ComplaintRejectedException {
         Log.d("[JSON]", this.title);
-        HttpResponse post = Requests.post("/complaint", this.toJSON(img));
+        HttpResponse post = Requests.post("/complaint/new", this.toJSON(img));
         if (!Requests.checkStatusCode(post, HttpStatus.SC_CREATED)) {
             Log.d(getClass().getName(), "Status Code in not 201");
             throw new ComplaintRejectedException();
