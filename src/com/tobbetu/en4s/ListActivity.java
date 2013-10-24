@@ -140,13 +140,10 @@ public class ListActivity extends Activity {
                         getResources().getString(R.string.ma_no_location),
                         Toast.LENGTH_LONG).show();
             } else {
-                if (!EnforceService.getGPSStatus()) {
-                    buildAlertMessageNoGps();
-                } else {
-                    Intent i = new Intent(ListActivity.this,
-                            TakePhotoActivity.class);
-                    startActivity(i);
-                }
+
+                Intent i = new Intent(ListActivity.this,
+                        TakePhotoActivity.class);
+                startActivity(i);
             }
             break;
         }
@@ -155,7 +152,7 @@ public class ListActivity extends Activity {
 
     }
 
-    /* The click listner for ListView in the navigation drawer */
+    /* The click listener for ListView in the navigation drawer */
     private class DrawerItemClickListener implements
             ListView.OnItemClickListener {
         @Override
@@ -168,9 +165,9 @@ public class ListActivity extends Activity {
 
     private void selectItem(int position) {
         // update the main content by replacing fragments
-        Fragment fragment = new PlanetFragment();
+        Fragment fragment = new ComplaintListFragment();
         Bundle args = new Bundle();
-        args.putInt(PlanetFragment.ARG_PLANET_NUMBER, position);
+        args.putInt(ComplaintListFragment.ARG_COMPLAINT_NUMBER, position);
         fragment.setArguments(args);
 
         FragmentManager fragmentManager = getFragmentManager();
@@ -211,10 +208,10 @@ public class ListActivity extends Activity {
     /**
      * Fragment that appears in the "content_frame", shows a planet
      */
-    public class PlanetFragment extends Fragment {
-        public static final String ARG_PLANET_NUMBER = "buglist_number";
+    public class ComplaintListFragment extends Fragment {
+        public static final String ARG_COMPLAINT_NUMBER = "buglist_number";
 
-        public PlanetFragment() {
+        public ComplaintListFragment() {
             // Empty constructor required for fragment subclasses
         }
 
@@ -223,7 +220,7 @@ public class ListActivity extends Activity {
                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_bug_list,
                     container, false);
-            int i = getArguments().getInt(ARG_PLANET_NUMBER);
+            int i = getArguments().getInt(ARG_COMPLAINT_NUMBER);
             bugList = (ListView) rootView.findViewById(R.id.lvBugs);
             ComplaintListTask task = new ComplaintListTask();
             task.execute();
@@ -325,5 +322,14 @@ public class ListActivity extends Activity {
                         });
         final AlertDialog alert = builder.create();
         alert.show();
+    }
+
+    @Override
+    public void onBackPressed() {
+        stopService(new Intent(ListActivity.this, EnforceService.class));
+
+        finish();
+        super.onDestroy();
+        android.os.Process.killProcess(android.os.Process.myPid());
     }
 }

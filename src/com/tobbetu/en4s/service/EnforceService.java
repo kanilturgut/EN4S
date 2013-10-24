@@ -4,173 +4,142 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationRequest;
 import com.tobbetu.en4s.backend.Complaint;
 import com.tobbetu.en4s.backend.Image;
 import com.tobbetu.en4s.tasks.SaveComplaintTask;
 
-public class EnforceService extends Service {
+public class EnforceService extends Service implements
+        GooglePlayServicesClient.ConnectionCallbacks,
+        GooglePlayServicesClient.OnConnectionFailedListener,
+        com.google.android.gms.location.LocationListener {
 
-    private static final int TWO_MINUTES = 1000 * 60 * 2;
-    private LocationManager locManager = null;
-    private LocationListener locListener = null;
+    public static final int UPDATE_INTERVAL = 5 * 1000;
+    public static final int FAST_CEILING = 1 * 1000;
+
+    private LocationRequest mLocationRequest = null;
+    private LocationClient mLocationClient = null;
 
     private static Location myBestLoc = null;
+    private boolean mInProgress;
+    private IBinder mBinder = new LocalBinder();
 
-    private static boolean isGPSEnabled = false;
+    public class LocalBinder extends Binder {
+        public EnforceService getServerInstance() {
+            return EnforceService.this;
+        }
+    }
 
     @Override
     public IBinder onBind(Intent intent) {
-        // Belki birgun ne oldugu anlasilir ve icerisi doldurulur :)
-        return null;
+        return mBinder;
     }
 
     @Override
     public void onCreate() {
+        super.onCreate();
 
-        Log.d("EnforceService", "onCreate of service");
+        mLocationRequest = LocationRequest.create();
+        mLocationRequest.setInterval(UPDATE_INTERVAL);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setFastestInterval(FAST_CEILING);
 
-        locManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        locListener = new EnforceLocationListener();
+        mLocationClient = new LocationClient(this, this, this);
 
-        myBestLoc = locManager
-                .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+    }
+
+    private boolean servicesConnected() {
+
+        // Check that Google Play services is available
+        int resultCode = GooglePlayServicesUtil
+                .isGooglePlayServicesAvailable(this);
+
+        // If Google Play services is available
+        if (ConnectionResult.SUCCESS == resultCode)
+            return true;
+
+        else
+            return false;
 
     }
 
     @Override
-    public void onStart(Intent intent, int startId) {
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        super.onStartCommand(intent, flags, startId);
 
-        Log.d("EnforceService", "onStart of service");
+        if (!servicesConnected() || mLocationClient.isConnected()
+                || mInProgress)
+            return START_STICKY;
 
-        locManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                1000, 1, locListener);
+        setUpLocationClientIfNeeded();
+        if (!mLocationClient.isConnected() || !mLocationClient.isConnecting()
+                && !mInProgress) {
 
-        locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,
-                1, locListener);
+            mInProgress = true;
+            mLocationClient.connect();
+        }
 
-        isGPSEnabled = locManager
-                .isProviderEnabled(LocationManager.GPS_PROVIDER);
+        return START_STICKY;
+    }
+
+    private void setUpLocationClientIfNeeded() {
+        if (mLocationClient == null)
+            mLocationClient = new LocationClient(this, this, this);
+
     }
 
     @Override
     public void onDestroy() {
-
-        Log.d("EnforceService", "onDestroy of service");
-
-        if (locManager != null) {
-            locManager.removeUpdates(locListener);
-
-            locManager = null;
-            locListener = null;
-
+        mInProgress = false;
+        if (servicesConnected() && mLocationClient != null) {
+            mLocationClient.removeLocationUpdates(this);
+            mLocationClient = null;
         }
+
+        super.onDestroy();
     }
 
-    class EnforceLocationListener implements LocationListener {
-
-        @Override
-        public void onLocationChanged(Location location) {
-
-            Log.d("EnforceService", location.toString());
-
-            if (isBetterLocation(location, myBestLoc)) {
-                myBestLoc = location;
-            }
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
-            if (provider.equals(LocationManager.GPS_PROVIDER)) {
-                isGPSEnabled = false;
-            }
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-            if (provider.equals(LocationManager.GPS_PROVIDER)) {
-                locManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                        1000, 1, locListener);
-
-                isGPSEnabled = true;
-            }
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-            // TODO Auto-generated method stub
-
-        }
-
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        mInProgress = false;
     }
 
-    protected boolean isBetterLocation(Location location,
-            Location currentBestLocation) {
-        if (currentBestLocation == null) {
-            // A new location is always better than no location
-            return true;
+    @Override
+    public void onConnected(Bundle connectionHint) {
+        try {
+            myBestLoc = mLocationClient.getLastLocation();
+        } catch (Exception e) {
+            // don't post your last location because it doesn't exist
         }
 
-        // Check whether the new location fix is newer or older
-        long timeDelta = location.getTime() - currentBestLocation.getTime();
-        boolean isSignificantlyNewer = timeDelta > TWO_MINUTES;
-        boolean isSignificantlyOlder = timeDelta < -TWO_MINUTES;
-        boolean isNewer = timeDelta > 0;
-
-        // If it's been more than two minutes since the current location, use
-        // the new location
-        // because the user has likely moved
-        if (isSignificantlyNewer) {
-            return true;
-            // If the new location is more than two minutes older, it must be
-            // worse
-        } else if (isSignificantlyOlder) {
-            return false;
-        }
-
-        // Check whether the new location fix is more or less accurate
-        int accuracyDelta = (int) (location.getAccuracy() - currentBestLocation
-                .getAccuracy());
-        boolean isLessAccurate = accuracyDelta > 0;
-        boolean isMoreAccurate = accuracyDelta < 0;
-        boolean isSignificantlyLessAccurate = accuracyDelta > 200;
-
-        // Check if the old and new location are from the same provider
-        boolean isFromSameProvider = isSameProvider(location.getProvider(),
-                currentBestLocation.getProvider());
-
-        // Determine location quality using a combination of timeliness and
-        // accuracy
-        if (isMoreAccurate) {
-            return true;
-        } else if (isNewer && !isLessAccurate) {
-            return true;
-        } else if (isNewer && !isSignificantlyLessAccurate
-                && isFromSameProvider) {
-            return true;
-        }
-        return false;
+        mLocationClient.requestLocationUpdates(mLocationRequest, this);
     }
 
-    /** Checks whether two providers are the same */
-    private boolean isSameProvider(String provider1, String provider2) {
-        if (provider1 == null) {
-            return provider2 == null;
+    @Override
+    public void onDisconnected() {
+        mInProgress = false;
+        mLocationClient = null;
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+        if (location.getLatitude() != myBestLoc.getLatitude()
+                && location.getLongitude() != myBestLoc.getLongitude()) {
+            myBestLoc = location;
         }
-        return provider1.equals(provider2);
     }
 
     public static Location getLocation() {
         return myBestLoc;
-    }
-
-    public static boolean getGPSStatus() {
-        return isGPSEnabled;
     }
 
     public static void startSaveComplaintTask(Context c,
@@ -179,4 +148,5 @@ public class EnforceService extends Service {
                 newComplaint2, img);
         newSaveComplaint.execute();
     }
+
 }

@@ -164,13 +164,11 @@ public class MainActivity extends FragmentActivity {
                         getResources().getString(R.string.ma_no_location),
                         Toast.LENGTH_LONG).show();
             } else {
-                if (!EnforceService.getGPSStatus()) {
-                    buildAlertMessageNoGps();
-                } else {
-                    Intent i = new Intent(MainActivity.this,
-                            TakePhotoActivity.class);
-                    startActivity(i);
-                }
+
+                Intent i = new Intent(MainActivity.this,
+                        TakePhotoActivity.class);
+                startActivity(i);
+
             }
             break;
         }
