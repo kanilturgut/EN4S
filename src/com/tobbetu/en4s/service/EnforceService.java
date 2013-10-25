@@ -132,7 +132,9 @@ public class EnforceService extends Service implements
     @Override
     public void onLocationChanged(Location location) {
 
-        if (location.getLatitude() != myBestLoc.getLatitude()
+        if (myBestLoc == null) {
+            myBestLoc = location;
+        } else if (location.getLatitude() != myBestLoc.getLatitude()
                 && location.getLongitude() != myBestLoc.getLongitude()) {
             myBestLoc = location;
         }
