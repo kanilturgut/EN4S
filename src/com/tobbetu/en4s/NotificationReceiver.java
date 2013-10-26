@@ -4,6 +4,8 @@ import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -46,9 +48,13 @@ public class NotificationReceiver extends BroadcastReceiver {
         // PendingIntent action = PendingIntent.getActivity(context, 0, solved,
         // PendingIntent.FLAG_UPDATE_CURRENT);
 
+        Bitmap icon = BitmapFactory.decodeResource(context.getResources(),
+                R.drawable.ic_launcher);
+
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
                 context)
                 .setSmallIcon(R.drawable.logo)
+                .setLargeIcon(icon)
                 .setContentTitle(extras.getString("title"))
                 .setContentText(extras.getString("msg"))
                 .setAutoCancel(true)

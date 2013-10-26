@@ -7,6 +7,8 @@ import org.json.JSONException;
 import android.app.Activity;
 import android.app.NotificationManager;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -25,6 +27,7 @@ public class SaveComplaintTask extends BetterAsyncTask<Void, Complaint> {
     private Image image = null;
     private NotificationManager mNotifyMgr;
     private int notificationID;
+    private Bitmap enforceIcon;
 
     public SaveComplaintTask(Context c, Complaint cmp, Image img) {
         this.context = c;
@@ -33,6 +36,8 @@ public class SaveComplaintTask extends BetterAsyncTask<Void, Complaint> {
         this.notificationID = cmp.getTitle().hashCode();
         this.mNotifyMgr = (NotificationManager) context
                 .getSystemService(Activity.NOTIFICATION_SERVICE);
+        this.enforceIcon = BitmapFactory.decodeResource(c.getResources(),
+                R.drawable.ic_launcher);
     }
 
     @Override
@@ -48,10 +53,11 @@ public class SaveComplaintTask extends BetterAsyncTask<Void, Complaint> {
                 .setTicker(
                         context.getResources().getString(
                                 R.string.nc_cat_sending))
-                .setAutoCancel(false)
+                .setOngoing(true)
                 .setContentText(
                         context.getResources().getString(
-                                R.string.nc_cat_sending));
+                                R.string.nc_cat_sending))
+                .setProgress(0, 0, true);
 
         mNotifyMgr.notify(notificationID, mBuilder.build());
     }
@@ -68,13 +74,16 @@ public class SaveComplaintTask extends BetterAsyncTask<Void, Complaint> {
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
                 context)
                 .setSmallIcon(R.drawable.logo)
+                .setLargeIcon(enforceIcon)
                 .setContentTitle(result.getTitle())
                 .setContentText(
                         context.getResources().getString(R.string.nc_accepted))
-                .setAutoCancel(true).setLargeIcon(image.getBmp())
-                // TODO duzgun enforce iconu
+                .setAutoCancel(true)
                 .setStyle(
                         new NotificationCompat.BigPictureStyle()
+                                .setSummaryText(
+                                        context.getResources().getString(
+                                                R.string.nc_accepted))
                                 .bigPicture(image.getBmp()));
 
         mNotifyMgr.notify(notificationID, mBuilder.build());
@@ -83,6 +92,7 @@ public class SaveComplaintTask extends BetterAsyncTask<Void, Complaint> {
     @Override
     protected void onFailure(Exception error) {
         Log.e(TAG, "SaveTask Failed", error);
+        mNotifyMgr.cancel(notificationID);
         if (error instanceof IOException) {
             // TODO save complaint to send in future (mustafa)
             Toast.makeText(context, R.string.network_failed_msg,
