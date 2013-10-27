@@ -1,6 +1,10 @@
 package com.tobbetu.en4s;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.text.Normalizer;
+import java.text.Normalizer.Form;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -288,6 +292,28 @@ public class Utils {
             poke.addCategory(Intent.CATEGORY_ALTERNATIVE);
             poke.setData(Uri.parse("3"));
             c.sendBroadcast(poke);
+        }
+    }
+
+    /**
+     * Slugifies the input string
+     * 
+     * @param input
+     *            string to slugify
+     * @return slugified version of given input
+     */
+    public static String slugify(String input) {
+        if (input == null || input.length() == 0)
+            return "";
+        String toReturn = Normalizer.normalize(input, Form.NFD).replaceAll(
+                "[^\\p{ASCII}]", "");
+        toReturn = toReturn.replace(" ", "-");
+        toReturn = toReturn.toLowerCase();
+        try {
+            return URLEncoder.encode(toReturn, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+
+            return null;
         }
     }
 }
