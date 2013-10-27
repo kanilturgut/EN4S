@@ -216,11 +216,6 @@ public class Utils {
                 tmp[0] = 800;
                 tmp[1] = 600;
                 break;
-                // } else if (list.get(i).width == 640 && list.get(i).height ==
-                // 480) {
-                // tmp[0] = 640;
-                // tmp[1] = 480;
-                // break;
             } else if (list.get(i).width == 1024 && list.get(i).height == 768) {
                 tmp[0] = 1024;
                 tmp[1] = 768;
@@ -233,6 +228,10 @@ public class Utils {
                 tmp[0] = 1900;
                 tmp[1] = 1600;
                 break;
+            } else if ((list.get(i).width * 3) == (list.get(i).height * 4)) {
+                // 4:3 oranina sahip ilk cozunurlugu aliyorum
+                tmp[0] = list.get(i).width;
+                tmp[1] = list.get(i).height;
             } else {
                 tmp[0] = 0;
                 tmp[1] = 0;

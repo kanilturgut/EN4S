@@ -30,6 +30,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.tobbetu.en4s.backend.Image;
 import com.tobbetu.en4s.helpers.Preview;
@@ -76,6 +77,9 @@ public class TakePhotoActivity extends Activity implements OnClickListener {
                 preview = new Preview(TakePhotoActivity.this);
                 if (Preview.pictureWidth == 0 || Preview.pictureHeight == 0) {
                     // Create an alert
+                    Toast.makeText(getApplicationContext(),
+                            R.string.nc_screen_size_doesnt_match,
+                            Toast.LENGTH_LONG).show();
                     finish();
                 }
 

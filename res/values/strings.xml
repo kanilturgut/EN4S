@@ -111,6 +111,7 @@
     <string name="nc_compalint_rejected">Üzgünüz fakat şikayetiniz gönderilemedi.</string>
     <string name="nc_accepted">Şikayetiniz kaydedilmiştir, teşekkür ederiz</string>
     <string name="nc_missing_photo">Fotoğraf çekmeden şikayet bildiriminde bulunamazsınız</string>
+    <string name="nc_screen_size_doesnt_match">Cihazınızın kamerasına erişemiyoruz</string>
 
     <!-- Complaint -->
     <string name="comp_sec">%d saniye önce</string>
