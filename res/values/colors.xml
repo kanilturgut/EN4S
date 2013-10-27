@@ -35,4 +35,9 @@
     <color name="facebook_button_stroke">#47639E</color>
     <color name="facebook_button_pressed">#5270BC</color>
     <color name="facebook_button_pressed_stroke">#5270BC</color>
+    
+    <color name="take_picture_button">#5ab8ee</color>
+    <color name="take_picture_button_stroke">#5ab8ee</color>
+    <color name="take_picture_button_pressed">#9fd6f5</color>
+    <color name="take_picture_button_pressed_stroke">#9fd6f5</color>
 </resources>
