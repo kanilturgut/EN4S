@@ -3,12 +3,14 @@ package com.tobbetu.en4s;
 import java.io.IOException;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -32,8 +34,11 @@ import com.tobbetu.en4s.backend.EnforceLogin;
 import com.tobbetu.en4s.backend.FacebookLogin;
 import com.tobbetu.en4s.backend.Login;
 import com.tobbetu.en4s.backend.Login.LoginFailedException;
+import com.tobbetu.en4s.backend.Requests;
 import com.tobbetu.en4s.backend.User;
 import com.tobbetu.en4s.helpers.BetterAsyncTask;
+import com.tobbetu.en4s.helpers.Geocoder;
+import com.tobbetu.en4s.service.EnforceService;
 
 public class LoginPageActivity extends Activity implements OnClickListener,
         OnEditorActionListener {
@@ -199,7 +204,20 @@ public class LoginPageActivity extends Activity implements OnClickListener,
             else
                 newLogin = new EnforceLogin(loginArg0, loginArg1, regId);
 
-            return newLogin.makeRequest();
+            User user = newLogin.makeRequest();
+            try {
+                JSONObject city = new JSONObject();
+                Location location = EnforceService.getLocation();
+                String cityName = Geocoder.getCity(location.getLatitude(),
+                        location.getLongitude());
+                Log.d(TAG, "Current City: " + cityName);
+                city.put("current_city", Utils.slugify(cityName));
+                Requests.put("/user/updatecity", city.toString());
+            } catch (Exception e) {
+                Log.e(TAG, "Current City", e);
+            }
+
+            return user;
         }
 
         @Override
