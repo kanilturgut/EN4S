@@ -112,6 +112,7 @@
     <string name="nc_accepted">Şikayetiniz kaydedilmiştir, teşekkür ederiz</string>
     <string name="nc_missing_photo">Fotoğraf çekmeden şikayet bildiriminde bulunamazsınız</string>
     <string name="nc_screen_size_doesnt_match">Cihazınızın kamerasına erişemiyoruz</string>
+    <string name="nc_camera_is_not_ready">Cihazınızın kamerası şu anda başka bir uygulama tarafından kullanılıyor. Lütfen daha sonra tekrar deneyiniz.</string>
 
     <!-- Complaint -->
     <string name="comp_sec">%d saniye önce</string>

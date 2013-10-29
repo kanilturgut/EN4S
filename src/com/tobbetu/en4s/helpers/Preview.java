@@ -4,27 +4,32 @@ import java.io.IOException;
 
 import android.content.Context;
 import android.hardware.Camera;
+import android.os.Build;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.tobbetu.en4s.LauncherActivity;
 
 public class Preview extends SurfaceView implements SurfaceHolder.Callback {
 
     SurfaceHolder mHolder;
-    public Camera camera;
+    public Camera camera = null;
     public static int pictureWidth;
     public static int pictureHeight;
 
     @SuppressWarnings("deprecation")
     public Preview(Context context) {
         super(context);
-        // Install a SurfaceHolder.Callback so we get notified when the
-        // underlying surface is created and destroyed.
+
         mHolder = getHolder();
         mHolder.addCallback(this);
-        mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+
+        // This constant was deprecated in API level 11. this is ignored, this
+        // value is set automatically when needed.
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB)
+            mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
 
         pictureWidth = LauncherActivity.firstTimeControlPref.getInt(
                 "deviceWidth", 0);
@@ -37,42 +42,65 @@ public class Preview extends SurfaceView implements SurfaceHolder.Callback {
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width,
             int height) {
-        // TODO Auto-generated method stub
-        camera.setDisplayOrientation(90);
-        camera.startPreview();
+
+        try {
+            camera.startPreview();
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            BugSenseHandler.sendExceptionMessage(
+                    "on Preview --> surfaceChanged", "camera.startPreview();",
+                    e);
+        }
+
         Log.i("Preview", "surfaceChanged");
     }
 
     @Override
-    public void surfaceCreated(SurfaceHolder holder) {
-        // The Surface has been created, acquire the camera and tell it where
-        // to draw.
-        camera = Camera.open();
+    public void surfaceCreated(final SurfaceHolder holder) {
+
+        if (camera != null)
+            camera.release();
+
+        try {
+            camera = Camera.open();
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            BugSenseHandler.sendExceptionMessage(
+                    "on Preview --> surfaceCreated", "Camera.open() failed", e);
+            // calismayi bitirmeli yoksa uygulama crash eder.
+            return;
+        }
+
+        camera.setDisplayOrientation(90);
+        Camera.Parameters parameters = camera.getParameters();
+        parameters.setPictureSize(pictureWidth, pictureHeight);
+        camera.setParameters(parameters);
+        camera.startPreview();
 
         try {
             camera.setPreviewDisplay(holder);
-            Camera.Parameters parameters = camera.getParameters();
-            // List<Size> sizes=parameters.getSupportedPictureSizes();
-            parameters.setPictureSize(pictureWidth, pictureHeight);
-            camera.setParameters(parameters);
-            camera.startPreview();
-
-            Log.i("Preview", "surfaceCreated");
-
         } catch (IOException e) {
             e.printStackTrace();
+
+            BugSenseHandler.sendExceptionMessage(
+                    "on Preview --> surfaceCreated",
+                    "camera.setPreviewDisplay", e);
         }
+
+        Log.i("Preview", "surfaceCreated");
+
     }
 
     @Override
     public void surfaceDestroyed(SurfaceHolder holder) {
-        // Surface will be destroyed when we return, so stop the preview.
-        // Because the CameraDevice object is not a shared resource, it's very
-        // important to release it when the activity is paused.
-        camera.stopPreview();
-        camera.release();
-        camera = null;
-
+        if (camera != null) {
+            camera.stopPreview();
+            camera.setPreviewCallback(null);
+            camera.release();
+            camera = null;
+        }
         Log.i("Preview", "surfaceDestroyed");
     }
 
