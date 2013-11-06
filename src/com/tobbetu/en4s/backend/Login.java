@@ -34,6 +34,12 @@ public abstract class Login {
             if (regid != null) {
                 login.put("android_notification", regid);
             }
+
+            JSONObject clientInfo = new JSONObject();
+            clientInfo.put("os", "android");
+            clientInfo.put("type", "enforce");
+            clientInfo.put("version", "v1.6");
+            login.put("client_info", clientInfo);
         } catch (JSONException e) {
             Log.e(getClass().getName(), "JSONException", e);
         }
