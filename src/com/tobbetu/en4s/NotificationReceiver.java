@@ -42,26 +42,38 @@ public class NotificationReceiver extends BroadcastReceiver {
                     .getSystemService(Context.NOTIFICATION_SERVICE);
         }
 
-        // TODO action tanimlanacak
-        // Intent solved = new Intent(context, DetailsActivity.class);
-        // solved.putExtras(extras);
-        // PendingIntent action = PendingIntent.getActivity(context, 0, solved,
-        // PendingIntent.FLAG_UPDATE_CURRENT);
+        String type = extras.getString("type");
+        type = type == null ? "INVALID" : type;
 
-        Bitmap icon = BitmapFactory.decodeResource(context.getResources(),
-                R.drawable.ic_launcher);
+        if (type.equals("duy")) {
+            /**
+             * TODO action tanimlanacak
+             * 
+             * Intent solved = new Intent(context, DetailsActivity.class);
+             * solved.putExtras(extras); PendingIntent action =
+             * PendingIntent.getActivity(context, 0, solved,
+             * PendingIntent.FLAG_UPDATE_CURRENT);
+             */
 
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
-                context)
-                .setSmallIcon(R.drawable.logo)
-                .setLargeIcon(icon)
-                .setContentTitle(extras.getString("title"))
-                .setContentText(extras.getString("msg"))
-                .setAutoCancel(true)
-                .setStyle(
-                        new NotificationCompat.BigTextStyle().bigText(extras
-                                .getString("msg")));
+            // TODO belediye iconlari yerlestirilecek
+            Bitmap icon = BitmapFactory.decodeResource(context.getResources(),
+                    R.drawable.ic_launcher);
 
-        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+            NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(
+                    context)
+                    .setSmallIcon(R.drawable.logo)
+                    .setLargeIcon(icon)
+                    .setContentTitle(extras.getString("title"))
+                    .setContentText(extras.getString("msg"))
+                    .setAutoCancel(true)
+                    .setStyle(
+                            new NotificationCompat.BigTextStyle()
+                                    .bigText(extras.getString("msg")));
+
+            mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
+        } else {
+            // Invalid notification
+        }
+
     }
 }
