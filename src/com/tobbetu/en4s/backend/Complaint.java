@@ -259,7 +259,18 @@ public class Complaint implements Serializable {
 
     public void delete() throws IOException, ComplaintRejectedException {
         Log.d("Deleting", this.title);
-        HttpResponse delete = Requests.delete("/complaint/" + this.id);
+
+        JSONObject obj = new JSONObject();
+        try {
+            obj.put("picpath", this.imageURLs.get(0));
+            obj.put("complaint_id", this.id);
+        } catch (JSONException e) {
+            Log.e("Complaint", "Delete - JSON Exception", e);
+            throw new ComplaintRejectedException();
+        }
+
+        HttpResponse delete = Requests
+                .post("/complaint/delete", obj.toString());
         if (!Requests.checkStatusCode(delete, HttpStatus.SC_NO_CONTENT)) {
             Log.d(getClass().getName(), "Status Code in not 204");
             throw new ComplaintRejectedException();
