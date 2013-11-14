@@ -37,6 +37,7 @@ import com.tobbetu.en4s.backend.Complaint;
 import com.tobbetu.en4s.backend.Image;
 import com.tobbetu.en4s.backend.Login;
 import com.tobbetu.en4s.backend.User;
+import com.tobbetu.en4s.cache.Cache;
 import com.tobbetu.en4s.helpers.BetterAsyncTask;
 import com.tobbetu.en4s.helpers.CategoryI18n;
 import com.tobbetu.en4s.helpers.CommentRejectedException;
@@ -64,6 +65,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
     private boolean toMoreCommentActivity = false;
 
     private ImageView ivProblemImage = null;
+    private ImageView ivAvatarImage = null;
 
     private boolean afterCommentFlag = false;
 
@@ -80,6 +82,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
         // viewPagerLayout = (LinearLayout) findViewById(R.id.viewPagerLayout);
         ivProblemImage = (ImageView) findViewById(R.id.ivProblemImage);
+        ivAvatarImage = (ImageView) findViewById(R.id.ivAvatar);
 
         tvComplaintAdress = (TextView) findViewById(R.id.tvComplaintAdress);
         tvComplaintTitle = (TextView) findViewById(R.id.tvComplaintTitle);
@@ -131,7 +134,11 @@ public class DetailsActivity extends Activity implements OnClickListener {
         tvReporter.setText(comp.getReporter().getName());
         tvReporterDate.setText(comp.getDateAsString(this));
 
+        Cache.getInstance().getImage(comp.getReporter().getAvatar(),
+                ivAvatarImage);
         comp.getImage(0, Image.SIZE_512, ivProblemImage);
+
+        Log.d(TAG, "Avatar: " + comp.getReporter().getAvatar());
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -334,20 +341,28 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
             TextView tvComment = (TextView) findViewById(R.id.tvComment);
             TextView tvCommentUser = (TextView) findViewById(R.id.tvCommentUser);
+            ImageView ivAvatar = (ImageView) findViewById(R.id.ivCommentUserAvatar);
 
             TextView tvComment2 = (TextView) findViewById(R.id.tvComment2);
             TextView tvCommentUser2 = (TextView) findViewById(R.id.tvCommentUser2);
+            ImageView ivAvatar2 = (ImageView) findViewById(R.id.ivCommentUserAvatar2);
 
             if (result != null) {
                 if (result.size() >= 2) {
                     tvComment.setText(result.get(0).getText().toString());
                     tvCommentUser.setText(result.get(0).getAuthor().getName());
+                    Cache.getInstance().getImage(
+                            result.get(0).getAuthor().getAvatar(), ivAvatar);
 
                     tvComment2.setText(result.get(1).getText().toString());
                     tvCommentUser2.setText(result.get(1).getAuthor().getName());
+                    Cache.getInstance().getImage(
+                            result.get(1).getAuthor().getAvatar(), ivAvatar2);
                 } else if (result.size() == 1) {
                     tvComment.setText(result.get(0).getText().toString());
                     tvCommentUser.setText(result.get(0).getAuthor().getName());
+                    Cache.getInstance().getImage(
+                            result.get(0).getAuthor().getAvatar(), ivAvatar);
 
                     ((LinearLayout) findViewById(R.id.newComplaintCommentTwo))
                             .setVisibility(LinearLayout.GONE);

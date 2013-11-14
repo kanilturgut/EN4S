@@ -49,16 +49,12 @@ public class Requests {
     }
 
     public static HttpResponse get(String path) throws IOException {
-        return Requests.get(path, null);
+        return Requests.getWithoutDomain(domain + path);
     }
 
-    public static HttpResponse get(String path, HttpParams params)
-            throws IOException {
+    public static HttpResponse getWithoutDomain(String path) throws IOException {
         HttpClient httpclient = Requests.getInstance().getHttpClient();
-        HttpGet getRequest = new HttpGet(domain + path);
-        if (params != null) {
-            getRequest.setParams(params);
-        }
+        HttpGet getRequest = new HttpGet(path);
         HttpResponse response = httpclient.execute(getRequest);
 
         return response;
@@ -118,7 +114,12 @@ public class Requests {
 
     public static byte[] download(String image) throws IOException,
             NoSuchElementException {
-        HttpResponse get = Requests.get(image);
+        HttpResponse get;
+        if (image.startsWith("http://") || image.startsWith("https://")) {
+            get = Requests.getWithoutDomain(image);
+        } else {
+            get = Requests.get(image);
+        }
 
         if (!Requests.checkStatusCode(get, HttpStatus.SC_OK)) {
             throw new NoSuchElementException("Status code is not 200");

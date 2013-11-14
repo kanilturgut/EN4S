@@ -7,9 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tobbetu.en4s.backend.Comment;
+import com.tobbetu.en4s.cache.Cache;
 
 public class CommentListAdapter extends ArrayAdapter<Comment> {
 
@@ -28,12 +30,15 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
 
         LayoutInflater myInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View myRowView = myInflater.inflate(R.layout.comment_list_item,
-                parent, false);
+        View myRowView = myInflater.inflate(R.layout.comment_list_item, parent,
+                false);
 
-        TextView tvComment = (TextView) myRowView.findViewById(R.id.tvCommentListComment);
+        TextView tvComment = (TextView) myRowView
+                .findViewById(R.id.tvCommentListComment);
         TextView tvCommentUser = (TextView) myRowView
                 .findViewById(R.id.tvCommentUser);
+        ImageView ivAvatar = (ImageView) myRowView
+                .findViewById(R.id.ivCommentListAvatar);
 
         /*
          * for future 1. User avatart 2. User name 3. Up Vote and Down Vote
@@ -43,6 +48,9 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
         Comment aComment = comments.get(position);
         tvComment.setText(aComment.getText().trim());
         tvCommentUser.setText(aComment.getAuthor().getName().trim());
+
+        Cache.getInstance()
+                .getImage(aComment.getAuthor().getAvatar(), ivAvatar);
 
         return myRowView;
     }

@@ -12,14 +12,16 @@ public class User implements Serializable {
     private String id;
     private String email;
     private String name;
+    private String avatar;
 
     public User() {
     }
 
-    public User(String id, String email, String name) {
+    public User(String id, String email, String name, String avatar) {
         this.id = id;
         this.email = email;
         this.name = name;
+        this.avatar = avatar;
     }
 
     public static User fromJSON(String response) throws JSONException {
@@ -28,7 +30,7 @@ public class User implements Serializable {
 
     public static User fromJSON(JSONObject obj) throws JSONException {
         return new User(obj.getString("_id"), obj.getString("email"),
-                obj.getString("name"));
+                obj.getString("name"), obj.getString("avatar"));
     }
 
     public String getId() {
@@ -53,5 +55,13 @@ public class User implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }
