@@ -3,8 +3,6 @@ package com.tobbetu.en4s.helpers;
 import java.io.IOException;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -24,10 +22,7 @@ public class Geocoder {
                         Double.toString(latitude), Double.toString(longitude));
 
         Log.d(TAG, "url: " + url);
-        HttpClient httpclient = Requests.getInstance().getHttpClient();
-        HttpGet getRequest = new HttpGet(url);
-        HttpResponse get = httpclient.execute(getRequest);
-
+        HttpResponse get = Requests.getWithoutDomain(url);
         String response = Requests.readResponse(get);
 
         JSONObject obj = new JSONObject(response);

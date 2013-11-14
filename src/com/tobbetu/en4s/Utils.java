@@ -6,6 +6,7 @@ import java.net.URLEncoder;
 import java.text.Normalizer;
 import java.text.Normalizer.Form;
 import java.util.ArrayList;
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -308,7 +309,7 @@ public class Utils {
         String toReturn = Normalizer.normalize(input, Form.NFD).replaceAll(
                 "[^\\p{ASCII}]", "");
         toReturn = toReturn.replace(" ", "-");
-        toReturn = toReturn.toLowerCase();
+        toReturn = toReturn.toLowerCase(new Locale("tr-TR"));
         try {
             return URLEncoder.encode(toReturn, "UTF-8");
         } catch (UnsupportedEncodingException e) {

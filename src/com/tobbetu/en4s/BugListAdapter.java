@@ -68,6 +68,8 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
                     .findViewById(R.id.tvUpVoteCount);
             holder.tvCommentCount = (TextView) convertView
                     .findViewById(R.id.tvCommentCount);
+            holder.upvoteImage = (ImageView) convertView
+                    .findViewById(R.id.ivUp);
 
             convertView.setTag(holder);
         } else {
@@ -98,10 +100,10 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
         holder.tvUpVoteCount.setText("" + complaint.getUpVote());
         holder.tvCommentCount.setText("" + complaint.getCommentsCount());
 
-        ivUp = (ImageView) convertView.findViewById(R.id.ivUp);
-
         if (complaint.alreadyVoted(user))
-            ivUp.setImageResource(R.drawable.up_voted);
+            holder.upvoteImage.setImageResource(R.drawable.up_voted);
+        else
+            holder.upvoteImage.setImageResource(R.drawable.up);
 
         // position
         if (tabPosition == 0) {
@@ -165,6 +167,7 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
     static class ViewHolder {
 
         ImageView problemImage;
+        ImageView upvoteImage;
         TextView complaintTitle;
         TextView tvAdditionalInfo;
         TextView tvUpVoteCount;

@@ -17,7 +17,6 @@ import android.hardware.Camera;
 import android.hardware.Camera.PictureCallback;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -45,8 +44,7 @@ public class TakePhotoActivity extends Activity implements OnClickListener {
     private Button cancelButton;
 
     private Preview preview;
-    private Handler previewHandler;
-    private Runnable previewRunnable;
+
     private ProgressDialog pg;
     private Bitmap bmp;
     private Image img;
@@ -67,47 +65,47 @@ public class TakePhotoActivity extends Activity implements OnClickListener {
         cancelButton = (Button) findViewById(R.id.cancelButton);
         cancelButton.setOnClickListener(this);
 
-        previewHandler = new Handler();
-        previewRunnable = new Runnable() {
+        try {
+            preview = new Preview(TakePhotoActivity.this);
+        } catch (Exception e) {
+            // preview olusturma islemi sirasinda bir sorun olursa
 
-            @Override
-            public void run() {
+            Toast.makeText(getApplicationContext(),
+                    R.string.nc_camera_is_not_ready, Toast.LENGTH_LONG).show();
+            finish();
+        }
 
-                // Log.i(TAG, "run started");
-                preview = new Preview(TakePhotoActivity.this);
-                if (Preview.pictureWidth == 0 || Preview.pictureHeight == 0) {
-                    // Create an alert
-                    Toast.makeText(getApplicationContext(),
-                            R.string.nc_screen_size_doesnt_match,
-                            Toast.LENGTH_LONG).show();
-                    finish();
-                }
+        if (Preview.pictureWidth == 0 || Preview.pictureHeight == 0) {
+            // Create an alert
+            Toast.makeText(getApplicationContext(),
+                    R.string.nc_screen_size_doesnt_match, Toast.LENGTH_LONG)
+                    .show();
+            finish();
+        }
 
-                Display display = getWindowManager().getDefaultDisplay();
-                Point size = new Point();
-                display.getSize(size);
-                int width = size.x;
-                int height = width; // Kare olaca�� i�in height = width
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        int height = width; // Kare olacagi icin height = width olmali.
 
-                previewLayout = (LinearLayout) findViewById(R.id.previewLayout);
-                previewFrame = new FrameLayout(getBaseContext());
+        previewLayout = (LinearLayout) findViewById(R.id.previewLayout);
+        previewFrame = new FrameLayout(getBaseContext());
 
-                FrameLayout.LayoutParams frameLayoutParams = new FrameLayout.LayoutParams(
-                        width - 30, height - 30);
-                previewFrame.setLayoutParams(frameLayoutParams);
+        FrameLayout.LayoutParams frameLayoutParams = new FrameLayout.LayoutParams(
+                width - 30, height - 30);
+        previewFrame.setLayoutParams(frameLayoutParams);
 
-                takenPhoto = new ImageView(getBaseContext());
-                takenPhoto.setVisibility(ImageView.GONE);
+        takenPhoto = new ImageView(getBaseContext());
+        takenPhoto.setVisibility(ImageView.GONE);
 
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                        width - 30, height - 30, Gravity.CENTER);
-                previewLayout.addView(previewFrame, layoutParams);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                width - 30, height - 30, Gravity.CENTER);
+        previewLayout.addView(previewFrame, layoutParams);
 
-                previewFrame.addView(preview);
-                previewFrame.addView(takenPhoto);
-            }
-        };
-        previewHandler.postDelayed(previewRunnable, 0);
+        previewFrame.addView(preview);
+        previewFrame.addView(takenPhoto);
+
         LinearLayout afterPhotoTakenLayout = (LinearLayout) findViewById(R.id.afterPhotoTakenLayout);
         afterPhotoTakenLayout.setVisibility(LinearLayout.GONE);
 
@@ -153,8 +151,6 @@ public class TakePhotoActivity extends Activity implements OnClickListener {
             preview.setVisibility(FrameLayout.VISIBLE);
             preview.camera.startPreview();
 
-            // bReTakePhoto.setVisibility(Button.GONE);
-            // bTakePhoto.setVisibility(Button.VISIBLE);
         } else if (v.getId() == R.id.doneButton) {
 
             Intent i = new Intent(this, NewComplaint.class);

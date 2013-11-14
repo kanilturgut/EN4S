@@ -105,6 +105,9 @@ public class EnforceService extends Service implements
         }
 
         super.onDestroy();
+
+        // after serviceStopped kill application
+        System.exit(0);
     }
 
     @Override

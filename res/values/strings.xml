@@ -112,6 +112,7 @@
     <string name="nc_accepted">Şikayetiniz kaydedilmiştir, teşekkür ederiz</string>
     <string name="nc_missing_photo">Fotoğraf çekmeden şikayet bildiriminde bulunamazsınız</string>
     <string name="nc_screen_size_doesnt_match">Cihazınızın kamerasına erişemiyoruz</string>
+    <string name="nc_camera_is_not_ready">Cihazınızın kamerası şu anda başka bir uygulama tarafından kullanılıyor. Lütfen daha sonra tekrar deneyiniz.</string>
 
     <!-- Complaint -->
     <string name="comp_sec">%d saniye önce</string>
@@ -172,7 +173,7 @@
     <string name="imageButtonDescription">ImageButton</string>
     <string name="tp_iptal">İptal</string>
     <string name="abort_new_complaint">Şikayet girme işlemini iptal etmek istiyor musunuz?</string>
-    <string name="capturing">Fotoğraf Çekiliyor...</string>
+    <string name="capturing">Fotoğraf Çekiliyor&#8230;</string>
     <string name="title_activity_list">ListActivity</string>
 
     <string name="drawer_open">Open navigation drawer</string>

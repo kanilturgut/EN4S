@@ -31,6 +31,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -67,12 +68,16 @@ public class ListActivity extends Activity {
         getActionBar().setTitle(R.string.app_name);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         TITLES = getResources().getStringArray(R.array.title_array);
 
         // set up the drawer's list view with items and click listener
         mDrawerList.setAdapter(new MyArrayAdapter(this, TITLES));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
+                GravityCompat.START);
 
         // enable ActionBar app icon to behave as action to toggle nav drawer
         getActionBar().setDisplayHomeAsUpEnabled(true);
@@ -327,9 +332,5 @@ public class ListActivity extends Activity {
     @Override
     public void onBackPressed() {
         stopService(new Intent(ListActivity.this, EnforceService.class));
-
-        finish();
-        super.onDestroy();
-        android.os.Process.killProcess(android.os.Process.myPid());
     }
 }
