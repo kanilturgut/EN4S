@@ -23,10 +23,8 @@ import org.json.JSONException;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -298,35 +296,6 @@ public class ListActivity extends Activity {
                         Toast.LENGTH_LONG).show();
             }
         }
-    }
-
-    private void buildAlertMessageNoGps() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.login_gps_disabled)
-                .setCancelable(false)
-                .setPositiveButton(R.string.login_yes_openGPS,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(final DialogInterface dialog,
-                                    final int id) {
-                                switchedFromGPSActivity = true;
-                                startActivity(new Intent(
-                                        android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                            }
-                        })
-                .setNegativeButton(R.string.login_no_closeGPS,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(final DialogInterface dialog,
-                                    final int id) {
-                                dialog.cancel();
-                                Intent i = new Intent(ListActivity.this,
-                                        TakePhotoActivity.class);
-                                startActivity(i);
-                            }
-                        });
-        final AlertDialog alert = builder.create();
-        alert.show();
     }
 
     @Override

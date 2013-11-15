@@ -107,6 +107,7 @@
             android:exported="false"
             android:label="@string/app_name" >
         </service>
+
         <receiver
             android:name="com.tobbetu.en4s.NotificationReceiver"
             android:permission="com.google.android.c2dm.permission.SEND" >
@@ -116,6 +117,11 @@
                 <category android:name="com.tobbetu.en4s" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name="com.tobbetu.en4s.BiggerImage"
+            android:label="@string/title_activity_bigger_image" >
+        </activity>
     </application>
 
 </manifest>

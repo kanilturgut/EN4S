@@ -79,7 +79,7 @@
     <string name="title_new">YENİ</string>
     <string name="title_near">YAKIN</string>
     <string name="title_top">POPÜLER</string>
-    
+
     <string-array name="title_array">
         <item>Gündem</item>
         <item>Yeni</item>
@@ -146,7 +146,6 @@
     <string name="da_complaint_delete_rejected">Bu şikayeti silmeye yetkili değilsiniz.</string>
     <string name="da_delete_title">Silme</string>
     <string name="da_delete_msg">Bu şikayeti silmek istediğinizden emin misiniz?</string>
-
     <string name="login_failed_msg">Üzgünüz ama giriş yapamadınız.</string>
     <string name="network_failed_msg">İnternet erişiminizdeki sorun nedeniyle işleminizi tamamlayamadık. Lütfen daha sonra tekrar deneyin.</string>
     <string name="api_changed">Kullandığınız programın versiyonu eski olduğu için işleminizi tamamlayamadık. Lütfen programı güncelledikten sonra tekrar deneyin.</string>
@@ -175,8 +174,9 @@
     <string name="abort_new_complaint">Şikayet girme işlemini iptal etmek istiyor musunuz?</string>
     <string name="capturing">Fotoğraf Çekiliyor&#8230;</string>
     <string name="title_activity_list">ListActivity</string>
-
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="sil">Şikayeti Sil</string>
+    <string name="title_activity_bigger_image">BiggerImage</string>
+
 </resources>

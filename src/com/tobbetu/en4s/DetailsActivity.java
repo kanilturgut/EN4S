@@ -83,6 +83,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
         // viewPagerLayout = (LinearLayout) findViewById(R.id.viewPagerLayout);
         ivProblemImage = (ImageView) findViewById(R.id.ivProblemImage);
         ivAvatarImage = (ImageView) findViewById(R.id.ivAvatar);
+        ivProblemImage.setOnClickListener(this);
 
         tvComplaintAdress = (TextView) findViewById(R.id.tvComplaintAdress);
         tvComplaintTitle = (TextView) findViewById(R.id.tvComplaintTitle);
@@ -222,6 +223,11 @@ public class DetailsActivity extends Activity implements OnClickListener {
                         });
                 alert.show();
             }
+        } else if (v.getId() == R.id.ivProblemImage) {
+            Log.i(TAG, "tikla");
+            Intent i = new Intent(this, BiggerImage.class);
+            i.putExtra("class", comp);
+            startActivity(i);
         }
 
     }
