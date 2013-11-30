@@ -8,12 +8,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class MyArrayAdapter extends ArrayAdapter<String> {
+public class MyDrawerListMenuItemAdapter extends ArrayAdapter<String> {
 
     private Context context;
     private String[] myArray;
 
-    public MyArrayAdapter(Context c, String[] array) {
+    public MyDrawerListMenuItemAdapter(Context c, String[] array) {
         super(c, R.layout.drawer_list_item, array);
 
         this.context = c;
@@ -36,19 +36,12 @@ public class MyArrayAdapter extends ArrayAdapter<String> {
                 .findViewById(R.id.imageOfItem);
         switch (position) {
         case 0:
-            imageOfItem.setImageResource(R.drawable.ic_action_web_site);
+            imageOfItem.setImageResource(R.drawable.yeni_problem);
             break;
         case 1:
-            imageOfItem.setImageResource(R.drawable.ic_action_import_export);
-            break;
-        case 2:
-            imageOfItem.setImageResource(R.drawable.ic_action_place);
-            break;
-        case 3:
-            imageOfItem.setImageResource(R.drawable.ic_action_favorite);
+            imageOfItem.setImageResource(R.drawable.ic_action_settings);
             break;
         }
-
         return rowView;
     }
 }

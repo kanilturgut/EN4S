@@ -86,6 +86,11 @@
         <item>Yakın</item>
         <item>Popüler</item>
     </string-array>
+    
+    <string-array name="title_of_drawer_menu_items">
+        <item>Yeni Şikayet</item>
+        <item>Ayarlar</item>
+    </string-array>
 
     <!-- Kategoriler -->
     <string name="cat_select">Kategori Seçin</string>

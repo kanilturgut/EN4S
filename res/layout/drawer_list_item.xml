@@ -1,4 +1,3 @@
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="48dp"
@@ -9,17 +8,19 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_gravity="center"
+        android:layout_marginLeft="12dp"
         android:contentDescription="@string/imageButtonDescription"
-        android:layout_marginLeft="12dp" />
+        android:src="@drawable/ic_action_favorite" />
 
     <TextView
         android:id="@+id/tvNavigator"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="12dp"
-        android:textSize="16sp"
+        android:gravity="center_vertical"
+        android:text="oldu mu la"
         android:textColor="#DDDDDD"
-        android:textStyle="bold"
-        android:gravity="center_vertical" />
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
 </LinearLayout>

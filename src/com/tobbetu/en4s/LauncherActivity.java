@@ -190,6 +190,7 @@ public class LauncherActivity extends Activity implements OnClickListener {
                             Utils.turnGPSOff(LauncherActivity.this);
                             stopService(new Intent(LauncherActivity.this,
                                     EnforceService.class));
+                            System.exit(0);
                         } catch (Throwable e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();

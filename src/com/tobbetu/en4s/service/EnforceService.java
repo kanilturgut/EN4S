@@ -7,6 +7,7 @@ import android.location.Location;
 import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
@@ -31,6 +32,8 @@ public class EnforceService extends Service implements
     private static Location myBestLoc = null;
     private boolean mInProgress;
     private IBinder mBinder = new LocalBinder();
+
+    private int stopServiceCounter = 0;
 
     public class LocalBinder extends Binder {
         public EnforceService getServerInstance() {
@@ -104,10 +107,13 @@ public class EnforceService extends Service implements
             mLocationClient = null;
         }
 
+        Toast.makeText(getApplicationContext(), "Enfroce Service is stopped",
+                Toast.LENGTH_SHORT).show();
+
         super.onDestroy();
 
         // after serviceStopped kill application
-        System.exit(0);
+        // System.exit(0);
     }
 
     @Override
@@ -139,7 +145,18 @@ public class EnforceService extends Service implements
             myBestLoc = location;
         } else if (location.getLatitude() != myBestLoc.getLatitude()
                 && location.getLongitude() != myBestLoc.getLongitude()) {
+
+            stopServiceCounter++;
+
             myBestLoc = location;
+
+            if (stopServiceCounter == 2) {
+                if (mLocationClient != null)
+                    mLocationClient.removeLocationUpdates(this);
+
+                stopSelf();
+            }
+
         }
     }
 

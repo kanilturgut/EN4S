@@ -40,6 +40,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bugsense.trace.BugSenseHandler;
@@ -50,14 +51,16 @@ import com.tobbetu.en4s.service.EnforceService;
 @SuppressLint({ "NewApi", "ValidFragment" })
 public class ListActivity extends Activity {
     private DrawerLayout mDrawerLayout;
-    private ListView mDrawerList;
+    private ListView mDrawerList, mDrawerMenuList;
     private ActionBarDrawerToggle mDrawerToggle;
 
     private CharSequence mTitle = "Enforce";
     private static ListView bugList;
     private String[] TITLES = null;
+    private String[] MENU_ITEMS = null;
     private int myPosition;
     protected boolean switchedFromGPSActivity = false;
+    private RelativeLayout relativeDrawerLayout = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,13 +69,23 @@ public class ListActivity extends Activity {
         getActionBar().setTitle(R.string.app_name);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        relativeDrawerLayout = (RelativeLayout) findViewById(R.id.relativeDrawerLayout);
 
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        mDrawerMenuList = (ListView) findViewById(R.id.left_drawer_menu_item);
+
         TITLES = getResources().getStringArray(R.array.title_array);
+        MENU_ITEMS = getResources().getStringArray(
+                R.array.title_of_drawer_menu_items);
 
         // set up the drawer's list view with items and click listener
-        mDrawerList.setAdapter(new MyArrayAdapter(this, TITLES));
+        mDrawerList.setAdapter(new MyDrawerListItemAdapter(this, TITLES));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+
+        mDrawerMenuList.setAdapter(new MyDrawerListMenuItemAdapter(this,
+                MENU_ITEMS));
+        mDrawerMenuList
+                .setOnItemClickListener(new DrawerMenuItemClickListener());
 
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
                 GravityCompat.START);
@@ -166,6 +179,34 @@ public class ListActivity extends Activity {
         }
     }
 
+    // The click listener for ListView in the navigation drawer menu items, such
+    // as new complaint and settings
+    private class DrawerMenuItemClickListener implements
+            ListView.OnItemClickListener {
+
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position,
+                long id) {
+
+            // start intents for new activities
+            if (position == 0) { // new complaint
+
+                // first close drawer
+                mDrawerLayout.closeDrawer(relativeDrawerLayout);
+
+                // need to add sleep or smthng
+
+                // then start new photo activity
+                Intent i = new Intent(ListActivity.this,
+                        TakePhotoActivity.class);
+                startActivity(i);
+            } else { // settings
+                Toast.makeText(getApplicationContext(), "not yet",
+                        Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
     private void selectItem(int position) {
         // update the main content by replacing fragments
         Fragment fragment = new ComplaintListFragment();
@@ -180,7 +221,7 @@ public class ListActivity extends Activity {
         // update selected item and title, then close the drawer
         mDrawerList.setItemChecked(position, true);
         setTitle(TITLES[position]);
-        mDrawerLayout.closeDrawer(mDrawerList);
+        mDrawerLayout.closeDrawer(relativeDrawerLayout);
     }
 
     @Override
@@ -301,5 +342,6 @@ public class ListActivity extends Activity {
     @Override
     public void onBackPressed() {
         stopService(new Intent(ListActivity.this, EnforceService.class));
+        System.exit(0);
     }
 }
