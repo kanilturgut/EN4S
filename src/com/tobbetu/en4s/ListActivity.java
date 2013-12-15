@@ -44,9 +44,11 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bugsense.trace.BugSenseHandler;
+import com.tobbetu.en4s.announcement.AnnouncementsActivity;
 import com.tobbetu.en4s.backend.Complaint;
 import com.tobbetu.en4s.helpers.BetterAsyncTask;
 import com.tobbetu.en4s.service.EnforceService;
+import com.tobbetu.en4s.settingsList.SettingsListActivity;
 
 @SuppressLint({ "NewApi", "ValidFragment" })
 public class ListActivity extends Activity {
@@ -189,7 +191,10 @@ public class ListActivity extends Activity {
                 long id) {
 
             // start intents for new activities
-            if (position == 0) { // new complaint
+            if (position == 0) {
+                startActivity(new Intent(ListActivity.this,
+                        AnnouncementsActivity.class));
+            } else if (position == 1) { // new complaint
 
                 // first close drawer
                 mDrawerLayout.closeDrawer(relativeDrawerLayout);
@@ -200,9 +205,9 @@ public class ListActivity extends Activity {
                 Intent i = new Intent(ListActivity.this,
                         TakePhotoActivity.class);
                 startActivity(i);
-            } else { // settings
-                Toast.makeText(getApplicationContext(), "not yet",
-                        Toast.LENGTH_SHORT).show();
+            } else if (position == 2) { // settings
+                startActivity(new Intent(ListActivity.this,
+                        SettingsListActivity.class));
             }
         }
     }

@@ -15,8 +15,8 @@
 
         <ImageView
             android:id="@+id/loginLogo"
-            android:layout_width="110dp"
-            android:layout_height="100dp"
+            android:layout_width="128dp"
+            android:layout_height="129dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:layout_margin="15dp"
@@ -46,19 +46,19 @@
             android:layout_marginTop="30dp"
             android:background="@drawable/facebook_signup_button_style"
             android:textColor="#FFFFFF"
-            android:visibility="invisible"
             android:textSize="14sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:visibility="invisible" />
 
         <LinearLayout
             android:id="@+id/breakLayout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/faceButton"
-            android:visibility="invisible"
             android:layout_marginBottom="10dp"
             android:layout_marginTop="20dp"
-            android:orientation="vertical" >
+            android:orientation="vertical"
+            android:visibility="invisible" >
 
             <View
                 android:layout_width="wrap_content"
@@ -159,9 +159,9 @@
             android:layout_below="@+id/userInfoLayout"
             android:layout_marginLeft="12dp"
             android:layout_marginRight="12dp"
-            android:minHeight="50dp"
             android:layout_marginTop="15dp"
             android:background="@drawable/signup_button_style"
+            android:minHeight="50dp"
             android:text="@string/signIn"
             android:textColor="#FFFFFF"
             android:textSize="16sp"
