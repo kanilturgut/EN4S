@@ -76,15 +76,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tobbetu.en4s.LoginPageActivity"
+            android:name="com.tobbetu.en4s.login.LoginPageActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.tobbetu.en4s.DetailsActivity"
+            android:name="com.tobbetu.en4s.complaint.DetailsActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.tobbetu.en4s.NewComplaint"
+            android:name="com.tobbetu.en4s.complaint.NewComplaint"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
         </activity>
@@ -93,7 +93,7 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.tobbetu.en4s.MoreCommentsActivity"
+            android:name="com.tobbetu.en4s.comment.MoreCommentsActivity"
             android:label="@string/title_activity_more_comments"
             android:screenOrientation="portrait" >
         </activity>
@@ -103,22 +103,22 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
-            android:name="com.tobbetu.en4s.RegisterPageActivity"
+            android:name="com.tobbetu.en4s.register.RegisterPageActivity"
             android:label="@string/title_activity_register_page"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.tobbetu.en4s.TakePhotoActivity"
+            android:name="com.tobbetu.en4s.complaint.TakePhotoActivity"
             android:label="@string/title_activity_take_photo"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.tobbetu.en4s.ListActivity"
+            android:name="com.tobbetu.en4s.navigationDrawer.ListActivity"
             android:label="@string/title_activity_list"
             android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name="com.tobbetu.en4s.BiggerImage"
+            android:name="com.tobbetu.en4s.biggerImage.BiggerImage"
             android:label="@string/title_activity_bigger_image" >
         </activity>
         <activity

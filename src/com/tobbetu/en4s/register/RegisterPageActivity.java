@@ -1,4 +1,4 @@
-package com.tobbetu.en4s;
+package com.tobbetu.en4s.register;
 
 import java.io.IOException;
 
@@ -23,11 +23,13 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.bugsense.trace.BugSenseHandler;
-import com.tobbetu.en4s.backend.Login;
-import com.tobbetu.en4s.backend.Register;
-import com.tobbetu.en4s.backend.Register.RegisterFailedException;
+import com.tobbetu.en4s.LauncherActivity;
+import com.tobbetu.en4s.R;
 import com.tobbetu.en4s.backend.User;
 import com.tobbetu.en4s.helpers.BetterAsyncTask;
+import com.tobbetu.en4s.login.Login;
+import com.tobbetu.en4s.login.LoginPageActivity;
+import com.tobbetu.en4s.register.Register.RegisterFailedException;
 
 public class RegisterPageActivity extends Activity implements
         OnEditorActionListener {

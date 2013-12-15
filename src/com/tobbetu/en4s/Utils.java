@@ -252,7 +252,7 @@ public class Utils {
         return tmp;
     }
 
-    protected static boolean isNetworkAvailable(Context c) {
+    public static boolean isNetworkAvailable(Context c) {
         ConnectivityManager connectivityManager = (ConnectivityManager) c
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager

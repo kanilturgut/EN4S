@@ -1,4 +1,4 @@
-package com.tobbetu.en4s.helpers;
+package com.tobbetu.en4s.biggerImage;
 
 import android.content.Context;
 import android.graphics.Matrix;

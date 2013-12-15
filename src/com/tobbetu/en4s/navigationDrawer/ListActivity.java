@@ -1,4 +1,4 @@
-package com.tobbetu.en4s;
+package com.tobbetu.en4s.navigationDrawer;
 
 /*
  * Copyright 2013 The Android Open Source Project
@@ -44,8 +44,12 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.bugsense.trace.BugSenseHandler;
+import com.tobbetu.en4s.R;
 import com.tobbetu.en4s.announcement.AnnouncementsActivity;
-import com.tobbetu.en4s.backend.Complaint;
+import com.tobbetu.en4s.complaint.BugListAdapter;
+import com.tobbetu.en4s.complaint.Complaint;
+import com.tobbetu.en4s.complaint.DetailsActivity;
+import com.tobbetu.en4s.complaint.TakePhotoActivity;
 import com.tobbetu.en4s.helpers.BetterAsyncTask;
 import com.tobbetu.en4s.service.EnforceService;
 import com.tobbetu.en4s.settingsList.SettingsListActivity;

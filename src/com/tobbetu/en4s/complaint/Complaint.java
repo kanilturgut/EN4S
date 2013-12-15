@@ -1,4 +1,4 @@
-package com.tobbetu.en4s.backend;
+package com.tobbetu.en4s.complaint;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -24,9 +24,12 @@ import android.widget.ImageView;
 
 import com.tobbetu.en4s.R;
 import com.tobbetu.en4s.Utils;
+import com.tobbetu.en4s.backend.Image;
+import com.tobbetu.en4s.backend.Requests;
+import com.tobbetu.en4s.backend.User;
 import com.tobbetu.en4s.cache.Cache;
-import com.tobbetu.en4s.helpers.CommentRejectedException;
-import com.tobbetu.en4s.helpers.ComplaintRejectedException;
+import com.tobbetu.en4s.comment.Comment;
+import com.tobbetu.en4s.comment.CommentRejectedException;
 import com.tobbetu.en4s.helpers.VoteRejectedException;
 
 @SuppressLint("SimpleDateFormat")

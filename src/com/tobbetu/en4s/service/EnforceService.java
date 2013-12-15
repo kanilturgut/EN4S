@@ -13,8 +13,8 @@ import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationRequest;
-import com.tobbetu.en4s.backend.Complaint;
 import com.tobbetu.en4s.backend.Image;
+import com.tobbetu.en4s.complaint.Complaint;
 import com.tobbetu.en4s.tasks.SaveComplaintTask;
 
 public class EnforceService extends Service implements

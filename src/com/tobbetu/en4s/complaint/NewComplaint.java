@@ -1,4 +1,4 @@
-package com.tobbetu.en4s;
+package com.tobbetu.en4s.complaint;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -32,7 +32,9 @@ import android.widget.Toast;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.tobbetu.en4s.backend.Complaint;
+import com.tobbetu.en4s.BiggerMap;
+import com.tobbetu.en4s.R;
+import com.tobbetu.en4s.Utils;
 import com.tobbetu.en4s.backend.Image;
 import com.tobbetu.en4s.helpers.CategoryI18n;
 import com.tobbetu.en4s.service.EnforceService;

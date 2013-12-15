@@ -1,4 +1,4 @@
-package com.tobbetu.en4s;
+package com.tobbetu.en4s.complaint;
 
 import java.io.IOException;
 import java.util.List;
@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.http.client.HttpResponseException;
 import org.json.JSONException;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -32,17 +33,19 @@ import com.bugsense.trace.BugSenseHandler;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.tobbetu.en4s.backend.Comment;
-import com.tobbetu.en4s.backend.Complaint;
+import com.tobbetu.en4s.R;
+import com.tobbetu.en4s.Utils;
 import com.tobbetu.en4s.backend.Image;
-import com.tobbetu.en4s.backend.Login;
 import com.tobbetu.en4s.backend.User;
+import com.tobbetu.en4s.biggerImage.BiggerImage;
 import com.tobbetu.en4s.cache.Cache;
+import com.tobbetu.en4s.comment.Comment;
+import com.tobbetu.en4s.comment.CommentRejectedException;
+import com.tobbetu.en4s.comment.MoreCommentsActivity;
 import com.tobbetu.en4s.helpers.BetterAsyncTask;
 import com.tobbetu.en4s.helpers.CategoryI18n;
-import com.tobbetu.en4s.helpers.CommentRejectedException;
-import com.tobbetu.en4s.helpers.ComplaintRejectedException;
 import com.tobbetu.en4s.helpers.VoteRejectedException;
+import com.tobbetu.en4s.login.Login;
 import com.tobbetu.en4s.service.EnforceService;
 
 public class DetailsActivity extends Activity implements OnClickListener {
@@ -50,8 +53,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
     private final String TAG = "DetailsActivity";
 
     private TextView tvComplaintAdress, tvComplaintTitle, tvComplaintCategory,
-            tvReporter, tvReporterDate, tvYouAreAlreadyVoted,
-            tvYouAreNotAllowed;
+            tvReporter, tvReporterDate, tvYouAreAlreadyVoted;
     private Button bUpVote, bDownVote, bMoreComment;
     // private LinearLayout viewPagerLayout;
 
@@ -71,6 +73,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
     private AlertDialog deleteDialog;
 
+    @SuppressLint("NewApi")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -224,7 +227,6 @@ public class DetailsActivity extends Activity implements OnClickListener {
                 alert.show();
             }
         } else if (v.getId() == R.id.ivProblemImage) {
-            Log.i(TAG, "tikla");
             Intent i = new Intent(this, BiggerImage.class);
             i.putExtra("class", comp);
             startActivity(i);

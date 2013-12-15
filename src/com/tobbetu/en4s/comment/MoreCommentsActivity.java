@@ -1,4 +1,4 @@
-package com.tobbetu.en4s;
+package com.tobbetu.en4s.comment;
 
 import java.io.IOException;
 import java.util.List;
@@ -18,10 +18,10 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.bugsense.trace.BugSenseHandler;
-import com.tobbetu.en4s.backend.Comment;
-import com.tobbetu.en4s.backend.Complaint;
+import com.tobbetu.en4s.R;
+import com.tobbetu.en4s.complaint.Complaint;
+import com.tobbetu.en4s.complaint.DetailsActivity;
 import com.tobbetu.en4s.helpers.BetterAsyncTask;
-import com.tobbetu.en4s.helpers.CommentRejectedException;
 
 public class MoreCommentsActivity extends Activity {
 

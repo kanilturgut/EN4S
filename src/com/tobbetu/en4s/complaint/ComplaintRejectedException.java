@@ -1,4 +1,4 @@
-package com.tobbetu.en4s.helpers;
+package com.tobbetu.en4s.complaint;
 
 public class ComplaintRejectedException extends Exception {
 

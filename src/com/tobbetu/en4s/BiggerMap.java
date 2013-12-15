@@ -15,6 +15,7 @@ import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.tobbetu.en4s.complaint.NewComplaint;
 import com.tobbetu.en4s.service.EnforceService;
 
 public class BiggerMap extends Activity {

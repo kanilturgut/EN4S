@@ -5,7 +5,7 @@
  * yazmaya calisiyorum ama daha sonra gozden gecirelim.
  * 
  */
-package com.tobbetu.en4s.backend;
+package com.tobbetu.en4s.comment;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -21,6 +21,10 @@ import org.apache.http.client.HttpResponseException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.tobbetu.en4s.backend.Requests;
+import com.tobbetu.en4s.backend.User;
+import com.tobbetu.en4s.complaint.Complaint;
 
 import android.util.Log;
 

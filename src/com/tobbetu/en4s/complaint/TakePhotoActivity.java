@@ -1,4 +1,4 @@
-package com.tobbetu.en4s;
+package com.tobbetu.en4s.complaint;
 
 import java.io.ByteArrayOutputStream;
 
@@ -31,8 +31,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.tobbetu.en4s.R;
 import com.tobbetu.en4s.backend.Image;
-import com.tobbetu.en4s.helpers.Preview;
 import com.tobbetu.en4s.service.EnforceService;
 
 public class TakePhotoActivity extends Activity implements OnClickListener {
@@ -54,6 +54,7 @@ public class TakePhotoActivity extends Activity implements OnClickListener {
     private int deviceOrientation, photoOrientation;
     private OrientationEventListener mOrientationListener = null;
 
+    @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

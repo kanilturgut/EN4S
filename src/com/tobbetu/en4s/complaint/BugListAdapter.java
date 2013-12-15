@@ -1,7 +1,8 @@
-package com.tobbetu.en4s;
+package com.tobbetu.en4s.complaint;
 
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Point;
 import android.util.Log;
@@ -15,11 +16,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.tobbetu.en4s.backend.Complaint;
+import com.tobbetu.en4s.R;
 import com.tobbetu.en4s.backend.Image;
-import com.tobbetu.en4s.backend.Login;
 import com.tobbetu.en4s.backend.User;
 import com.tobbetu.en4s.helpers.BetterAsyncTask;
+import com.tobbetu.en4s.login.Login;
 import com.tobbetu.en4s.service.EnforceService;
 
 public class BugListAdapter extends ArrayAdapter<Complaint> {
@@ -30,7 +31,6 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
     private final int tabPosition;
     private Complaint complaint;
     private final User user = Login.getMe();
-    private ImageView ivUp;
 
     public BugListAdapter(Context context, List<Complaint> complaints, int pos) {
 
@@ -41,6 +41,7 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
         this.tabPosition = pos;
     }
 
+    @SuppressLint("DefaultLocale")
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
 

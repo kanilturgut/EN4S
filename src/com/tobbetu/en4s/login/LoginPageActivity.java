@@ -1,4 +1,4 @@
-package com.tobbetu.en4s;
+package com.tobbetu.en4s.login;
 
 import java.io.IOException;
 
@@ -30,14 +30,15 @@ import android.widget.Toast;
 import com.bugsense.trace.BugSenseHandler;
 import com.facebook.Session;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.tobbetu.en4s.backend.EnforceLogin;
-import com.tobbetu.en4s.backend.FacebookLogin;
-import com.tobbetu.en4s.backend.Login;
-import com.tobbetu.en4s.backend.Login.LoginFailedException;
+import com.tobbetu.en4s.LauncherActivity;
+import com.tobbetu.en4s.R;
+import com.tobbetu.en4s.Utils;
 import com.tobbetu.en4s.backend.Requests;
 import com.tobbetu.en4s.backend.User;
 import com.tobbetu.en4s.helpers.BetterAsyncTask;
 import com.tobbetu.en4s.helpers.Geocoder;
+import com.tobbetu.en4s.login.Login.LoginFailedException;
+import com.tobbetu.en4s.navigationDrawer.ListActivity;
 import com.tobbetu.en4s.service.EnforceService;
 
 public class LoginPageActivity extends Activity implements OnClickListener,

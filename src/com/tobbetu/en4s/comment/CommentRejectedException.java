@@ -1,4 +1,4 @@
-package com.tobbetu.en4s.helpers;
+package com.tobbetu.en4s.comment;
 
 public class CommentRejectedException extends Exception {
 

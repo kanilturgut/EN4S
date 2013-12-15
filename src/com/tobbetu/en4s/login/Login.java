@@ -1,4 +1,4 @@
-package com.tobbetu.en4s.backend;
+package com.tobbetu.en4s.login;
 
 import java.io.IOException;
 
@@ -6,6 +6,9 @@ import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.tobbetu.en4s.backend.Requests;
+import com.tobbetu.en4s.backend.User;
 
 import android.util.Log;
 

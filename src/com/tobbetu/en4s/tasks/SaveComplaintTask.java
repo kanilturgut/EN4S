@@ -14,10 +14,10 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.tobbetu.en4s.R;
-import com.tobbetu.en4s.backend.Complaint;
 import com.tobbetu.en4s.backend.Image;
+import com.tobbetu.en4s.complaint.Complaint;
+import com.tobbetu.en4s.complaint.ComplaintRejectedException;
 import com.tobbetu.en4s.helpers.BetterAsyncTask;
-import com.tobbetu.en4s.helpers.ComplaintRejectedException;
 
 public class SaveComplaintTask extends BetterAsyncTask<Void, Complaint> {
 

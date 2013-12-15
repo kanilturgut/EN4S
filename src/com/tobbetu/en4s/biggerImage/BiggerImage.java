@@ -1,11 +1,11 @@
-package com.tobbetu.en4s;
+package com.tobbetu.en4s.biggerImage;
 
 import android.app.Activity;
 import android.os.Bundle;
 
-import com.tobbetu.en4s.backend.Complaint;
+import com.tobbetu.en4s.R;
 import com.tobbetu.en4s.backend.Image;
-import com.tobbetu.en4s.helpers.TouchImageView;
+import com.tobbetu.en4s.complaint.Complaint;
 
 public class BiggerImage extends Activity {
 

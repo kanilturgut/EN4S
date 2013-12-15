@@ -1,4 +1,4 @@
-package com.tobbetu.en4s;
+package com.tobbetu.en4s.navigationDrawer;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,12 +8,14 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class MyDrawerListMenuItemAdapter extends ArrayAdapter<String> {
+import com.tobbetu.en4s.R;
+
+public class MyDrawerListItemAdapter extends ArrayAdapter<String> {
 
     private Context context;
     private String[] myArray;
 
-    public MyDrawerListMenuItemAdapter(Context c, String[] array) {
+    public MyDrawerListItemAdapter(Context c, String[] array) {
         super(c, R.layout.drawer_list_item, array);
 
         this.context = c;
@@ -36,15 +38,19 @@ public class MyDrawerListMenuItemAdapter extends ArrayAdapter<String> {
                 .findViewById(R.id.imageOfItem);
         switch (position) {
         case 0:
-            imageOfItem.setImageResource(R.drawable.ic_action_view_as_list);
+            imageOfItem.setImageResource(R.drawable.ic_action_web_site);
             break;
         case 1:
-            imageOfItem.setImageResource(R.drawable.yeni_problem);
+            imageOfItem.setImageResource(R.drawable.ic_action_import_export);
             break;
         case 2:
-            imageOfItem.setImageResource(R.drawable.ic_action_settings);
+            imageOfItem.setImageResource(R.drawable.ic_action_place);
+            break;
+        case 3:
+            imageOfItem.setImageResource(R.drawable.ic_action_favorite);
             break;
         }
+
         return rowView;
     }
 }
