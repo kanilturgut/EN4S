@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.json.JSONException;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 
 import com.tobbetu.en4s.R;
 import com.tobbetu.en4s.helpers.BetterAsyncTask;
+import com.tobbetu.en4s.login.Login;
 
 public class AnnouncementsActivity extends Activity {
 
@@ -52,12 +54,14 @@ public class AnnouncementsActivity extends Activity {
 
     }
 
+    @SuppressLint("DefaultLocale")
     private class AnnouncementListTask extends
             BetterAsyncTask<Void, List<Announcement>> {
 
         @Override
         protected List<Announcement> task(Void... arg0) throws Exception {
-            return Announcement.getList("/notification/ankara");
+            return Announcement.getList("/notification/"
+                    + Login.getMe().getCurrent_city().toLowerCase());
         }
 
         @Override
