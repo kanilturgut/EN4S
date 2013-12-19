@@ -12,14 +12,60 @@
         android:id="@+id/relativeDrawerLayout"
         android:layout_width="240dp"
         android:layout_height="match_parent"
-        android:background="#222222"
-        android:layout_gravity="start" >
+        android:layout_gravity="start"
+        android:background="#222222" >
+
+        <RelativeLayout
+            android:id="@+id/relativeLayoLeftDrawerUseravatar"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginBottom="5dp" >
+
+            <com.tobbetu.en4s.circularImageView.CircularImageView
+                android:id="@+id/ivLeftDrawerUseravatar"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_margin="5dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/ivLeftDrawerUseravatar"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/tvLeftMenuUsername"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvLeftMenuUserEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF"
+                    android:textSize="13sp" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/seperator"
+            android:layout_width="match_parent"
+            android:layout_height="0.1dp"
+            android:layout_below="@+id/relativeLayoLeftDrawerUseravatar"
+            android:background="#484848" />
 
         <ListView
             android:id="@+id/left_drawer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
+            android:layout_below="@+id/seperator"
             android:choiceMode="singleChoice"
             android:divider="#484848"
             android:dividerHeight="0.1dp" />

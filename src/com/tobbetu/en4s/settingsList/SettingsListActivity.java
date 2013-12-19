@@ -48,7 +48,8 @@ public class SettingsListActivity extends ListActivity {
 
         if (!items.get(position).isSection()) {
 
-            com.tobbetu.en4s.listItems.EntryItem item = (EntryItem) items.get(position);
+            com.tobbetu.en4s.listItems.EntryItem item = (EntryItem) items
+                    .get(position);
 
             Toast.makeText(getApplicationContext(), item.getTitle(),
                     Toast.LENGTH_SHORT).show();

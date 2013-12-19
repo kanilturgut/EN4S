@@ -41,16 +41,21 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bugsense.trace.BugSenseHandler;
 import com.tobbetu.en4s.R;
 import com.tobbetu.en4s.announcement.AnnouncementsActivity;
+import com.tobbetu.en4s.backend.User;
+import com.tobbetu.en4s.cache.Cache;
+import com.tobbetu.en4s.circularImageView.CircularImageView;
 import com.tobbetu.en4s.complaint.BugListAdapter;
 import com.tobbetu.en4s.complaint.Complaint;
 import com.tobbetu.en4s.complaint.DetailsActivity;
 import com.tobbetu.en4s.complaint.TakePhotoActivity;
 import com.tobbetu.en4s.helpers.BetterAsyncTask;
+import com.tobbetu.en4s.login.Login;
 import com.tobbetu.en4s.service.EnforceService;
 import com.tobbetu.en4s.settingsList.SettingsListActivity;
 
@@ -59,6 +64,7 @@ public class ListActivity extends Activity {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList, mDrawerMenuList;
     private ActionBarDrawerToggle mDrawerToggle;
+    private CircularImageView ivLeftDrawerUseravatar;
 
     private CharSequence mTitle = "Enforce";
     private static ListView bugList;
@@ -76,6 +82,17 @@ public class ListActivity extends Activity {
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         relativeDrawerLayout = (RelativeLayout) findViewById(R.id.relativeDrawerLayout);
+        ivLeftDrawerUseravatar = (CircularImageView) findViewById(R.id.ivLeftDrawerUseravatar);
+
+        // user avatar on the left drawer menu
+        findViewById(R.id.relativeLayoLeftDrawerUseravatar).setOnClickListener(
+                null);
+        User me = Login.getMe();
+        Cache.getInstance().getImage(me.getAvatar(), ivLeftDrawerUseravatar);
+        ((TextView) findViewById(R.id.tvLeftMenuUsername))
+                .setText(me.getName());
+        ((TextView) findViewById(R.id.tvLeftMenuUserEmail)).setText(me
+                .getEmail());
 
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
         mDrawerMenuList = (ListView) findViewById(R.id.left_drawer_menu_item);
