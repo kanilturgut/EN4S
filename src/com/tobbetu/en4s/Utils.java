@@ -237,6 +237,7 @@ public class Utils {
                 // 4:3 oranina sahip ilk cozunurlugu aliyorum
                 tmp[0] = list.get(i).width;
                 tmp[1] = list.get(i).height;
+                break;
             } else {
                 tmp[0] = 0;
                 tmp[1] = 0;
