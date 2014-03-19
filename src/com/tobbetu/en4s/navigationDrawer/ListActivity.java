@@ -45,6 +45,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bugsense.trace.BugSenseHandler;
+import com.google.analytics.tracking.android.EasyTracker;
 import com.tobbetu.en4s.R;
 import com.tobbetu.en4s.announcement.AnnouncementsActivity;
 import com.tobbetu.en4s.backend.User;
@@ -146,6 +147,18 @@ public class ListActivity extends Activity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        EasyTracker.getInstance(this).activityStart(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EasyTracker.getInstance(this).activityStop(this);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.list, menu);
@@ -212,10 +225,10 @@ public class ListActivity extends Activity {
                 long id) {
 
             // start intents for new activities
-            if (position == 0) {
+            if (position == -1) { // normalde bu sifir olacak
                 startActivity(new Intent(ListActivity.this,
                         AnnouncementsActivity.class));
-            } else if (position == 1) { // new complaint
+            } else if (position == 0) { // new complaint
 
                 // first close drawer
                 mDrawerLayout.closeDrawer(relativeDrawerLayout);
@@ -226,7 +239,7 @@ public class ListActivity extends Activity {
                 Intent i = new Intent(ListActivity.this,
                         TakePhotoActivity.class);
                 startActivity(i);
-            } else if (position == 2) { // settings
+            } else if (position == -2) { // settings ---- normalde bu 2 olacak
                 startActivity(new Intent(ListActivity.this,
                         SettingsListActivity.class));
             }

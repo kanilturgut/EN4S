@@ -29,6 +29,7 @@ import android.widget.Toast;
 
 import com.bugsense.trace.BugSenseHandler;
 import com.facebook.Session;
+import com.google.analytics.tracking.android.EasyTracker;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.tobbetu.en4s.LauncherActivity;
 import com.tobbetu.en4s.R;
@@ -150,9 +151,15 @@ public class LoginPageActivity extends Activity implements OnClickListener,
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        EasyTracker.getInstance(this).activityStart(this);
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
-
+        EasyTracker.getInstance(this).activityStop(this);
         finish();
 
         if (alertDialog != null)

@@ -23,6 +23,7 @@ import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
 import com.bugsense.trace.BugSenseHandler;
+import com.google.analytics.tracking.android.EasyTracker;
 import com.tobbetu.en4s.LauncherActivity;
 import com.tobbetu.en4s.R;
 import com.tobbetu.en4s.backend.User;
@@ -74,6 +75,12 @@ public class RegisterPageActivity extends Activity implements
                     new RegisterTask().execute();
             }
         });
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EasyTracker.getInstance(this).activityStart(this);
     }
 
     class RegisterTask extends BetterAsyncTask<Void, User> {
@@ -135,6 +142,7 @@ public class RegisterPageActivity extends Activity implements
     @Override
     protected void onStop() {
         super.onStop();
+        EasyTracker.getInstance(this).activityStop(this);
 
         finish();
     }

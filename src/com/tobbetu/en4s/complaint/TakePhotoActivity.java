@@ -31,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.analytics.tracking.android.EasyTracker;
 import com.tobbetu.en4s.R;
 import com.tobbetu.en4s.backend.Image;
 import com.tobbetu.en4s.service.EnforceService;
@@ -122,6 +123,12 @@ public class TakePhotoActivity extends Activity implements OnClickListener {
         };
         if (mOrientationListener.canDetectOrientation())
             mOrientationListener.enable();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EasyTracker.getInstance(this).activityStart(this);
     }
 
     @Override
@@ -279,6 +286,8 @@ public class TakePhotoActivity extends Activity implements OnClickListener {
     @Override
     protected void onStop() {
         super.onStop();
+        EasyTracker.getInstance(this).activityStop(this);
+
         mOrientationListener.disable();
         if (alertDialog != null) {
             alertDialog.dismiss();

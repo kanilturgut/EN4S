@@ -37,14 +37,17 @@ public class MyDrawerListMenuItemAdapter extends ArrayAdapter<String> {
         ImageView imageOfItem = (ImageView) rowView
                 .findViewById(R.id.imageOfItem);
         switch (position) {
+        // case 0:
+        // imageOfItem.setImageResource(R.drawable.ic_action_view_as_list);
+        // break;
+        // case 1:
+        // imageOfItem.setImageResource(R.drawable.yeni_problem);
+        // break;
+        // case 2:
+        // imageOfItem.setImageResource(R.drawable.ic_action_settings);
+        // break;
         case 0:
-            imageOfItem.setImageResource(R.drawable.ic_action_view_as_list);
-            break;
-        case 1:
             imageOfItem.setImageResource(R.drawable.yeni_problem);
-            break;
-        case 2:
-            imageOfItem.setImageResource(R.drawable.ic_action_settings);
             break;
         }
         return rowView;

@@ -86,10 +86,13 @@
         <item>Yakın</item>
         <item>Popüler</item>
     </string-array>
+<!--     <string-array name="title_of_drawer_menu_items"> -->
+<!--         <item>Duyurular</item> -->
+<!--         <item>Yeni Şikayet</item> -->
+<!--         <item>Ayarlar</item> -->
+<!--     </string-array> -->
     <string-array name="title_of_drawer_menu_items">
-        <item>Duyurular</item>
         <item>Yeni Şikayet</item>
-        <item>Ayarlar</item>
     </string-array>
 
     <!-- Kategoriler -->

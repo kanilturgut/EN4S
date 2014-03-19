@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.analytics.tracking.android.EasyTracker;
 import com.tobbetu.en4s.R;
 import com.tobbetu.en4s.listItems.EntryItem;
 import com.tobbetu.en4s.listItems.ListItem;
@@ -41,6 +42,18 @@ public class SettingsListActivity extends ListActivity {
         EntryAdapter adapter = new EntryAdapter(this, items);
         liste.setAdapter(adapter);
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EasyTracker.getInstance(this).activityStart(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EasyTracker.getInstance(this).activityStop(this);
     }
 
     @Override

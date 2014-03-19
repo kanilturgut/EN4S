@@ -30,6 +30,7 @@ import com.facebook.SessionState;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 import com.facebook.widget.LoginButton.OnErrorListener;
+import com.google.analytics.tracking.android.EasyTracker;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.tobbetu.en4s.backend.Requests;
 import com.tobbetu.en4s.backend.User;
@@ -144,6 +145,12 @@ public class LauncherActivity extends Activity implements OnClickListener {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        EasyTracker.getInstance(this).activityStart(this);
+    }
+
+    @Override
     public void onClick(View v) {
         Intent i = null;
 
@@ -163,6 +170,8 @@ public class LauncherActivity extends Activity implements OnClickListener {
     @Override
     protected void onStop() {
         super.onStop();
+
+        EasyTracker.getInstance(this).activityStop(this);
 
         if (alertDialog != null)
             alertDialog.dismiss();

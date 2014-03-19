@@ -18,6 +18,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.bugsense.trace.BugSenseHandler;
+import com.google.analytics.tracking.android.EasyTracker;
 import com.tobbetu.en4s.R;
 import com.tobbetu.en4s.complaint.Complaint;
 import com.tobbetu.en4s.complaint.DetailsActivity;
@@ -74,9 +75,15 @@ public class MoreCommentsActivity extends Activity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        EasyTracker.getInstance(this).activityStart(this);
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
-
+        EasyTracker.getInstance(this).activityStop(this);
         // kill this activity
         finish();
     }

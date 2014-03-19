@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Replace placeholder ID with your tracking ID -->
+    <string name="ga_trackingId">UA-43271504-2</string>
+
+    <!-- Enable automatic activity tracking -->
+    <bool name="ga_autoActivityTracking">true</bool>
+
+    <!-- Enable automatic exception tracking -->
+    <bool name="ga_reportUncaughtExceptions">true</bool>
+
+    <string name="com.tobbetu.en4s.LauncherActivity">Launcher Activity</string>
+    <string name="com.tobbetu.en4s.login.LoginPageActivity">Login Activity</string>
+    <string name="com.tobbetu.en4s.complaint.DetailsActivity">Details Activity</string>
+    <string name="com.tobbetu.en4s.complaint.NewComplaint">NewComplaint Activity</string>
+    <string name="com.tobbetu.en4s.BiggerMap">BiggerMap Activity</string>
+    <string name="com.tobbetu.en4s.comment.MoreCommentsActivity">Comments Activity</string>
+    <string name="com.tobbetu.en4s.register.RegisterPageActivity">RegisterPage Activity</string>
+    <string name="com.tobbetu.en4s.complaint.TakePhotoActivity">Camera Activitu</string>
+    <string name="com.tobbetu.en4s.navigationDrawer.ListActivity">MainScreen Activity</string>
+    <string name="com.tobbetu.en4s.biggerImage.BiggerImage">BiggerImage Activity</string>
+    <string name="com.tobbetu.en4s.settingsList.SettingsListActivity">Settings Activity</string>
+    <string name="com.tobbetu.en4s.announcement.AnnouncementsActivity">Announcement Activity</string>
+    <string name="com.tobbetu.en4s.announcement.AnnouncementDetailsActivity">AnnouncementDetails Activity</string>
+
+</resources>

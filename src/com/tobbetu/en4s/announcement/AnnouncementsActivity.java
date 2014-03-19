@@ -10,19 +10,24 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.analytics.tracking.android.EasyTracker;
 import com.tobbetu.en4s.R;
 import com.tobbetu.en4s.helpers.BetterAsyncTask;
 import com.tobbetu.en4s.login.Login;
 
+@SuppressLint("DefaultLocale")
 public class AnnouncementsActivity extends Activity {
 
     private ListView lvAnnouncements;
     private AnnouncementListTask task = null;
+    private EditText etAnnouncementArea = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,18 +55,55 @@ public class AnnouncementsActivity extends Activity {
         });
 
         task = new AnnouncementListTask();
-        task.execute();
+        task.execute("");
 
+        etAnnouncementArea = (EditText) findViewById(R.id.etAnnouncementArea);
+
+        findViewById(R.id.bAnnouncementSearch).setOnClickListener(
+                new OnClickListener() {
+
+                    @Override
+                    public void onClick(View arg0) {
+
+                        if (task != null)
+                            task.cancel(true);
+
+                        task = new AnnouncementListTask();
+                        if (etAnnouncementArea != null)
+                            task.execute(etAnnouncementArea.getText()
+                                    .toString().toLowerCase());
+                        else
+                            task.execute("");
+                    }
+                });
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EasyTracker.getInstance(this).activityStart(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EasyTracker.getInstance(this).activityStop(this);
     }
 
     @SuppressLint("DefaultLocale")
     private class AnnouncementListTask extends
-            BetterAsyncTask<Void, List<Announcement>> {
+            BetterAsyncTask<String, List<Announcement>> {
 
         @Override
-        protected List<Announcement> task(Void... arg0) throws Exception {
-            return Announcement.getList("/notification/"
-                    + Login.getMe().getCurrent_city().toLowerCase());
+        protected List<Announcement> task(String... city) throws Exception {
+
+            if (city[0].equals(""))
+                return Announcement.getList("/notification/"
+                        + Login.getMe().getCurrent_city().toLowerCase());
+            else
+                return Announcement.getList("/notification/"
+                        + city[0].toLowerCase());
         }
 
         @Override

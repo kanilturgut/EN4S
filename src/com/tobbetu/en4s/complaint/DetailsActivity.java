@@ -3,6 +3,7 @@ package com.tobbetu.en4s.complaint;
 import java.io.IOException;
 import java.util.List;
 
+import com.google.analytics.tracking.android.MapBuilder;
 import org.apache.http.client.HttpResponseException;
 import org.json.JSONException;
 
@@ -12,6 +13,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bugsense.trace.BugSenseHandler;
+import com.google.analytics.tracking.android.EasyTracker;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -73,6 +76,8 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
     private AlertDialog deleteDialog;
 
+    EasyTracker easyTracker = null;
+
     @SuppressLint("NewApi")
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -80,6 +85,8 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
         setContentView(R.layout.details_layout);
         // getActionBar().hide();
+
+        easyTracker = EasyTracker.getInstance(this);
 
         comp = (Complaint) getIntent().getSerializableExtra("class");
 
@@ -120,10 +127,6 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
         compPos = new LatLng(comp.getLatitude(), comp.getLongitude());
 
-        // mViewPager = new HackyViewPager(this);
-        // viewPagerLayout.addView(mViewPager);
-        // mViewPager.setAdapter(new SamplePagerAdapter());
-
         myMap = ((MapFragment) getFragmentManager().findFragmentById(
                 R.id.mapDetails)).getMap();
         myMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
@@ -157,8 +160,16 @@ public class DetailsActivity extends Activity implements OnClickListener {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        EasyTracker.getInstance(this).activityStart(this); // Add this method.
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
+
+        EasyTracker.getInstance(this).activityStop(this); // Add this method.
 
         Log.i(TAG, "onStop");
 
@@ -227,6 +238,9 @@ public class DetailsActivity extends Activity implements OnClickListener {
                 alert.show();
             }
         } else if (v.getId() == R.id.ivProblemImage) {
+
+            easyTracker.send(MapBuilder.createEvent("bigger_image", "bigger_image_opened", "R.id.ivProblemImage", null).build());
+
             Intent i = new Intent(this, BiggerImage.class);
             i.putExtra("class", comp);
             startActivity(i);
@@ -534,11 +548,34 @@ public class DetailsActivity extends Activity implements OnClickListener {
             return true;
 
         case R.id.shareOnFacebook:
-            url = "https://www.facebook.com/sharer/sharer.php?u="
-                    + comp.getSlug_URL();
 
-            Intent facebookIntent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse(url));
+            url = comp.getSlug_URL();
+
+            Intent facebookIntent = new Intent(Intent.ACTION_SEND);
+            facebookIntent.setType("text/plain");
+            facebookIntent.putExtra(Intent.EXTRA_TEXT, url);
+
+            // See if official Facebook app is found
+            boolean facebookAppFound = false;
+            List<ResolveInfo> matches = getPackageManager()
+                    .queryIntentActivities(facebookIntent, 0);
+            for (ResolveInfo info : matches) {
+                if (info.activityInfo.packageName.toLowerCase().startsWith(
+                        "com.facebook")) {
+                    facebookIntent.setPackage(info.activityInfo.packageName);
+                    facebookAppFound = true;
+                    break;
+                }
+            }
+
+            // As fallback, launch sharer.php in a browser
+            if (!facebookAppFound) {
+                String sharerUrl = "https://www.facebook.com/sharer/sharer.php?u="
+                        + url;
+                facebookIntent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(sharerUrl));
+            }
+
             startActivity(facebookIntent);
             return true;
         case R.id.shareOnTwitter:
