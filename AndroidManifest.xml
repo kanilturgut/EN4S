@@ -3,6 +3,8 @@
     package="com.tobbetu.en4s"
     android:versionCode="9"
     android:versionName="1.08" >
+    android:versionCode="13"
+    android:versionName="1.12" >
 
     <uses-sdk
         android:minSdkVersion="11"
@@ -25,6 +27,8 @@
     <permission
         android:name="com.tobbetu.en4s.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
+
+    <uses-permission android:name="com.tobbetu.en4s.permission.C2D_MESSAGE"/>
 
     <uses-feature
         android:glEsVersion="0x00020000"
@@ -60,14 +64,18 @@
         </activity>
         <activity
             android:name="com.tobbetu.en4s.LoginPageActivity"
+            android:name="com.tobbetu.en4s.login.LoginPageActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.tobbetu.en4s.DetailsActivity"
+            android:name="com.tobbetu.en4s.NewComplaint"
+            android:name="com.tobbetu.en4s.complaint.DetailsActivity"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.tobbetu.en4s.NewComplaint"
+            android:name="com.tobbetu.en4s.complaint.NewComplaint"
             android:label="@string/app_name"
             android:screenOrientation="portrait" >
         </activity>
@@ -77,6 +85,7 @@
         </activity>
         <activity
             android:name="com.tobbetu.en4s.MoreCommentsActivity"
+            android:name="com.tobbetu.en4s.comment.MoreCommentsActivity"
             android:label="@string/title_activity_more_comments"
             android:screenOrientation="portrait" >
         </activity>
@@ -87,22 +96,40 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name="com.tobbetu.en4s.RegisterPageActivity"
+            android:name="com.tobbetu.en4s.register.RegisterPageActivity"
             android:label="@string/title_activity_register_page"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.tobbetu.en4s.TakePhotoActivity"
+            android:name="com.tobbetu.en4s.complaint.TakePhotoActivity"
             android:label="@string/title_activity_take_photo"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.tobbetu.en4s.ListActivity"
+            android:name="com.tobbetu.en4s.navigationDrawer.ListActivity"
             android:label="@string/title_activity_list"
             android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.tobbetu.en4s.BiggerImage"
             android:label="@string/title_activity_bigger_image" >
+        </activity>
+            android:name="com.tobbetu.en4s.biggerImage.BiggerImage"
+            android:label="@string/title_activity_bigger_image" >
+        </activity>
+        <activity
+            android:name="com.tobbetu.en4s.settingsList.SettingsListActivity"
+            android:label="@string/title_activity_settings_list" >
+        </activity>
+        <activity
+            android:name="com.tobbetu.en4s.announcement.AnnouncementsActivity"
+            android:label="@string/title_activity_notifications" >
+        </activity>
+        <activity
+            android:name="com.tobbetu.en4s.announcement.AnnouncementDetailsActivity"
+            android:label="@string/title_activity_announcement_details" >
         </activity>
 
         <service
