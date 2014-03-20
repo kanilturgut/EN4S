@@ -13,8 +13,8 @@
 
         <ImageView
             android:id="@+id/loginLogo"
-            android:layout_width="110dp"
-            android:layout_height="100dp"
+            android:layout_width="128dp"
+            android:layout_height="129dp"
             android:layout_gravity="center"
             android:layout_margin="15dp"
             android:layout_marginTop="15dp"
@@ -59,6 +59,30 @@
                 android:textColor="#FFFFFF"
                 android:textSize="14sp"
                 android:textStyle="bold" />
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="0.1dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="15dp"
+                android:background="#AAAAAA" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:gravity="center_horizontal"
+                android:text="@string/veya"
+                android:textColor="#FFFFFF" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.1dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:background="#AAAAAA" />
 
             <Button
                 android:id="@+id/bLauncherSignup"

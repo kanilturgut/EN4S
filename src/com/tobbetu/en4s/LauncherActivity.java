@@ -30,15 +30,19 @@ import com.facebook.SessionState;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 import com.facebook.widget.LoginButton.OnErrorListener;
+import com.google.analytics.tracking.android.EasyTracker;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.tobbetu.en4s.backend.EnforceLogin;
-import com.tobbetu.en4s.backend.FacebookLogin;
-import com.tobbetu.en4s.backend.Login;
-import com.tobbetu.en4s.backend.Login.LoginFailedException;
 import com.tobbetu.en4s.backend.Requests;
 import com.tobbetu.en4s.backend.User;
 import com.tobbetu.en4s.helpers.BetterAsyncTask;
 import com.tobbetu.en4s.helpers.Geocoder;
+import com.tobbetu.en4s.login.EnforceLogin;
+import com.tobbetu.en4s.login.FacebookLogin;
+import com.tobbetu.en4s.login.Login;
+import com.tobbetu.en4s.login.Login.LoginFailedException;
+import com.tobbetu.en4s.login.LoginPageActivity;
+import com.tobbetu.en4s.navigationDrawer.ListActivity;
+import com.tobbetu.en4s.register.RegisterPageActivity;
 import com.tobbetu.en4s.service.EnforceService;
 
 public class LauncherActivity extends Activity implements OnClickListener {
@@ -46,7 +50,7 @@ public class LauncherActivity extends Activity implements OnClickListener {
     private final String TAG = "LauncherActivity";
 
     public static SharedPreferences firstTimeControlPref;
-    protected static SharedPreferences loginPreferences;
+    public static SharedPreferences loginPreferences;
     private final String sharedFileName = "loginInfo";
 
     private AlertDialog alertDialog = null;
@@ -141,6 +145,12 @@ public class LauncherActivity extends Activity implements OnClickListener {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        EasyTracker.getInstance(this).activityStart(this);
+    }
+
+    @Override
     public void onClick(View v) {
         Intent i = null;
 
@@ -160,6 +170,8 @@ public class LauncherActivity extends Activity implements OnClickListener {
     @Override
     protected void onStop() {
         super.onStop();
+
+        EasyTracker.getInstance(this).activityStop(this);
 
         if (alertDialog != null)
             alertDialog.dismiss();
@@ -190,6 +202,7 @@ public class LauncherActivity extends Activity implements OnClickListener {
                             Utils.turnGPSOff(LauncherActivity.this);
                             stopService(new Intent(LauncherActivity.this,
                                     EnforceService.class));
+                            System.exit(0);
                         } catch (Throwable e) {
                             // TODO Auto-generated catch block
                             e.printStackTrace();

@@ -13,8 +13,8 @@ import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationRequest;
-import com.tobbetu.en4s.backend.Complaint;
 import com.tobbetu.en4s.backend.Image;
+import com.tobbetu.en4s.complaint.Complaint;
 import com.tobbetu.en4s.tasks.SaveComplaintTask;
 
 public class EnforceService extends Service implements
@@ -31,6 +31,8 @@ public class EnforceService extends Service implements
     private static Location myBestLoc = null;
     private boolean mInProgress;
     private IBinder mBinder = new LocalBinder();
+
+    private int stopServiceCounter = 0;
 
     public class LocalBinder extends Binder {
         public EnforceService getServerInstance() {
@@ -105,9 +107,6 @@ public class EnforceService extends Service implements
         }
 
         super.onDestroy();
-
-        // after serviceStopped kill application
-        System.exit(0);
     }
 
     @Override
@@ -139,7 +138,19 @@ public class EnforceService extends Service implements
             myBestLoc = location;
         } else if (location.getLatitude() != myBestLoc.getLatitude()
                 && location.getLongitude() != myBestLoc.getLongitude()) {
+
+            stopServiceCounter++;
+
             myBestLoc = location;
+
+            /* on the third improvement, stop service */
+            if (stopServiceCounter == 3) {
+                if (mLocationClient != null)
+                    mLocationClient.removeLocationUpdates(this);
+
+                stopSelf();
+            }
+
         }
     }
 

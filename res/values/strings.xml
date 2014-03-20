@@ -86,6 +86,14 @@
         <item>Yakın</item>
         <item>Popüler</item>
     </string-array>
+<!--     <string-array name="title_of_drawer_menu_items"> -->
+<!--         <item>Duyurular</item> -->
+<!--         <item>Yeni Şikayet</item> -->
+<!--         <item>Ayarlar</item> -->
+<!--     </string-array> -->
+    <string-array name="title_of_drawer_menu_items">
+        <item>Yeni Şikayet</item>
+    </string-array>
 
     <!-- Kategoriler -->
     <string name="cat_select">Kategori Seçin</string>
@@ -178,5 +186,18 @@
     <string name="drawer_close">Close navigation drawer</string>
     <string name="sil">Şikayeti Sil</string>
     <string name="title_activity_bigger_image">BiggerImage</string>
-
+    <string name="title_activity_settings_list">SettingsListActivity</string>
+    <string name="title_activity_notifications">Duyurular</string>
+    <string name="title_activity_announcement_details">AnnouncementDetailsActivity</string>
+    
+    <string name="announcement_list_baslangic_tarihi">Başlangıç Tarihi</string>
+    <string name="announcement_list_bitis_tarihi">Bitiş Tarihi</string>
+    <string name="announcement_list_il_ilce">İl/İlçe</string>
+    <string name="announcement_list_aciklama">Açıklama</string>
+    <string name="announcement_list_etkilenecek_bolgeler">Etkilenecek Bölgeler</string>
+    <string name="announcement_list_sosyal_medya">Sosyal Medyada Paylaş</string>
+    <string name="announcement_list_facebook">Facebook</string>
+    <string name="announcement_list_twitter">Twitter</string>
+    <string name="announcement_list_google_plus">Google+</string>
+    
 </resources>

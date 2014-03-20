@@ -1,17 +1,5 @@
 package com.tobbetu.en4s;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.text.Normalizer;
-import java.text.Normalizer.Form;
-import java.util.ArrayList;
-import java.util.Locale;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,12 +12,21 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.Settings;
 import android.util.Log;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.text.Normalizer;
+import java.text.Normalizer.Form;
+import java.util.ArrayList;
+import java.util.Locale;
 
 public class Utils {
 
@@ -53,13 +50,6 @@ public class Utils {
 
         place = map.addMarker(new MarkerOptions().position(position).draggable(
                 draggable));
-
-        // map.addMarker(new MarkerOptions()
-        // .position(myPos)
-        // .title("Yeriniz")
-        // .snippet("�u an buradas�n�z.")
-        // .icon(BitmapDescriptorFactory
-        // .fromResource(R.drawable.ic_launcher)));
     }
 
     /**
@@ -162,38 +152,63 @@ public class Utils {
      * yapilir. Donen deger, Preview sinifinin constructor ina gonderilir.
      */
     public static int[] deviceSupportedScreenSize() {
+
+        boolean didFind = false;
+
         int[] tmp = new int[2];
         Camera camera = Camera.open(Camera.CameraInfo.CAMERA_FACING_BACK);
         Camera.Parameters params = camera.getParameters();
         ArrayList<Camera.Size> list = (ArrayList<Size>) params
                 .getSupportedPictureSizes();
 
+        // if device supports one of these sizes, we choose that one.
         for (int i = list.size() - 1; i >= 0; i--) {
 
             if (list.get(i).width == 800 && list.get(i).height == 600) {
                 tmp[0] = 800;
                 tmp[1] = 600;
+                didFind = true;
                 break;
             } else if (list.get(i).width == 1024 && list.get(i).height == 768) {
                 tmp[0] = 1024;
                 tmp[1] = 768;
+                didFind = true;
                 break;
             } else if (list.get(i).width == 1280 && list.get(i).height == 960) {
                 tmp[0] = 1280;
                 tmp[1] = 960;
+                didFind = true;
                 break;
             } else if (list.get(i).width == 1900 && list.get(i).height == 1600) {
                 tmp[0] = 1900;
                 tmp[1] = 1600;
+                didFind = true;
                 break;
-            } else if ((list.get(i).width * 3) == (list.get(i).height * 4)) {
-                // 4:3 oranina sahip ilk cozunurlugu aliyorum
-                tmp[0] = list.get(i).width;
-                tmp[1] = list.get(i).height;
-            } else {
-                tmp[0] = 0;
-                tmp[1] = 0;
+            } else if (list.get(i).width == 2048 && list.get(i).height == 1536) {
+                tmp[0] = 2048;
+                tmp[1] = 1536;
+                didFind = true;
+                break;
             }
+        }
+
+        // then chosee the first 4:3 screen size
+        if (didFind == false) {
+
+            for (int j = list.size() - 1; j >= 0; j--) {
+                if ((list.get(j).width * 3) == (list.get(j).height * 4)) {
+                    // 4:3 oranina sahip ilk cozunurlugu aliyorum
+                    tmp[0] = list.get(j).width;
+                    tmp[1] = list.get(j).height;
+                    didFind = true;
+                    break;
+                } else {
+                    tmp[0] = 0;
+                    tmp[1] = 0;
+                    didFind = false;
+                }
+            }
+
         }
 
         camera.release();
@@ -205,7 +220,7 @@ public class Utils {
         return tmp;
     }
 
-    protected static boolean isNetworkAvailable(Context c) {
+    public static boolean isNetworkAvailable(Context c) {
         ConnectivityManager connectivityManager = (ConnectivityManager) c
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager
