@@ -11,10 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.*;
 
 import com.tobbetu.en4s.R;
 import com.tobbetu.en4s.backend.Image;
@@ -95,9 +92,9 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
         display.getSize(size);
         int tmpWidth = size.x;
 
-        LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(
+        RelativeLayout.LayoutParams llParams = new RelativeLayout.LayoutParams(
                 tmpWidth, tmpWidth);
-        convertView.findViewById(R.id.complaintItemInfoLayout).setLayoutParams(
+        convertView.findViewById(R.id.complaintItemInfoLayout1).setLayoutParams(
                 llParams);
         holder.problemImage.setLayoutParams(llParams);
 
@@ -120,21 +117,10 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
 
         holder.tvComplaintCity.setText(complaint.getCity());
 
-        // position
-        if (tabPosition == 0) {
-            holder.tvAdditionalInfo.setText(R.string.bla_hot);
-        } else if (tabPosition == 1) {
-            holder.tvAdditionalInfo.setText(complaint
-                    .getDateAsString(this.context));
-        } else if (tabPosition == 2) {
-            holder.tvAdditionalInfo.setText(complaint.getDistance(this.context,
-                    EnforceService.getLocation().getLatitude(), EnforceService
-                            .getLocation().getLongitude()));
-        } else {
-            holder.tvAdditionalInfo
-                    .setText(String.format(context.getString(R.string.bla_top),
-                            complaint.getUpVote()));
-        }
+        holder.tvAdditionalInfo.setText(complaint
+                .getDateAsString(this.context) + " / " + complaint.getDistance(this.context,
+                EnforceService.getLocation().getLatitude(), EnforceService
+                        .getLocation().getLongitude()));
 
         return convertView;
     }

@@ -234,7 +234,7 @@ public class Complaint implements Serializable {
             return String.format(ctx.getString(R.string.comp_month),
                     ((now - unixtime) / 30 / 7 / 24 / 60 / 60 / 1000));
         } else {
-            SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+            SimpleDateFormat df = new SimpleDateFormat("dd.MM.yyyy");
             return df.format(date);
         }
     }
