@@ -67,10 +67,16 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
                     .findViewById(R.id.tvDate);
             holder.tvUpVoteCount = (TextView) convertView
                     .findViewById(R.id.tvUpVoteCount);
+            holder.tvDownVoteCount = (TextView) convertView
+                    .findViewById(R.id.tvDownVoteCount);
             holder.tvCommentCount = (TextView) convertView
                     .findViewById(R.id.tvCommentCount);
             holder.upvoteImage = (ImageView) convertView
                     .findViewById(R.id.ivUp);
+            holder.downvoteImage = (ImageView) convertView
+                    .findViewById(R.id.ivDown);
+            holder.tvComplaintCity = (TextView) convertView
+                    .findViewById(R.id.tvComplaintCity);
 
             convertView.setTag(holder);
         } else {
@@ -98,13 +104,21 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
         holder.complaintTitle.setText(complaint.getTitle().substring(0, 1)
                 .toUpperCase()
                 + complaint.getTitle().substring(1).trim());
-        holder.tvUpVoteCount.setText("" + complaint.getUpVote());
-        holder.tvCommentCount.setText("" + complaint.getCommentsCount());
+        holder.tvUpVoteCount.setText(String.valueOf(complaint.getUpVote()));
+        holder.tvDownVoteCount.setText(String.valueOf(complaint.getDownVote()));
+        holder.tvCommentCount.setText(String.valueOf(complaint.getCommentsCount()));
 
-        if (complaint.alreadyVoted(user))
-            holder.upvoteImage.setImageResource(R.drawable.up_voted);
+        if (complaint.alreadyUpVoted(user))
+            holder.upvoteImage.setImageResource(R.drawable.upvote_green);
         else
-            holder.upvoteImage.setImageResource(R.drawable.up);
+            holder.upvoteImage.setImageResource(R.drawable.upvote);
+
+        if (complaint.alreadyDownVoted(user))
+            holder.downvoteImage.setImageResource(R.drawable.downvote_red);
+        else
+            holder.downvoteImage.setImageResource(R.drawable.downvote);
+
+        holder.tvComplaintCity.setText(complaint.getCity());
 
         // position
         if (tabPosition == 0) {
@@ -169,10 +183,12 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
 
         ImageView problemImage;
         ImageView upvoteImage;
+        ImageView downvoteImage;
         TextView complaintTitle;
         TextView tvAdditionalInfo;
         TextView tvUpVoteCount;
+        TextView tvDownVoteCount;
         TextView tvCommentCount;
-
+        TextView tvComplaintCity;
     }
 }

@@ -97,6 +97,20 @@ public class Complaint implements Serializable {
             return true; // this should never be reachable
     }
 
+    public boolean alreadyUpVoted(User me) {
+        if (upvoters != null)
+            return upvoters.contains(me.getId());
+        else
+            return true;
+    }
+
+    public boolean alreadyDownVoted(User me) {
+        if (downvoters != null)
+            return downvoters.contains(me.getId());
+        else
+            return true;
+    }
+
     public double getLatitude() {
         return latitude;
     }

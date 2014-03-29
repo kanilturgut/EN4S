@@ -129,8 +129,8 @@
     <string name="comp_day">%d gün önce</string>
     <string name="comp_week">%d hafta önce</string>
     <string name="comp_month">%d ay önce</string>
-    <string name="comp_meter">%.0f metre</string>
-    <string name="comp_km">%.0f kilometre</string>
+    <string name="comp_meter">%.0f m</string>
+    <string name="comp_km">%.0f km</string>
 
     <!-- BugListAdapter -->
     <string name="bla_hot"></string>
