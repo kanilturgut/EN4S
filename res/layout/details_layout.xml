@@ -234,8 +234,8 @@
                 android:id="@+id/newComplaintMapLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/rounded_corners"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/bottom_corner_rounded"
                 android:orientation="vertical">
 
             <fragment
@@ -243,7 +243,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="145dp"
                     android:layout_gravity="center"
-                    android:layout_margin="1dp"
+                    android:layout_marginTop="1dp"
+                    android:layout_marginLeft="1dp"
+                    android:layout_marginRight="1dp"
                     class="com.google.android.gms.maps.MapFragment"/>
 
             <TextView
@@ -251,7 +253,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_margin="5dp"
+                    android:layout_margin="10dp"
                     android:text="@string/detail_item_address"
                     android:textColor="#444444"
                     android:textSize="12sp"/>
