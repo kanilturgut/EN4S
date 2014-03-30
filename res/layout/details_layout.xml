@@ -1,339 +1,390 @@
-<?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scroller"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#DDDDDD"
-    android:fillViewport="true"
-    android:padding="15dp"
-    android:scrollY="0dp" >
+            android:id="@+id/scroller"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#E4F1F3">
 
     <LinearLayout
-        android:id="@+id/complaintDetailLayout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="#DDDDDD"
-        android:orientation="vertical" >
+            android:id="@+id/complaintDetailLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"
+            android:layout_marginTop="5dp"
+            android:background="#E4F1F3"
+            android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/complaintItemInfoLayout"
-            android:layout_width="match_parent"
-            android:layout_height="190dp"
-            android:background="#FFFFFF"
-            android:orientation="vertical" >
-
-            <ImageView
-                android:id="@+id/ivProblemImage"
+                android:id="@+id/bottomCornerRounded"
                 android:layout_width="match_parent"
-                android:layout_height="145dp"
-                android:layout_gravity="center"
-                android:contentDescription="@string/detail_loading_image"
-                android:src="@drawable/loading_half" />
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="@drawable/bottom_corner_rounded">
+
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                <RelativeLayout android:layout_width="match_parent"
+                                android:layout_height="190dp"
+                                android:layout_alignParentTop="true"
+                                android:id="@+id/complaintItemInfoLayout">
+                    <ImageView
+                            android:id="@+id/ivProblemImage"
+                            android:layout_width="match_parent"
+                            android:layout_height="145dp"
+                            android:layout_gravity="center"
+                            android:contentDescription="@string/detail_loading_image"
+                            android:src="@drawable/loading_half"/>
+
+
+                    <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:background="#70000000"
+                            android:layout_alignParentBottom="true">
+
+                        <TextView
+                                android:id="@+id/tvComplaintTitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="10dp"
+                                android:text="@string/bug_list_item_title"
+                                android:textColor="#FFFFFF"
+                                android:textSize="16sp"
+                                android:layout_centerVertical="true"
+                                android:layout_alignParentLeft="true"
+                                android:layout_alignParentStart="true"/>
+
+                        <TextView
+                                android:id="@+id/tvComplaintCategory"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:text="@string/bug_list_item_date"
+                                android:textColor="#FFFFFF"
+                                android:textSize="12sp"
+                                android:layout_alignParentBottom="true"
+                                android:layout_alignParentRight="true"
+                                android:layout_alignParentEnd="true"/>
+                    </RelativeLayout>
+
+                </RelativeLayout>
+
+
+                <RelativeLayout
+                        android:id="@+id/complaintItemVoteLayout"
+                        android:layout_below="@+id/complaintItemInfoLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/transparent">
+
+                    <RelativeLayout android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_alignParentLeft="true" android:layout_marginLeft="10dp"
+                                    android:layout_marginTop="10dp"
+                                    android:layout_marginBottom="10dp"
+                                    android:layout_centerInParent="true">
+                        <ImageView
+                                android:id="@+id/ivUp"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:contentDescription="@string/bug_list_up_image"
+                                android:paddingLeft="5dp"
+                                android:paddingRight="5dp"
+                                android:src="@drawable/upvote"/>
+
+                        <TextView
+                                android:id="@+id/tvUpVoteCount"
+                                android:layout_width="40dp"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:text="@string/dummyNumber"
+                                android:layout_centerVertical="true"
+                                android:textColor="#666666"
+                                android:layout_toRightOf="@+id/ivUp"/>
+
+                        <ImageView
+                                android:id="@+id/ivDown"
+                                android:layout_toRightOf="@+id/tvUpVoteCount"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:contentDescription="@string/bug_list_up_image"
+                                android:paddingLeft="5dp"
+                                android:paddingRight="5dp"
+                                android:src="@drawable/downvote"/>
+
+                        <TextView
+                                android:id="@+id/tvDownVoteCount"
+                                android:layout_toRightOf="@+id/ivDown"
+                                android:layout_width="wrap_content"
+                                android:layout_height="40dp"
+                                android:layout_marginRight="30dp"
+                                android:textColor="#666666"
+                                android:gravity="center_vertical"
+                                android:text="@string/dummyNumber"/>
+
+                        <ImageView
+                                android:id="@+id/ivComment"
+                                android:layout_width="40dp"
+                                android:layout_height="wrap_content"
+                                android:contentDescription="@string/bug_list_comment_image"
+                                android:paddingLeft="5dp"
+                                android:paddingRight="5dp"
+                                android:src="@drawable/comments"
+                                android:layout_centerVertical="true"
+                                android:layout_toRightOf="@+id/tvDownVoteCount"/>
+
+                        <TextView
+                                android:id="@+id/tvCommentCount"
+                                android:layout_toRightOf="@+id/ivComment"
+                                android:layout_width="wrap_content"
+                                android:layout_height="40dp"
+                                android:textColor="#666666"
+                                android:layout_marginRight="30dp"
+                                android:gravity="center_vertical"
+                                android:text="@string/dummyNumber"/>
+
+                        <LinearLayout android:layout_width="wrap_content"
+                                      android:layout_height="wrap_content"
+                                      android:id="@+id/detailsSocialNetworks"
+                                      android:orientation="horizontal"
+                                      android:paddingLeft="5dp"
+                                      android:paddingRight="5dp"
+                                      android:layout_alignParentRight="true"
+                                      android:layout_centerVertical="true">
+                            <ImageView
+                                    android:id="@+id/ivDetailsFacebook"
+                                    android:layout_width="35dp"
+                                    android:layout_height="35dp"
+                                    android:contentDescription="@string/bug_list_comment_image"
+                                    android:src="@drawable/facebook_action_bar"/>
+
+                            <ImageView
+                                    android:id="@+id/ivDetailsTwitter"
+                                    android:layout_width="35dp"
+                                    android:layout_height="35dp"
+                                    android:contentDescription="@string/bug_list_comment_image"
+                                    android:src="@drawable/twitter_action_bar"/>
+                            <ImageView
+                                    android:id="@+id/ivDetailsGooglePlus"
+                                    android:layout_width="35dp"
+                                    android:layout_height="35dp"
+                                    android:contentDescription="@string/bug_list_comment_image"
+                                    android:src="@drawable/googleplus_action_bar"/>
+                        </LinearLayout>
+                    </RelativeLayout>
+                </RelativeLayout>
+            </RelativeLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#FFFFFF"
-            android:orientation="vertical" >
-
-            <TextView
-                android:id="@+id/tvComplaintTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:text="@string/detail_item_title"
-                android:textColor="#222222"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/tvComplaintCategory"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="3dp"
-                android:text="@string/detail_item_category"
-                android:textColor="#AAAAAA"
-                android:textSize="12sp" />
-        </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/complaintItemVoteLayout"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="10dp"
-            android:background="#DDDDDD"
-            android:orientation="horizontal" >
-
-            <Button
-                android:id="@+id/bUpVote"
-                android:layout_width="140dp"
+                android:id="@+id/complaintItemUserLayout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="@drawable/approve_button_style"
-                android:text="@string/detail_item_approve_button"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold" />
-
-            <Button
-                android:id="@+id/bDownVote"
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_weight="1"
-                android:background="@drawable/report_button_style"
-                android:text="@string/detail_item_report_button"
-                android:textColor="#FFFFFF"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvYouAreAlreadyVoted"
-                android:layout_width="fill_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
                 android:layout_marginTop="5dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:text="@string/da_already_voted"
-                android:textColor="#222222"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:visibility="gone" />
-
-            <TextView
-                android:id="@+id/tvYouAreNotAllowed"
-                android:layout_width="fill_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:text="@string/da_already_voted_error"
-                android:textColor="#222222"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:visibility="gone" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/complaintItemUserLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="#DDDDDD"
-            android:orientation="vertical" >
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="0.1dp"
-                android:background="#AAAAAA" />
+                android:background="@drawable/rounded_corners"
+                android:orientation="vertical">
 
             <LinearLayout
-                android:id="@+id/complaintItemUserInfoLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="5dp"
-                android:background="#DDDDDD"
-                android:orientation="horizontal" >
-
-                <ImageView
-                    android:id="@+id/ivAvatar"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:contentDescription="@string/detail_item_user_photo"
-                    android:src="@drawable/default_user_photo" />
-
-                <LinearLayout
-                    android:id="@+id/complaintItemUserNameLayout"
+                    android:id="@+id/complaintItemUserInfoLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:background="#DDDDDD"
-                    android:orientation="vertical" >
+                    android:layout_margin="5dp"
+                    android:orientation="horizontal">
+
+                <com.tobbetu.en4s.circularImageView.CircularImageView
+                        android:id="@+id/ivAvatar"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:contentDescription="@string/detail_item_user_photo"
+                        android:src="@drawable/default_user_photo"/>
+
+                <LinearLayout
+                        android:id="@+id/complaintItemUserNameLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/tvReporter"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:text="@string/detail_item_user_name"
-                        android:textColor="#444444"
-                        android:textSize="12sp" />
+                            android:id="@+id/tvReporter"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:text="@string/detail_item_user_name"
+                            android:textColor="#444444"
+                            android:textSize="12sp"/>
 
                     <TextView
-                        android:id="@+id/tvReporterDate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:text="@string/detail_item_user_creation_date"
-                        android:textColor="#444444"
-                        android:textSize="12sp" />
+                            android:id="@+id/tvReporterDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:text="@string/detail_item_user_creation_date"
+                            android:textColor="#444444"
+                            android:textSize="12sp"/>
                 </LinearLayout>
             </LinearLayout>
-
-            <View
-                android:layout_width="fill_parent"
-                android:layout_height="0.1dp"
-                android:background="#AAAAAA" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/newComplaintMapLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="#FFFFFF"
-            android:orientation="vertical" >
+                android:id="@+id/newComplaintMapLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/rounded_corners"
+                android:orientation="vertical">
 
             <fragment
-                android:id="@+id/mapDetails"
-                android:layout_width="wrap_content"
-                android:layout_height="145dp"
-                android:layout_gravity="center"
-                class="com.google.android.gms.maps.MapFragment" />
+                    android:id="@+id/mapDetails"
+                    android:layout_width="wrap_content"
+                    android:layout_height="145dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="1dp"
+                    class="com.google.android.gms.maps.MapFragment"/>
 
             <TextView
-                android:id="@+id/tvComplaintAdress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_margin="5dp"
-                android:text="@string/detail_item_address"
-                android:textColor="#444444"
-                android:textSize="12sp" />
+                    android:id="@+id/tvComplaintAdress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="5dp"
+                    android:text="@string/detail_item_address"
+                    android:textColor="#444444"
+                    android:textSize="12sp"/>
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/newComplaintCommentLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:visibility="gone"
-            android:background="#FFFFFF"
-            android:orientation="vertical" >
-
-            <LinearLayout
-                android:id="@+id/newComplaintCommentInfoLayout"
+                android:id="@+id/newComplaintCommentLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
+                android:layout_marginTop="10dp"
+                android:visibility="gone"
                 android:background="#FFFFFF"
-                android:orientation="vertical" >
+                android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/newComplaintCommentOne"
+            <LinearLayout
+                    android:id="@+id/newComplaintCommentInfoLayout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
                     android:background="#FFFFFF"
-                    android:orientation="vertical" >
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/tvComment"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:text="@string/detail_item_comment"
-                        android:textColor="#222222"
-                        android:textSize="12sp" />
-
-                    <LinearLayout
-                        android:id="@+id/newComplaintCommentUserInfoLayout"
+                <LinearLayout
+                        android:id="@+id/newComplaintCommentOne"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
                         android:background="#FFFFFF"
-                        android:orientation="horizontal" >
+                        android:orientation="vertical">
 
-                        <ImageView
-                            android:id="@+id/ivCommentUserAvatar"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:contentDescription="@string/detail_item_user_photo"
-                            android:src="@drawable/default_user_photo" />
-
-                        <TextView
-                            android:id="@+id/tvCommentUser"
+                    <TextView
+                            android:id="@+id/tvComment"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/detail_item_comment"
+                            android:textColor="#222222"
+                            android:textSize="12sp"/>
+
+                    <LinearLayout
+                            android:id="@+id/newComplaintCommentUserInfoLayout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
                             android:layout_marginLeft="5dp"
-                            android:layout_marginTop="2dp"
-                            android:text="@string/detail_item_comment_user"
-                            android:textColor="#444444"
-                            android:textSize="12sp"
-                            android:textStyle="bold" />
+                            android:layout_marginRight="5dp"
+                            android:background="#FFFFFF"
+                            android:orientation="horizontal">
+
+                        <ImageView
+                                android:id="@+id/ivCommentUserAvatar"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:contentDescription="@string/detail_item_user_photo"
+                                android:src="@drawable/default_user_photo"/>
+
+                        <TextView
+                                android:id="@+id/tvCommentUser"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/detail_item_comment_user"
+                                android:textColor="#444444"
+                                android:textSize="12sp"
+                                android:textStyle="bold"/>
                     </LinearLayout>
 
                     <View
-                        android:layout_width="fill_parent"
-                        android:layout_height="0.1dp"
-                        android:background="#AAAAAA" />
+                            android:layout_width="fill_parent"
+                            android:layout_height="0.1dp"
+                            android:background="#AAAAAA"/>
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/newComplaintCommentTwo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#FFFFFF"
-                    android:orientation="vertical" >
-
-                    <TextView
-                        android:id="@+id/tvComment2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:text="@string/detail_item_comment"
-                        android:textColor="#222222"
-                        android:textSize="12sp" />
-
-                    <LinearLayout
-                        android:id="@+id/newComplaintCommentUserInfoLayout2"
+                        android:id="@+id/newComplaintCommentTwo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="5dp"
                         android:background="#FFFFFF"
-                        android:orientation="horizontal" >
+                        android:orientation="vertical">
 
-                        <ImageView
-                            android:id="@+id/ivCommentUserAvatar2"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:contentDescription="@string/detail_item_user_photo"
-                            android:src="@drawable/default_user_photo" />
-
-                        <TextView
-                            android:id="@+id/tvCommentUser2"
+                    <TextView
+                            android:id="@+id/tvComment2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_margin="5dp"
+                            android:text="@string/detail_item_comment"
+                            android:textColor="#222222"
+                            android:textSize="12sp"/>
+
+                    <LinearLayout
+                            android:id="@+id/newComplaintCommentUserInfoLayout2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
                             android:layout_marginLeft="5dp"
-                            android:layout_marginTop="2dp"
-                            android:text="@string/detail_item_comment_user"
-                            android:textColor="#444444"
-                            android:textSize="12sp"
-                            android:textStyle="bold" />
+                            android:layout_marginRight="5dp"
+                            android:background="#FFFFFF"
+                            android:orientation="horizontal">
+
+                        <ImageView
+                                android:id="@+id/ivCommentUserAvatar2"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:contentDescription="@string/detail_item_user_photo"
+                                android:src="@drawable/default_user_photo"/>
+
+                        <TextView
+                                android:id="@+id/tvCommentUser2"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginTop="2dp"
+                                android:text="@string/detail_item_comment_user"
+                                android:textColor="#444444"
+                                android:textSize="12sp"
+                                android:textStyle="bold"/>
                     </LinearLayout>
 
                     <View
-                        android:layout_width="fill_parent"
-                        android:layout_height="0.1dp"
-                        android:background="#AAAAAA" />
+                            android:layout_width="fill_parent"
+                            android:layout_height="0.1dp"
+                            android:background="#AAAAAA"/>
                 </LinearLayout>
             </LinearLayout>
 
             <Button
-                android:id="@+id/bMoreComment"
-                android:layout_width="fill_parent"
-                android:layout_height="40dp"
-                android:background="@drawable/all_comments_button_style"
-                android:text="@string/detail_item_all_commments_button"
-                android:textColor="#444444"
-                android:textSize="12sp" />
+                    android:id="@+id/bMoreComment"
+                    android:layout_width="fill_parent"
+                    android:layout_height="40dp"
+                    android:background="@drawable/all_comments_button_style"
+                    android:text="@string/detail_item_all_commments_button"
+                    android:textColor="#444444"
+                    android:textSize="12sp"/>
         </LinearLayout>
     </LinearLayout>
 

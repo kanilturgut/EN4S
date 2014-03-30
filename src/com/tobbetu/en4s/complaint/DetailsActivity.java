@@ -1,16 +1,10 @@
 package com.tobbetu.en4s.complaint;
 
-import java.io.IOException;
-import java.util.List;
-
-import com.google.analytics.tracking.android.MapBuilder;
-import org.apache.http.client.HttpResponseException;
-import org.json.JSONException;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
@@ -18,21 +12,12 @@ import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Display;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
+import android.view.*;
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.widget.*;
 import com.bugsense.trace.BugSenseHandler;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.google.analytics.tracking.android.MapBuilder;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -42,6 +27,7 @@ import com.tobbetu.en4s.backend.Image;
 import com.tobbetu.en4s.backend.User;
 import com.tobbetu.en4s.biggerImage.BiggerImage;
 import com.tobbetu.en4s.cache.Cache;
+import com.tobbetu.en4s.circularImageView.CircularImageView;
 import com.tobbetu.en4s.comment.Comment;
 import com.tobbetu.en4s.comment.CommentRejectedException;
 import com.tobbetu.en4s.comment.MoreCommentsActivity;
@@ -50,33 +36,39 @@ import com.tobbetu.en4s.helpers.CategoryI18n;
 import com.tobbetu.en4s.helpers.VoteRejectedException;
 import com.tobbetu.en4s.login.Login;
 import com.tobbetu.en4s.service.EnforceService;
+import org.apache.http.client.HttpResponseException;
+import org.json.JSONException;
+
+import java.io.IOException;
+import java.util.List;
 
 public class DetailsActivity extends Activity implements OnClickListener {
 
-    private final String TAG = "DetailsActivity";
+    final String TAG = "DetailsActivity";
+    Context context;
 
-    private TextView tvComplaintAdress, tvComplaintTitle, tvComplaintCategory,
-            tvReporter, tvReporterDate, tvYouAreAlreadyVoted;
-    private Button bUpVote, bDownVote, bMoreComment;
-    // private LinearLayout viewPagerLayout;
+    TextView tvComplaintAdress, tvComplaintTitle, tvComplaintCategory, tvReporter, tvReporterDate, tvUpVoteCount, tvDownVoteCount, tvCommentsCount;
+    ImageView ivVoteUp, ivVoteDown, ivComments, ivProblemImage;
+    Button bMoreComment;
 
-    private GoogleMap myMap;
+    GoogleMap myMap;
 
-    private Complaint comp = null;
-    private final User me = Login.getMe();
-    private LatLng compPos = null;
+    Complaint comp = null;
+    final User me = Login.getMe();
+    LatLng compPos = null;
 
     // more comment activitysine gidilip gidilmedigini tutacak.
-    private boolean toMoreCommentActivity = false;
+    boolean toMoreCommentActivity = false;
 
-    private ImageView ivProblemImage = null;
-    private ImageView ivAvatarImage = null;
+    CircularImageView ivAvatarImage = null;
 
-    private boolean afterCommentFlag = false;
+    boolean afterCommentFlag = false;
 
-    private AlertDialog deleteDialog;
+    AlertDialog deleteDialog;
 
     EasyTracker easyTracker = null;
+
+    static boolean isVotedUp, isVotedDown;
 
     @SuppressLint("NewApi")
     @Override
@@ -84,15 +76,13 @@ public class DetailsActivity extends Activity implements OnClickListener {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.details_layout);
-        // getActionBar().hide();
+        context = this;
 
         easyTracker = EasyTracker.getInstance(this);
-
         comp = (Complaint) getIntent().getSerializableExtra("class");
 
-        // viewPagerLayout = (LinearLayout) findViewById(R.id.viewPagerLayout);
         ivProblemImage = (ImageView) findViewById(R.id.ivProblemImage);
-        ivAvatarImage = (ImageView) findViewById(R.id.ivAvatar);
+        ivAvatarImage = (CircularImageView) findViewById(R.id.ivAvatar);
         ivProblemImage.setOnClickListener(this);
 
         tvComplaintAdress = (TextView) findViewById(R.id.tvComplaintAdress);
@@ -102,20 +92,48 @@ public class DetailsActivity extends Activity implements OnClickListener {
         tvReporter = (TextView) findViewById(R.id.tvReporter);
         tvReporterDate = (TextView) findViewById(R.id.tvReporterDate);
 
-        bUpVote = (Button) findViewById(R.id.bUpVote);
-        bDownVote = (Button) findViewById(R.id.bDownVote);
+        ivVoteUp = (ImageView) findViewById(R.id.ivUp);
+        ivVoteUp.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeUpVoteImage();
+            }
+        });
+        ivVoteDown = (ImageView) findViewById(R.id.ivDown);
+        ivVoteDown.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                changeDownVoteImage();
+            }
+        });
 
-        if (comp.alreadyVoted(me)) {
-            bUpVote.setVisibility(Button.GONE);
-            bDownVote.setVisibility(Button.GONE);
-            tvYouAreAlreadyVoted = (TextView) findViewById(R.id.tvYouAreAlreadyVoted);
-            tvYouAreAlreadyVoted.setVisibility(TextView.VISIBLE);
-            tvYouAreAlreadyVoted.setText(getResources().getString(
-                    R.string.da_already_voted));
+        ivComments = (ImageView) findViewById(R.id.ivComment);
+
+        tvUpVoteCount = (TextView) findViewById(R.id.tvUpVoteCount);
+        tvUpVoteCount.setText(String.valueOf(comp.getUpVote()));
+
+        tvDownVoteCount = (TextView) findViewById(R.id.tvDownVoteCount);
+        tvDownVoteCount.setText(String.valueOf(comp.getDownVote()));
+
+        tvCommentsCount = (TextView) findViewById(R.id.tvComment);
+        tvCommentsCount.setText(String.valueOf(comp.getCommentsCount()));
+
+
+        if (comp.alreadyUpVoted(me)) {
+            ivVoteUp.setImageResource(R.drawable.upvote_green);
+            isVotedUp = true;
         } else {
-            bUpVote.setOnClickListener(this);
-            bDownVote.setOnClickListener(this);
+            ivVoteUp.setImageResource(R.drawable.upvote);
+            isVotedUp = false;
         }
+        if (comp.alreadyDownVoted(me)) {
+            ivVoteDown.setImageResource(R.drawable.downvote_red);
+            isVotedDown = true;
+        } else {
+            ivVoteDown.setImageResource(R.drawable.downvote);
+            isVotedDown = false;
+        }
+
         bMoreComment = (Button) findViewById(R.id.bMoreComment);
         bMoreComment.setOnClickListener(this);
 
@@ -141,8 +159,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
         tvReporter.setText(comp.getReporter().getName());
         tvReporterDate.setText(comp.getDateAsString(this));
 
-        Cache.getInstance().getImage(comp.getReporter().getAvatar(),
-                ivAvatarImage);
+        Cache.getInstance().getImage(comp.getReporter().getAvatar(), ivAvatarImage);
         comp.getImage(0, Image.SIZE_512, ivProblemImage);
 
         Log.d(TAG, "Avatar: " + comp.getReporter().getAvatar());
@@ -151,7 +168,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
         display.getSize(size);
         int tmpWidth = size.x;
 
-        LinearLayout.LayoutParams llParams = new LinearLayout.LayoutParams(
+        RelativeLayout.LayoutParams llParams = new RelativeLayout.LayoutParams(
                 tmpWidth, tmpWidth);
         findViewById(R.id.complaintItemInfoLayout).setLayoutParams(llParams);
         ivProblemImage.setLayoutParams(llParams);
@@ -183,11 +200,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
     @Override
     public void onClick(View v) {
 
-        if (v.getId() == R.id.bUpVote) {
-            createAlert(0);
-        } else if (v.getId() == R.id.bDownVote) {
-            createAlert(1);
-        } else if (v.getId() == R.id.bMoreComment) { // bMoreComment
+        if (v.getId() == R.id.bMoreComment) { // bMoreComment
             toMoreCommentActivity = true;
 
             if (comp.getCommentsCount() != 0) {
@@ -207,7 +220,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog,
-                                    int whichButton) {
+                                                int whichButton) {
 
                                 EditText et = (EditText) deneme
                                         .findViewById(R.id.etNewCommenFromDialog);
@@ -218,23 +231,26 @@ public class DetailsActivity extends Activity implements OnClickListener {
                                             getResources()
                                                     .getString(
                                                             R.string.dialog_empty_comment),
-                                            Toast.LENGTH_SHORT).show();
+                                            Toast.LENGTH_SHORT
+                                    ).show();
                                 else
                                     new CommentSaveTask().execute(et.getText()
                                             .toString());
 
                             }
-                        });
+                        }
+                );
 
                 alert.setNegativeButton(
                         getResources().getString(R.string.dialog_cancel),
                         new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog,
-                                    int whichButton) {
+                                                int whichButton) {
                                 dialog.cancel();
                             }
-                        });
+                        }
+                );
                 alert.show();
             }
         } else if (v.getId() == R.id.ivProblemImage) {
@@ -248,7 +264,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
     }
 
-    private void createAlert(int i) {
+    void createAlert(int i) {
 
         AlertDialog.Builder alt_bld = new AlertDialog.Builder(this);
         alt_bld.setTitle("Dikkat");
@@ -260,7 +276,8 @@ public class DetailsActivity extends Activity implements OnClickListener {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
                     }
-                });
+                }
+        );
 
         if (i == 0) { // up vote
             alt_bld.setMessage(R.string.da_upvote_msg);
@@ -270,7 +287,8 @@ public class DetailsActivity extends Activity implements OnClickListener {
                         public void onClick(DialogInterface dialog, int id) {
                             new VoteTask("upvote").execute();
                         }
-                    });
+                    }
+            );
         } else {
             alt_bld.setMessage(R.string.da_downvote_msg);
             alt_bld.setPositiveButton(R.string.da_dialog_pos,
@@ -279,7 +297,8 @@ public class DetailsActivity extends Activity implements OnClickListener {
                         public void onClick(DialogInterface dialog, int id) {
                             new VoteTask("downvote").execute();
                         }
-                    });
+                    }
+            );
         }
 
         AlertDialog alt_dlg = alt_bld.create();
@@ -289,7 +308,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
     class VoteTask extends BetterAsyncTask<Void, Void> {
 
-        private String type = "";
+        String type = "";
 
         public VoteTask(String type) {
             this.type = type;
@@ -311,44 +330,22 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
         @Override
         protected void onSuccess(Void result) {
-            Toast.makeText(getApplicationContext(),
-                    getResources().getString(R.string.da_voting_accepted),
-                    Toast.LENGTH_SHORT).show();
-
-            bUpVote.setVisibility(Button.GONE);
-            bDownVote.setVisibility(Button.GONE);
-
-            tvYouAreAlreadyVoted = (TextView) findViewById(R.id.tvYouAreAlreadyVoted);
-            tvYouAreAlreadyVoted.setVisibility(TextView.VISIBLE);
-            tvYouAreAlreadyVoted.setText(getResources().getString(
-                    R.string.da_already_voted));
+            Toast.makeText(context, getString(R.string.da_voting_accepted), Toast.LENGTH_SHORT).show();
         }
 
         @Override
         protected void onFailure(Exception error) {
             if (error instanceof IOException) {
-                Toast.makeText(getApplicationContext(),
-                        getResources().getString(R.string.network_failed_msg),
-                        Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, getString(R.string.network_failed_msg), Toast.LENGTH_SHORT).show();
             } else if (error instanceof VoteRejectedException) {
-                Utils.createAlert(DetailsActivity.this, "Hata",
-                        getString(R.string.da_voting_rejected), true, "",
-                        "Tamam");
+                Toast.makeText(context, getString(R.string.da_voting_rejected), Toast.LENGTH_LONG).show();
 
-                // Vote kabul edilmediyse hata goster
-                bUpVote.setVisibility(Button.GONE);
-                bDownVote.setVisibility(Button.GONE);
-
-                tvYouAreAlreadyVoted = (TextView) findViewById(R.id.tvYouAreAlreadyVoted);
-                tvYouAreAlreadyVoted.setVisibility(TextView.VISIBLE);
-                tvYouAreAlreadyVoted.setText(getResources().getString(
-                        R.string.da_voting_rejected));
             }
         }
 
     }
 
-    private class CommentGetTask extends BetterAsyncTask<Void, List<Comment>> {
+    class CommentGetTask extends BetterAsyncTask<Void, List<Comment>> {
 
         @Override
         protected List<Comment> task(Void... arg0) throws Exception {
@@ -416,19 +413,20 @@ public class DetailsActivity extends Activity implements OnClickListener {
         }
     }
 
-    private class CommentSaveTask extends BetterAsyncTask<String, Void> {
+    class CommentSaveTask extends BetterAsyncTask<String, Void> {
 
-        private ProgressDialog pd = null;
+        ProgressDialog pd = null;
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
             pd = ProgressDialog.show(DetailsActivity.this, getResources()
-                    .getString(R.string.dialog_comment_please_wait),
+                            .getString(R.string.dialog_comment_please_wait),
                     getResources()
                             .getString(R.string.dialog_comment_is_sending),
-                    true, false);
+                    true, false
+            );
         }
 
         @Override
@@ -473,7 +471,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
         }
     }
 
-    private class ComplaintDeleteTask extends BetterAsyncTask<Void, Void> {
+    class ComplaintDeleteTask extends BetterAsyncTask<Void, Void> {
 
         @Override
         protected Void task(Void... arg0) throws Exception {
@@ -513,7 +511,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
         return true;
     }
 
-    private void deleteDialog() {
+    void deleteDialog() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.da_delete_title);
@@ -525,14 +523,16 @@ public class DetailsActivity extends Activity implements OnClickListener {
                     public void onClick(DialogInterface dialog, int id) {
                         new ComplaintDeleteTask().execute();
                     }
-                });
+                }
+        );
         builder.setNegativeButton(R.string.ma_quit_cancel,
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();
                     }
-                });
+                }
+        );
 
         deleteDialog = builder.create();
         deleteDialog.show();
@@ -543,58 +543,98 @@ public class DetailsActivity extends Activity implements OnClickListener {
         String url = "";
 
         switch (item.getItemId()) {
-        case R.id.da_action_delete:
-            deleteDialog();
-            return true;
+            case R.id.da_action_delete:
+                deleteDialog();
+                return true;
 
-        case R.id.shareOnFacebook:
+            case R.id.shareOnFacebook:
 
-            url = comp.getSlug_URL();
+                url = comp.getSlug_URL();
 
-            Intent facebookIntent = new Intent(Intent.ACTION_SEND);
-            facebookIntent.setType("text/plain");
-            facebookIntent.putExtra(Intent.EXTRA_TEXT, url);
+                Intent facebookIntent = new Intent(Intent.ACTION_SEND);
+                facebookIntent.setType("text/plain");
+                facebookIntent.putExtra(Intent.EXTRA_TEXT, url);
 
-            // See if official Facebook app is found
-            boolean facebookAppFound = false;
-            List<ResolveInfo> matches = getPackageManager()
-                    .queryIntentActivities(facebookIntent, 0);
-            for (ResolveInfo info : matches) {
-                if (info.activityInfo.packageName.toLowerCase().startsWith(
-                        "com.facebook")) {
-                    facebookIntent.setPackage(info.activityInfo.packageName);
-                    facebookAppFound = true;
-                    break;
+                // See if official Facebook app is found
+                boolean facebookAppFound = false;
+                List<ResolveInfo> matches = getPackageManager()
+                        .queryIntentActivities(facebookIntent, 0);
+                for (ResolveInfo info : matches) {
+                    if (info.activityInfo.packageName.toLowerCase().startsWith(
+                            "com.facebook")) {
+                        facebookIntent.setPackage(info.activityInfo.packageName);
+                        facebookAppFound = true;
+                        break;
+                    }
                 }
-            }
 
-            // As fallback, launch sharer.php in a browser
-            if (!facebookAppFound) {
-                String sharerUrl = "https://www.facebook.com/sharer/sharer.php?u="
-                        + url;
-                facebookIntent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(sharerUrl));
-            }
+                // As fallback, launch sharer.php in a browser
+                if (!facebookAppFound) {
+                    String sharerUrl = "https://www.facebook.com/sharer/sharer.php?u="
+                            + url;
+                    facebookIntent = new Intent(Intent.ACTION_VIEW,
+                            Uri.parse(sharerUrl));
+                }
 
-            startActivity(facebookIntent);
-            return true;
-        case R.id.shareOnTwitter:
-            url = "https://twitter.com/intent/tweet?url=" + comp.getSlug_URL()
-                    + "&text=" + comp.getTitle() + "&via=enforceapp";
+                startActivity(facebookIntent);
+                return true;
+            case R.id.shareOnTwitter:
+                url = "https://twitter.com/intent/tweet?url=" + comp.getSlug_URL()
+                        + "&text=" + comp.getTitle() + "&via=enforceapp";
 
-            Intent twitterIntent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse(url));
-            startActivity(twitterIntent);
-            return true;
-        case R.id.shareOnGooglePlus:
-            url = "https://plus.google.com/share?url=" + comp.getSlug_URL();
+                Intent twitterIntent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(url));
+                startActivity(twitterIntent);
+                return true;
+            case R.id.shareOnGooglePlus:
+                url = "https://plus.google.com/share?url=" + comp.getSlug_URL();
 
-            Intent googlePlusIntent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse(url));
-            startActivity(googlePlusIntent);
-            return true;
+                Intent googlePlusIntent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(url));
+                startActivity(googlePlusIntent);
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    void changeUpVoteImage() {
+
+        if (isVotedDown) {
+            Toast.makeText(context, getString(R.string.da_already_voted), Toast.LENGTH_LONG).show();
+        } else {
+
+            if (isVotedUp) {
+                isVotedUp = false;
+                ivVoteUp.setImageResource(R.drawable.upvote);
+                tvUpVoteCount.setText(String.valueOf(Integer.parseInt(tvUpVoteCount.getText().toString()) - 1));
+            } else {
+                isVotedUp = true;
+                ivVoteUp.setImageResource(R.drawable.upvote_green);
+                tvUpVoteCount.setText(String.valueOf(Integer.parseInt(tvUpVoteCount.getText().toString()) + 1));
+            }
+
+            new VoteTask("upvote").execute();
+        }
+    }
+
+    void changeDownVoteImage() {
+
+        if (isVotedUp) {
+            Toast.makeText(context, getString(R.string.da_already_voted), Toast.LENGTH_LONG).show();
+        } else {
+
+            if (isVotedDown) {
+                isVotedDown = false;
+                ivVoteDown.setImageResource(R.drawable.downvote);
+                tvDownVoteCount.setText(String.valueOf(Integer.parseInt(tvDownVoteCount.getText().toString()) - 1));
+            } else {
+                isVotedDown = true;
+                ivVoteDown.setImageResource(R.drawable.downvote_red);
+                tvDownVoteCount.setText(String.valueOf(Integer.parseInt(tvDownVoteCount.getText().toString()) + 1));
+            }
+
+            new VoteTask("downvote").execute();
+        }
     }
 }
