@@ -153,8 +153,10 @@ public class DetailsActivity extends Activity implements OnClickListener {
         Utils.centerAndZomm(myMap, compPos, 15);
         tvComplaintAdress.setText(comp.getAddress());
         tvComplaintTitle.setText(comp.getTitle());
-        tvComplaintCategory.setText(getString(CategoryI18n.getID(comp
-                .getCategory())));
+        tvComplaintCategory.setText(comp
+                .getDateAsString(this.context) + " / " + comp.getDistance(this.context,
+                EnforceService.getLocation().getLatitude(), EnforceService
+                        .getLocation().getLongitude()));
 
         tvReporter.setText(comp.getReporter().getName());
         tvReporterDate.setText(comp.getDateAsString(this));
@@ -162,7 +164,6 @@ public class DetailsActivity extends Activity implements OnClickListener {
         Cache.getInstance().getImage(comp.getReporter().getAvatar(), ivAvatarImage);
         comp.getImage(0, Image.SIZE_512, ivProblemImage);
 
-        Log.d(TAG, "Avatar: " + comp.getReporter().getAvatar());
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
