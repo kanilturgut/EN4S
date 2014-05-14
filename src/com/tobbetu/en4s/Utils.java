@@ -228,42 +228,6 @@ public class Utils {
         return activeNetworkInfo != null;
     }
 
-    public static void turnGPSOn(Context c) {
-        Intent intent = new Intent("android.location.GPS_ENABLED_CHANGE");
-        intent.putExtra("enabled", true);
-        c.sendBroadcast(intent);
-
-        String provider = Settings.Secure.getString(c.getContentResolver(),
-                Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
-        if (!provider.contains("gps")) { // if gps is disabled
-            final Intent poke = new Intent();
-            poke.setClassName("com.android.settings",
-                    "com.android.settings.widget.SettingsAppWidgetProvider");
-            poke.addCategory(Intent.CATEGORY_ALTERNATIVE);
-            poke.setData(Uri.parse("3"));
-            c.sendBroadcast(poke);
-
-        }
-    }
-
-    // automatic turn off the gps
-    public static void turnGPSOff(Context c) {
-        Intent intent = new Intent("android.location.GPS_ENABLED_CHANGE");
-        intent.putExtra("enabled", false);
-        c.sendBroadcast(intent);
-
-        String provider = Settings.Secure.getString(c.getContentResolver(),
-                Settings.Secure.LOCATION_PROVIDERS_ALLOWED);
-        if (provider.contains("gps")) { // if gps is enabled
-            final Intent poke = new Intent();
-            poke.setClassName("com.android.settings",
-                    "com.android.settings.widget.SettingsAppWidgetProvider");
-            poke.addCategory(Intent.CATEGORY_ALTERNATIVE);
-            poke.setData(Uri.parse("3"));
-            c.sendBroadcast(poke);
-        }
-    }
-
     /**
      * Slugifies the input string
      * 

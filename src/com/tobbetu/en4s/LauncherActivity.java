@@ -199,7 +199,7 @@ public class LauncherActivity extends Activity implements OnClickListener {
                     public void onClick(DialogInterface dialog, int id) {
 
                         try {
-                            Utils.turnGPSOff(LauncherActivity.this);
+                            //Utils.turnGPSOff(LauncherActivity.this);
                             stopService(new Intent(LauncherActivity.this,
                                     EnforceService.class));
                             System.exit(0);
