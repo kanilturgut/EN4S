@@ -41,7 +41,7 @@ public abstract class Login {
             JSONObject clientInfo = new JSONObject();
             clientInfo.put("os", "android");
             clientInfo.put("type", "enforce");
-            clientInfo.put("version", "v1.12");
+            clientInfo.put("version", "v1.14");
             login.put("client_info", clientInfo);
         } catch (JSONException e) {
             Log.e(getClass().getName(), "JSONException", e);

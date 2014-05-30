@@ -150,29 +150,26 @@
                                       android:layout_height="wrap_content"
                                       android:id="@+id/detailsSocialNetworks"
                                       android:orientation="horizontal"
+                                      android:background="@drawable/rounded_green"
                                       android:paddingLeft="5dp"
                                       android:paddingRight="5dp"
+                                      android:layout_marginRight="5dp"
                                       android:layout_alignParentRight="true"
                                       android:layout_centerVertical="true">
-                            <ImageView
-                                    android:id="@+id/ivDetailsFacebook"
-                                    android:layout_width="35dp"
-                                    android:layout_height="35dp"
-                                    android:contentDescription="@string/bug_list_comment_image"
-                                    android:src="@drawable/facebook_action_bar"/>
+
+                            <TextView android:layout_width="wrap_content"
+                                      android:layout_height="wrap_content"
+                                      android:textColor="@color/white"
+                                      android:layout_gravity="center_vertical"
+                                      android:layout_marginRight="5dp"
+                                      android:text="@string/share"/>
 
                             <ImageView
-                                    android:id="@+id/ivDetailsTwitter"
                                     android:layout_width="35dp"
                                     android:layout_height="35dp"
                                     android:contentDescription="@string/bug_list_comment_image"
-                                    android:src="@drawable/twitter_action_bar"/>
-                            <ImageView
-                                    android:id="@+id/ivDetailsGooglePlus"
-                                    android:layout_width="35dp"
-                                    android:layout_height="35dp"
-                                    android:contentDescription="@string/bug_list_comment_image"
-                                    android:src="@drawable/googleplus_action_bar"/>
+                                    android:src="@android:drawable/ic_menu_share"/>
+
                         </LinearLayout>
                     </RelativeLayout>
                 </RelativeLayout>
@@ -264,8 +261,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
                 android:visibility="gone"
-                android:background="#FFFFFF"
+                android:background="@drawable/bottom_corner_rounded"
                 android:orientation="vertical">
 
             <LinearLayout
@@ -382,7 +380,10 @@
             <Button
                     android:id="@+id/bMoreComment"
                     android:layout_width="fill_parent"
-                    android:layout_height="40dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginBottom="5dp"
                     android:background="@drawable/all_comments_button_style"
                     android:text="@string/detail_item_all_commments_button"
                     android:textColor="#444444"

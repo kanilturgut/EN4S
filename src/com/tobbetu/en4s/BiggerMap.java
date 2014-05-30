@@ -14,6 +14,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.tobbetu.en4s.complaint.NewComplaint;
@@ -23,8 +25,6 @@ public class BiggerMap extends Activity {
 
     private GoogleMap myBigMap = null;
     private LatLng markerPosition = null;
-
-    private Button sendButton = null;
 
     private String complaintTitle;
     private int complaintCategory;
@@ -85,7 +85,7 @@ public class BiggerMap extends Activity {
             }
         });
 
-        sendButton = (Button) findViewById(R.id.bBiggerMapSend);
+        Button sendButton = (Button) findViewById(R.id.bBiggerMapSend);
         sendButton.setOnClickListener(new OnClickListener() {
 
             @Override

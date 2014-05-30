@@ -40,4 +40,7 @@
     <color name="take_picture_button_stroke">#5ab8ee</color>
     <color name="take_picture_button_pressed">#9fd6f5</color>
     <color name="take_picture_button_pressed_stroke">#9fd6f5</color>
+
+    <color name="white">#FFF</color>
+    <color name="black">#000</color>
 </resources>

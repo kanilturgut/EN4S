@@ -1,7 +1,20 @@
-<ListView xmlns:android="http://schemas.android.com/apk/res/android"
-          android:id="@+id/lvBugs"
-          android:layout_width="fill_parent"
-          android:layout_height="fill_parent"
-          android:divider="@android:color/transparent">
+<FrameLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
 
-</ListView>
+    <ListView android:id="@+id/lvBugs"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:divider="@android:color/transparent"/>
+
+
+    <ImageView
+            android:layout_width="80dp" android:layout_height="80dp"
+            android:id="@+id/ivNewComplaintOnMainFrame"
+            android:src="@drawable/new_complaint_button"
+            android:scaleType="fitXY"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="20dp"/>
+
+</FrameLayout>

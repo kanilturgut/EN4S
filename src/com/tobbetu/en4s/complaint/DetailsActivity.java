@@ -7,9 +7,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ResolveInfo;
 import android.graphics.Point;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.*;
@@ -32,7 +30,6 @@ import com.tobbetu.en4s.comment.Comment;
 import com.tobbetu.en4s.comment.CommentRejectedException;
 import com.tobbetu.en4s.comment.MoreCommentsActivity;
 import com.tobbetu.en4s.helpers.BetterAsyncTask;
-import com.tobbetu.en4s.helpers.CategoryI18n;
 import com.tobbetu.en4s.helpers.VoteRejectedException;
 import com.tobbetu.en4s.login.Login;
 import com.tobbetu.en4s.service.EnforceService;
@@ -47,8 +44,9 @@ public class DetailsActivity extends Activity implements OnClickListener {
     final String TAG = "DetailsActivity";
     Context context;
 
-    TextView tvComplaintAdress, tvComplaintTitle, tvComplaintCategory, tvReporter, tvReporterDate, tvUpVoteCount, tvDownVoteCount, tvCommentsCount;
+    TextView tvComplaintAdress, tvComplaintTitle, tvComplaintCategory, tvReporter, tvReporterDate, tvUpVoteCount, tvDownVoteCount, tvCommentsCount, tvCommentsCountOnCommentButton;
     ImageView ivVoteUp, ivVoteDown, ivComments, ivProblemImage;
+    LinearLayout detailsSocialNetworks;
     Button bMoreComment;
 
     GoogleMap myMap;
@@ -77,6 +75,8 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
         setContentView(R.layout.details_layout);
         context = this;
+
+        getActionBar().setHomeButtonEnabled(true);
 
         easyTracker = EasyTracker.getInstance(this);
         comp = (Complaint) getIntent().getSerializableExtra("class");
@@ -109,13 +109,19 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
         ivComments = (ImageView) findViewById(R.id.ivComment);
 
+        detailsSocialNetworks = (LinearLayout) findViewById(R.id.detailsSocialNetworks);
+        detailsSocialNetworks.setOnClickListener(this);
+
         tvUpVoteCount = (TextView) findViewById(R.id.tvUpVoteCount);
         tvUpVoteCount.setText(String.valueOf(comp.getUpVote()));
 
         tvDownVoteCount = (TextView) findViewById(R.id.tvDownVoteCount);
         tvDownVoteCount.setText(String.valueOf(comp.getDownVote()));
 
-        tvCommentsCount = (TextView) findViewById(R.id.tvComment);
+        tvCommentsCountOnCommentButton = (TextView) findViewById(R.id.tvComment);
+        tvCommentsCountOnCommentButton.setText(String.valueOf(comp.getCommentsCount()));
+
+        tvCommentsCount = (TextView) findViewById(R.id.tvCommentCount);
         tvCommentsCount.setText(String.valueOf(comp.getCommentsCount()));
 
 
@@ -261,6 +267,12 @@ public class DetailsActivity extends Activity implements OnClickListener {
             Intent i = new Intent(this, BiggerImage.class);
             i.putExtra("class", comp);
             startActivity(i);
+        } else if (v == detailsSocialNetworks) {
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra(Intent.EXTRA_SUBJECT, comp.getTitle());
+            shareIntent.putExtra(Intent.EXTRA_TEXT, comp.getTitle() + " @enforceapp " + comp.getSlug_URL());
+            context.startActivity(Intent.createChooser(shareIntent, context.getString(R.string.share)));
         }
 
     }
@@ -541,58 +553,14 @@ public class DetailsActivity extends Activity implements OnClickListener {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        String url = "";
 
         switch (item.getItemId()) {
+            case android.R.id.home:
+                // app icon in action bar clicked; goto parent activity.
+                onBackPressed();
+                return true;
             case R.id.da_action_delete:
                 deleteDialog();
-                return true;
-
-            case R.id.shareOnFacebook:
-
-                url = comp.getSlug_URL();
-
-                Intent facebookIntent = new Intent(Intent.ACTION_SEND);
-                facebookIntent.setType("text/plain");
-                facebookIntent.putExtra(Intent.EXTRA_TEXT, url);
-
-                // See if official Facebook app is found
-                boolean facebookAppFound = false;
-                List<ResolveInfo> matches = getPackageManager()
-                        .queryIntentActivities(facebookIntent, 0);
-                for (ResolveInfo info : matches) {
-                    if (info.activityInfo.packageName.toLowerCase().startsWith(
-                            "com.facebook")) {
-                        facebookIntent.setPackage(info.activityInfo.packageName);
-                        facebookAppFound = true;
-                        break;
-                    }
-                }
-
-                // As fallback, launch sharer.php in a browser
-                if (!facebookAppFound) {
-                    String sharerUrl = "https://www.facebook.com/sharer/sharer.php?u="
-                            + url;
-                    facebookIntent = new Intent(Intent.ACTION_VIEW,
-                            Uri.parse(sharerUrl));
-                }
-
-                startActivity(facebookIntent);
-                return true;
-            case R.id.shareOnTwitter:
-                url = "https://twitter.com/intent/tweet?url=" + comp.getSlug_URL()
-                        + "&text=" + comp.getTitle() + "&via=enforceapp";
-
-                Intent twitterIntent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(url));
-                startActivity(twitterIntent);
-                return true;
-            case R.id.shareOnGooglePlus:
-                url = "https://plus.google.com/share?url=" + comp.getSlug_URL();
-
-                Intent googlePlusIntent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(url));
-                startActivity(googlePlusIntent);
                 return true;
         }
 

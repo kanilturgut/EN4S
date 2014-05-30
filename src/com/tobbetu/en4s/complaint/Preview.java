@@ -76,6 +76,7 @@ public class Preview extends SurfaceView implements SurfaceHolder.Callback {
         camera.setDisplayOrientation(90);
         Camera.Parameters parameters = camera.getParameters();
         parameters.setPictureSize(pictureWidth, pictureHeight);
+        parameters.setFocusMode("continuous-picture");
         camera.setParameters(parameters);
         camera.startPreview();
 

@@ -19,6 +19,7 @@ package com.tobbetu.en4s.navigationDrawer;
 import java.io.IOException;
 import java.util.List;
 
+import android.widget.*;
 import org.json.JSONException;
 
 import android.annotation.SuppressLint;
@@ -37,12 +38,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bugsense.trace.BugSenseHandler;
 import com.google.analytics.tracking.android.EasyTracker;
@@ -72,8 +68,8 @@ public class ListActivity extends Activity {
     private String[] TITLES = null;
     private String[] MENU_ITEMS = null;
     private int myPosition;
-    protected boolean switchedFromGPSActivity = false;
     private RelativeLayout relativeDrawerLayout = null;
+    ImageView ivNewComplaintOnMainFrame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -307,6 +303,15 @@ public class ListActivity extends Activity {
             bugList = (ListView) rootView.findViewById(R.id.lvBugs);
             ComplaintListTask task = new ComplaintListTask();
             task.execute();
+
+            ivNewComplaintOnMainFrame = (ImageView) rootView.findViewById(R.id.ivNewComplaintOnMainFrame);
+            ivNewComplaintOnMainFrame.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(ListActivity.this, TakePhotoActivity.class);
+                    startActivity(i);
+                }
+            });
 
             initListener();
 
