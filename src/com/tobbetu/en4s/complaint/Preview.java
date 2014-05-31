@@ -1,6 +1,7 @@
 package com.tobbetu.en4s.complaint;
 
 import java.io.IOException;
+import java.util.List;
 
 import android.content.Context;
 import android.hardware.Camera;
@@ -77,6 +78,14 @@ public class Preview extends SurfaceView implements SurfaceHolder.Callback {
         Camera.Parameters parameters = camera.getParameters();
         parameters.setPictureSize(pictureWidth, pictureHeight);
         parameters.setFocusMode("continuous-picture");
+
+        //Check Whether device supports AutoFlash, If you YES then set AutoFlash
+        List<String> flashModes = parameters.getSupportedFlashModes();
+        if (flashModes.contains(android.hardware.Camera.Parameters.FLASH_MODE_AUTO))
+        {
+            parameters.setFlashMode(Camera.Parameters.FLASH_MODE_AUTO);
+        }
+
         camera.setParameters(parameters);
         camera.startPreview();
 

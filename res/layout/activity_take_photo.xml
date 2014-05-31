@@ -1,127 +1,110 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/camera_all_background"
-    tools:context=".CameraActivity" >
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/camera_all_background"
+                tools:context=".CameraActivity">
 
     <LinearLayout
-        android:id="@+id/cameraOptionsLayout"
-        android:layout_width="fill_parent"
-        android:layout_height="80dp"
-        android:background="@drawable/camera_upper_panel_background"
-        android:orientation="vertical" >
+            android:id="@+id/cameraOptionsLayout"
+            android:layout_width="fill_parent"
+            android:layout_height="80dp"
+            android:background="@drawable/camera_upper_panel_background"
+            android:orientation="vertical">
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" >
+                android:id="@+id/rlCameraOptionsLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
-            <Button
-                android:id="@+id/cancelButton"
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/report_button_style"
-                android:paddingBottom="10dp"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp"
-                android:paddingTop="10dp"
-                android:text="@string/tp_iptal"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp" />
+            <LinearLayout android:layout_width="wrap_content" android:layout_height="match_parent"
+                          android:layout_alignParentLeft="true"
+                          android:orientation="horizontal"
+                          android:layout_marginLeft="10dp"
+                          android:id="@+id/llHeaderBack">
+
+                <ImageView android:layout_width="24dp"
+                           android:layout_height="24dp"
+                           android:layout_gravity="center_vertical"
+                           android:src="@drawable/ic_action_previous_item"/>
+
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                          android:layout_gravity="center_vertical"
+                          android:textSize="18sp"
+                          android:textColor="@color/white"
+                          android:text="@string/tp_geri"/>
+
+            </LinearLayout>
 
             <ImageButton
-                android:id="@+id/flashImage"
-                android:visibility="invisible"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="?android:attr/borderlessButtonStyle"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="10dp"
-                android:src="@drawable/ic_action_flash_off" />
+                    android:id="@+id/flashImage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:src="@drawable/ic_action_flash_off"/>
+
         </RelativeLayout>
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/previewLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:orientation="vertical" >
-    </LinearLayout>
+    <SurfaceView
+            android:id="@+id/surfaceview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+    </SurfaceView>
+
+    <ImageView
+            android:id="@+id/ivTakenPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true">
+    </ImageView>
 
     <RelativeLayout
-        android:id="@+id/cameraButtonLayout"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:background="@drawable/camera_lower_panel_background"
-        android:orientation="vertical" >
+            android:id="@+id/cameraButtonLayout"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:background="@drawable/camera_lower_panel_background"
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/cameraButton"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:background="@drawable/take_picture_button_style"
-            android:paddingBottom="10dp"
-            android:paddingLeft="30dp"
-            android:paddingRight="30dp"
-            android:paddingTop="10dp"
-            android:text="@string/takePictureButton"
-            android:textColor="#FFFFFF"
-            android:textSize="14sp"
-            android:visibility="visible" />
+        <ImageView
+                android:id="@+id/cameraButton"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:scaleType="fitXY"
+                android:layout_centerInParent="true"
+                android:src="@drawable/shutter_button"
+                android:visibility="visible"/>
 
-        <LinearLayout
-            android:id="@+id/afterPhotoTakenLayout"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:orientation="horizontal"
-            android:visibility="visible" >
+        <RelativeLayout
+                android:id="@+id/afterPhotoTakenLayout"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:visibility="visible">
 
-            <Button
-                android:id="@+id/retakeButton"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="5dp"
-                android:layout_weight="1"
-                android:background="@drawable/report_button_style"
-                android:paddingBottom="10dp"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp"
-                android:paddingTop="10dp"
-                android:text="@string/re_takePictureButton"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp" />
+            <ImageView
+                    android:id="@+id/retakeButton"
+                    android:src="@drawable/ic_action_rotate_right"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginLeft="10dp"/>
 
-            <Button
-                android:id="@+id/doneButton"
-                style="?android:attr/buttonBarButtonStyle"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="10dp"
-                android:layout_weight="1"
-                android:background="@drawable/approve_button_style"
-                android:paddingBottom="10dp"
-                android:paddingLeft="30dp"
-                android:paddingRight="30dp"
-                android:paddingTop="10dp"
-                android:text="@string/nc_cat_missing_ok"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp" />
-        </LinearLayout>
+            <ImageView
+                    android:id="@+id/doneButton"
+                    android:layout_gravity="right"
+                    android:src="@drawable/ic_action_accept"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="60dp"
+                    android:layout_height="60dp"
+                    android:layout_marginRight="10dp"/>
+        </RelativeLayout>
     </RelativeLayout>
 
 </RelativeLayout>

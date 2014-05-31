@@ -1,13 +1,17 @@
 package com.tobbetu.en4s.complaint;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
@@ -18,33 +22,26 @@ import android.hardware.Camera.PictureCallback;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Display;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.OrientationEventListener;
-import android.view.View;
+import android.view.*;
 import android.view.View.OnClickListener;
-import android.widget.Button;
-import android.widget.FrameLayout;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.Toast;
+import android.widget.*;
 
+import com.bugsense.trace.BugSenseHandler;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.tobbetu.en4s.LauncherActivity;
 import com.tobbetu.en4s.R;
 import com.tobbetu.en4s.backend.Image;
 import com.tobbetu.en4s.service.EnforceService;
 
-public class TakePhotoActivity extends Activity implements OnClickListener {
+public class TakePhotoActivity extends Activity implements OnClickListener, SurfaceHolder.Callback {
 
-    private FrameLayout previewFrame;
-    private LinearLayout previewLayout;
+    Context context;
     private ImageView takenPhoto;
-    private Button takeButton;
+    private ImageView takeButton;
     private Button cancelButton;
+    ImageButton flashImage;
+    public static boolean isLightOn = false;
 
-    private Preview preview;
 
     private ProgressDialog pg;
     private Bitmap bmp;
@@ -54,34 +51,61 @@ public class TakePhotoActivity extends Activity implements OnClickListener {
     private byte[] bitmapdata;
     private int deviceOrientation, photoOrientation;
     private OrientationEventListener mOrientationListener = null;
+    private Camera camera;
+
+    public static int pictureWidth;
+    public static int pictureHeight;
+    SurfaceHolder mHolder;
+    SurfaceView surfaceView;
+    private Camera.Parameters parameters;
+    LinearLayout llHeaderBack;
+    RelativeLayout rlCameraOptionsLayout;
 
     @SuppressLint("NewApi")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_take_photo);
+        context = this;
         getActionBar().hide();
 
-        takeButton = (Button) findViewById(R.id.cameraButton);
-        takeButton.setOnClickListener(this);
-        cancelButton = (Button) findViewById(R.id.cancelButton);
-        cancelButton.setOnClickListener(this);
+        pictureWidth = LauncherActivity.firstTimeControlPref.getInt(
+                "deviceWidth", 0);
+        pictureHeight = LauncherActivity.firstTimeControlPref.getInt(
+                "deviceHeight", 0);
 
-        try {
-            preview = new Preview(TakePhotoActivity.this);
-        } catch (Exception e) {
-            // preview olusturma islemi sirasinda bir sorun olursa
+        surfaceView = (SurfaceView) findViewById(R.id.surfaceview);
+        mHolder = surfaceView.getHolder();
 
-            Toast.makeText(getApplicationContext(),
-                    R.string.nc_camera_is_not_ready, Toast.LENGTH_LONG).show();
-            finish();
+        if (mHolder != null) {
+            mHolder.addCallback(this);
+            mHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
         }
 
-        if (Preview.pictureWidth == 0 || Preview.pictureHeight == 0) {
+        takenPhoto = (ImageView) findViewById(R.id.ivTakenPhoto);
+
+        takeButton = (ImageView) findViewById(R.id.cameraButton);
+        takeButton.setOnClickListener(this);
+        //cancelButton = (Button) findViewById(R.id.cancelButton);
+        //cancelButton.setOnClickListener(this);
+
+        rlCameraOptionsLayout = (RelativeLayout) findViewById(R.id.rlCameraOptionsLayout);
+        llHeaderBack = (LinearLayout) findViewById(R.id.llHeaderBack);
+        llHeaderBack.setOnClickListener(this);
+
+        flashImage = (ImageButton) findViewById(R.id.flashImage);
+        flashImage.setOnClickListener(this);
+
+        PackageManager packageManager = context.getPackageManager();
+        if (packageManager != null) {
+            if (!packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_FLASH)) {
+                flashImage.setVisibility(View.INVISIBLE);
+            }
+        }
+
+        if (pictureWidth == 0 || pictureHeight == 0) {
             // Create an alert
-            Toast.makeText(getApplicationContext(),
-                    R.string.nc_screen_size_doesnt_match, Toast.LENGTH_LONG)
-                    .show();
+            Toast.makeText(context, R.string.nc_screen_size_doesnt_match, Toast.LENGTH_LONG).show();
             finish();
         }
 
@@ -91,25 +115,14 @@ public class TakePhotoActivity extends Activity implements OnClickListener {
         int width = size.x;
         int height = width; // Kare olacagi icin height = width olmali.
 
-        previewLayout = (LinearLayout) findViewById(R.id.previewLayout);
-        previewFrame = new FrameLayout(getBaseContext());
+        RelativeLayout.LayoutParams layoutParams = new RelativeLayout.LayoutParams(width, height);
+        layoutParams.addRule(RelativeLayout.CENTER_IN_PARENT);
+        surfaceView.setLayoutParams(layoutParams);
 
-        FrameLayout.LayoutParams frameLayoutParams = new FrameLayout.LayoutParams(
-                width - 30, height - 30);
-        previewFrame.setLayoutParams(frameLayoutParams);
+        takenPhoto.setLayoutParams(layoutParams);
 
-        takenPhoto = new ImageView(getBaseContext());
-        takenPhoto.setVisibility(ImageView.GONE);
-
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                width - 30, height - 30, Gravity.CENTER);
-        previewLayout.addView(previewFrame, layoutParams);
-
-        previewFrame.addView(preview);
-        previewFrame.addView(takenPhoto);
-
-        LinearLayout afterPhotoTakenLayout = (LinearLayout) findViewById(R.id.afterPhotoTakenLayout);
-        afterPhotoTakenLayout.setVisibility(LinearLayout.GONE);
+        RelativeLayout afterPhotoTakenLayout = (RelativeLayout) findViewById(R.id.afterPhotoTakenLayout);
+        afterPhotoTakenLayout.setVisibility(View.GONE);
 
         findViewById(R.id.retakeButton).setOnClickListener(this);
         findViewById(R.id.doneButton).setOnClickListener(this);
@@ -145,19 +158,20 @@ public class TakePhotoActivity extends Activity implements OnClickListener {
             pg = ProgressDialog.show(TakePhotoActivity.this, null,
                     getString(R.string.capturing));
             pg.show();
-            preview.camera.takePicture(null, null, jpegCallback);
+            camera.takePicture(null, null, jpegCallback);
 
         } else if (v.getId() == R.id.retakeButton) {
             bmp = null;
             img = null;
 
             takeButton.setVisibility(ImageButton.VISIBLE);
+            rlCameraOptionsLayout.setVisibility(View.VISIBLE);
             findViewById(R.id.retakeButton).setVisibility(ImageButton.GONE);
             findViewById(R.id.doneButton).setVisibility(ImageButton.GONE);
 
             takenPhoto.setVisibility(ImageView.GONE);
-            preview.setVisibility(FrameLayout.VISIBLE);
-            preview.camera.startPreview();
+
+            camera.startPreview();
 
         } else if (v.getId() == R.id.doneButton) {
 
@@ -166,11 +180,29 @@ public class TakePhotoActivity extends Activity implements OnClickListener {
             i.putExtra("user_lat", latitude);
             i.putExtra("user_lng", longitude);
             startActivity(i);
-        } else if (v.getId() == R.id.cancelButton) {
+        } else if (v.getId() == R.id.llHeaderBack) {
             bmp = null;
             img = null;
 
             cancelDialog();
+        } else if (v == flashImage) {
+
+            if (isLightOn) {
+                parameters.setFlashMode(Camera.Parameters.FLASH_MODE_OFF);
+                camera.setParameters(parameters);
+                camera.startPreview();
+                isLightOn = false;
+
+                flashImage.setImageResource(R.drawable.ic_action_flash_off);
+            } else {
+                parameters.setFlashMode(Camera.Parameters.FLASH_MODE_TORCH);
+                camera.setParameters(parameters);
+                camera.startPreview();
+                isLightOn = true;
+
+                flashImage.setImageResource(R.drawable.ic_action_flash_on);
+            }
+
         }
     }
 
@@ -204,8 +236,8 @@ public class TakePhotoActivity extends Activity implements OnClickListener {
                                 + bmp.getHeight() + " ,bitmap.size : "
                                 + (bmp.getByteCount() / 1000000) + " mb");
 
-                bmp = Bitmap.createBitmap(bmp, 0, 100, Preview.pictureHeight,
-                        Preview.pictureHeight);
+                bmp = Bitmap.createBitmap(bmp, 0, 100, pictureHeight,
+                        pictureHeight);
 
                 if (pg != null)
                     pg.dismiss();
@@ -234,18 +266,17 @@ public class TakePhotoActivity extends Activity implements OnClickListener {
                                 + bmp.getByteCount() / 1000000.0 + " mb "
                                 + bitmapdata.length / 1000000.0);
 
-                takenPhoto.setVisibility(ImageView.VISIBLE);
+                takenPhoto.setVisibility(View.VISIBLE);
                 takenPhoto.setImageBitmap(bmp);
-                preview.setVisibility(FrameLayout.GONE);
 
-                LinearLayout afterPhotoTakenLayout = (LinearLayout) findViewById(R.id.afterPhotoTakenLayout);
-                afterPhotoTakenLayout.setVisibility(LinearLayout.VISIBLE);
-                findViewById(R.id.retakeButton).setVisibility(
-                        ImageButton.VISIBLE);
-                findViewById(R.id.doneButton)
-                        .setVisibility(ImageButton.VISIBLE);
 
-                takeButton.setVisibility(ImageButton.GONE);
+                RelativeLayout afterPhotoTakenLayout = (RelativeLayout) findViewById(R.id.afterPhotoTakenLayout);
+                afterPhotoTakenLayout.setVisibility(View.VISIBLE);
+                findViewById(R.id.retakeButton).setVisibility(View.VISIBLE);
+                findViewById(R.id.doneButton).setVisibility(View.VISIBLE);
+
+                takeButton.setVisibility(View.GONE);
+                rlCameraOptionsLayout.setVisibility(View.INVISIBLE);
 
                 // Lokasyonu, kullanici fotografi cektigi anda alalim. Ornegin
                 // seyahat halinde fotograf ceken bir kisi, hizli sekilde title
@@ -298,6 +329,77 @@ public class TakePhotoActivity extends Activity implements OnClickListener {
 
     @Override
     public void onBackPressed() {
-        cancelButton.performClick();
+        llHeaderBack.performClick();
+    }
+
+    @Override
+    public void surfaceCreated(SurfaceHolder surfaceHolder) {
+        if (camera != null)
+            camera.release();
+
+        try {
+            camera = Camera.open();
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            BugSenseHandler.sendExceptionMessage(
+                    "on Preview --> surfaceCreated", "Camera.open() failed", e);
+            // calismayi bitirmeli yoksa uygulama crash eder.
+            return;
+        }
+
+        camera.setDisplayOrientation(90);
+        parameters = camera.getParameters();
+        parameters.setPictureSize(pictureWidth, pictureHeight);
+
+        List<String> focusMode = parameters.getSupportedFocusModes();
+        for (String focus: focusMode) {
+            if (focus.equals(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE))
+                parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);
+            else if (focus.equals(Camera.Parameters.FOCUS_MODE_AUTO))
+                parameters.setFocusMode(Camera.Parameters.FLASH_MODE_AUTO);
+        }
+
+        camera.setParameters(parameters);
+        camera.startPreview();
+
+        try {
+            camera.setPreviewDisplay(mHolder);
+        } catch (IOException e) {
+            e.printStackTrace();
+
+            BugSenseHandler.sendExceptionMessage(
+                    "on Preview --> surfaceCreated",
+                    "camera.setPreviewDisplay", e);
+        }
+
+        Log.i("Preview", "surfaceCreated");
+
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i2, int i3) {
+        try {
+            camera.startPreview();
+        } catch (Exception e) {
+            e.printStackTrace();
+
+            BugSenseHandler.sendExceptionMessage(
+                    "on Preview --> surfaceChanged", "camera.startPreview();",
+                    e);
+        }
+
+        Log.i("Preview", "surfaceChanged");
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+        if (camera != null) {
+            camera.stopPreview();
+            camera.setPreviewCallback(null);
+            camera.release();
+            camera = null;
+        }
+        Log.i("Preview", "surfaceDestroyed");
     }
 }

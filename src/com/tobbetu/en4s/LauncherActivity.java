@@ -343,7 +343,7 @@ public class LauncherActivity extends Activity implements OnClickListener {
         protected void onFailure(Exception error) {
             Log.e("LoginTask", "Failed to login: " + error.getMessage(), error);
             if (error instanceof IOException) {
-                BugSenseHandler.sendException(error);
+                //BugSenseHandler.sendException(error);
                 Toast.makeText(LauncherActivity.this,
                         getResources().getString(R.string.network_failed_msg),
                         Toast.LENGTH_LONG).show();
@@ -357,7 +357,7 @@ public class LauncherActivity extends Activity implements OnClickListener {
                         LauncherActivity.class);
                 startActivity(i);
             } else if (error instanceof JSONException) {
-                BugSenseHandler.sendException(error);
+                //BugSenseHandler.sendException(error);
                 Toast.makeText(LauncherActivity.this,
                         getResources().getString(R.string.api_changed),
                         Toast.LENGTH_LONG).show();

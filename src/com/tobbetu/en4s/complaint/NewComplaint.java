@@ -10,6 +10,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -86,7 +87,7 @@ public class NewComplaint extends Activity implements OnClickListener {
         int height = width; // Kare olacagi icin height = width
 
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                width - 30, height - 30, Gravity.CENTER);
+                width, height, Gravity.CENTER);
         photoButtonLL.addView(ivTakenPhoto, layoutParams);
 
         // klavye kendi kendine acilmayacak...Oh beeee :D

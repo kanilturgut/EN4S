@@ -154,6 +154,7 @@ public class DetailsActivity extends Activity implements OnClickListener {
         myMap = ((MapFragment) getFragmentManager().findFragmentById(
                 R.id.mapDetails)).getMap();
         myMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        myMap.getUiSettings().setAllGesturesEnabled(false);
 
         Utils.addAMarker(myMap, compPos, false);
         Utils.centerAndZomm(myMap, compPos, 15);
