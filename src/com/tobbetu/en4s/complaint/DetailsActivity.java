@@ -19,6 +19,7 @@ import com.google.analytics.tracking.android.MapBuilder;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.tobbetu.en4s.MapActivity;
 import com.tobbetu.en4s.R;
 import com.tobbetu.en4s.Utils;
 import com.tobbetu.en4s.backend.Image;
@@ -155,6 +156,15 @@ public class DetailsActivity extends Activity implements OnClickListener {
                 R.id.mapDetails)).getMap();
         myMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
         myMap.getUiSettings().setAllGesturesEnabled(false);
+        myMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                Intent intent = new Intent(context, MapActivity.class);
+                intent.putExtra("latitude", comp.getLatitude());
+                intent.putExtra("longitude", comp.getLongitude());
+                startActivity(intent);
+            }
+        });
 
         Utils.addAMarker(myMap, compPos, false);
         Utils.centerAndZomm(myMap, compPos, 15);

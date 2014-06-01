@@ -110,6 +110,7 @@
             android:name="com.tobbetu.en4s.announcement.AnnouncementDetailsActivity"
             android:label="@string/title_activity_announcement_details" >
         </activity>
+        <activity android:name=".MapActivity"/>
 
         <service
             android:name="com.tobbetu.en4s.service.EnforceService"
