@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.hardware.Camera;
 import android.hardware.Camera.Size;
 import android.location.Location;
@@ -12,11 +13,15 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.provider.Settings;
 import android.util.Log;
+import android.widget.ImageView;
+import com.androidquery.AQuery;
+import com.androidquery.callback.ImageOptions;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.tobbetu.en4s.backend.Requests;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -248,5 +253,41 @@ public class Utils {
 
             return null;
         }
+    }
+
+    public static void getImage(Context context, String url, ImageView imageView) {
+        String imageUrl = Requests.domain + url;
+
+        AQuery aQuery = new AQuery(context);
+        ImageOptions imageOptions = new ImageOptions();
+        imageOptions.memCache = true;
+        imageOptions.fileCache = true;
+
+        Bitmap bitmap = aQuery.getCachedImage(imageUrl);
+        if (bitmap == null) {
+            aQuery.id(imageView).image(imageUrl);
+            Log.d(TAG, "from Network");
+        } else {
+            imageView.setImageBitmap(bitmap);
+            Log.d(TAG, "from Cache");
+        }
+
+    }
+
+    public static void getImageWithoutDomain(Context context, String url, ImageView imageView) {
+        AQuery aQuery = new AQuery(context);
+        ImageOptions imageOptions = new ImageOptions();
+        imageOptions.memCache = true;
+        imageOptions.fileCache = true;
+
+        Bitmap bitmap = aQuery.getCachedImage(url);
+        if (bitmap == null) {
+            aQuery.id(imageView).image(url);
+            Log.d(TAG, "from Network");
+        } else {
+            imageView.setImageBitmap(bitmap);
+            Log.d(TAG, "from Cache");
+        }
+
     }
 }

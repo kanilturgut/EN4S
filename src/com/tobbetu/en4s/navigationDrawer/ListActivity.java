@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.List;
 
 import android.widget.*;
+import com.tobbetu.en4s.Utils;
 import org.json.JSONException;
 
 import android.annotation.SuppressLint;
@@ -85,7 +86,7 @@ public class ListActivity extends Activity {
         findViewById(R.id.relativeLayoLeftDrawerUseravatar).setOnClickListener(
                 null);
         User me = Login.getMe();
-        Cache.getInstance().getImage(me.getAvatar(), ivLeftDrawerUseravatar);
+        Utils.getImageWithoutDomain(this, me.getAvatar(), ivLeftDrawerUseravatar);
         ((TextView) findViewById(R.id.tvLeftMenuUsername))
                 .setText(me.getName());
         ((TextView) findViewById(R.id.tvLeftMenuUserEmail)).setText(me

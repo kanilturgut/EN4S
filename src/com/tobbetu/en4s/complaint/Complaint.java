@@ -1,39 +1,36 @@
 package com.tobbetu.en4s.complaint;
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.util.Log;
+import android.widget.ImageView;
+import com.androidquery.AQuery;
+import com.androidquery.callback.ImageOptions;
+import com.tobbetu.en4s.R;
+import com.tobbetu.en4s.Utils;
+import com.tobbetu.en4s.backend.Image;
+import com.tobbetu.en4s.backend.Requests;
+import com.tobbetu.en4s.backend.User;
+import com.tobbetu.en4s.comment.Comment;
+import com.tobbetu.en4s.comment.CommentRejectedException;
+import com.tobbetu.en4s.helpers.VoteRejectedException;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.util.Log;
-import android.widget.ImageView;
-
-import com.tobbetu.en4s.R;
-import com.tobbetu.en4s.Utils;
-import com.tobbetu.en4s.backend.Image;
-import com.tobbetu.en4s.backend.Requests;
-import com.tobbetu.en4s.backend.User;
-import com.tobbetu.en4s.cache.Cache;
-import com.tobbetu.en4s.comment.Comment;
-import com.tobbetu.en4s.comment.CommentRejectedException;
-import com.tobbetu.en4s.helpers.VoteRejectedException;
+import java.io.IOException;
+import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @SuppressLint("SimpleDateFormat")
 public class Complaint implements Serializable {
+
+    static final String TAG = "Complaint";
 
     private static final long serialVersionUID = -4700299102770387240L;
 
@@ -252,13 +249,27 @@ public class Complaint implements Serializable {
         }
     }
 
-    public void getImage(int index, String size, ImageView iv) {
+    public void getImage(int index, String size, ImageView iv, Context context) {
         // Instead of throwing exception, set failed image
         if (index >= imageURLs.size()) {
             iv.setImageResource(R.drawable.failed);
         } else {
             String url = imageURLs.get(index);
-            Cache.getInstance().getImage(Image.getImageURL(url, size), iv);
+
+            AQuery aQuery = new AQuery(context);
+
+            ImageOptions imageOptions = new ImageOptions();
+            imageOptions.memCache = true;
+            imageOptions.fileCache = true;
+
+            Bitmap bitmap = aQuery.getCachedImage(Requests.domain + Image.getImageURL(url, size));
+            if (bitmap == null) {
+                aQuery.id(iv).image(Requests.domain + Image.getImageURL(url, size), imageOptions);
+                Log.d(TAG, "from Network");
+            } else {
+                iv.setImageBitmap(bitmap);
+                Log.d(TAG, "from Cache");
+            }
         }
     }
 
@@ -480,7 +491,7 @@ public class Complaint implements Serializable {
     }
 
     public static List<Complaint> getNearList(String sinceId, double lat,
-            double lon) throws IOException, JSONException {
+                                              double lon) throws IOException, JSONException {
         String url = String.format("/complaint/near?latitude=%s&longitude=%s",
                 Double.toString(lat), Double.toString(lon));
         if (sinceId != null) {

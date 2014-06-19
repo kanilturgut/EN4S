@@ -54,9 +54,7 @@ public class AnnouncementListAdapter extends ArrayAdapter<Announcement> {
 
         holder.ivAnnouncementIcon.setImageResource(R.drawable.loading);
 
-        announcements.get(position).getImage(
-                announcements.get(position).getIcon(), Image.SIZE_ORIG,
-                holder.ivAnnouncementIcon);
+        announcements.get(position).getImage(ctx, announcements.get(position).getIcon(), holder.ivAnnouncementIcon);
 
         holder.tvAnnouncementTitle.setText(announcements.get(position)
                 .getTitle());

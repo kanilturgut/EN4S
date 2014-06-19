@@ -14,6 +14,7 @@ import android.view.*;
 import android.view.View.OnClickListener;
 import android.widget.*;
 import com.bugsense.trace.BugSenseHandler;
+import com.facebook.android.Util;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.google.analytics.tracking.android.MapBuilder;
 import com.google.android.gms.maps.GoogleMap;
@@ -178,8 +179,8 @@ public class DetailsActivity extends Activity implements OnClickListener {
         tvReporter.setText(comp.getReporter().getName());
         tvReporterDate.setText(comp.getDateAsString(this));
 
-        Cache.getInstance().getImage(comp.getReporter().getAvatar(), ivAvatarImage);
-        comp.getImage(0, Image.SIZE_512, ivProblemImage);
+        Utils.getImageWithoutDomain(this, comp.getReporter().getAvatar(), ivAvatarImage);
+        comp.getImage(0, Image.SIZE_512, ivProblemImage, context);
 
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
@@ -394,24 +395,19 @@ public class DetailsActivity extends Activity implements OnClickListener {
                 if (result.size() >= 2) {
                     tvComment.setText(result.get(0).getText().toString());
                     tvCommentUser.setText(result.get(0).getAuthor().getName());
-                    Cache.getInstance().getImage(
-                            result.get(0).getAuthor().getAvatar(), ivAvatar);
+                    Utils.getImageWithoutDomain(context, result.get(0).getAuthor().getAvatar(), ivAvatar);
 
                     tvComment2.setText(result.get(1).getText().toString());
                     tvCommentUser2.setText(result.get(1).getAuthor().getName());
-                    Cache.getInstance().getImage(
-                            result.get(1).getAuthor().getAvatar(), ivAvatar2);
+                    Utils.getImageWithoutDomain(context, result.get(1).getAuthor().getAvatar(), ivAvatar2);
                 } else if (result.size() == 1) {
                     tvComment.setText(result.get(0).getText().toString());
                     tvCommentUser.setText(result.get(0).getAuthor().getName());
-                    Cache.getInstance().getImage(
-                            result.get(0).getAuthor().getAvatar(), ivAvatar);
+                    Utils.getImageWithoutDomain(context, result.get(0).getAuthor().getAvatar(), ivAvatar);
 
-                    ((LinearLayout) findViewById(R.id.newComplaintCommentTwo))
-                            .setVisibility(LinearLayout.GONE);
+                    findViewById(R.id.newComplaintCommentTwo).setVisibility(LinearLayout.GONE);
                 } else { // 0
-                    ((LinearLayout) findViewById(R.id.newComplaintCommentInfoLayout))
-                            .setVisibility(LinearLayout.GONE);
+                    findViewById(R.id.newComplaintCommentInfoLayout).setVisibility(LinearLayout.GONE);
 
                     bMoreComment.setText(getResources().getString(
                             R.string.da_add_the_first_comment));

@@ -19,7 +19,7 @@ public class BiggerImage extends Activity {
         Complaint comp = (Complaint) getIntent().getSerializableExtra("class");
 
         TouchImageView image = (TouchImageView) findViewById(R.id.touchImageView);
-        comp.getImage(0, Image.SIZE_512, image);
+        comp.getImage(0, Image.SIZE_512, image, this);
         image.setMaxZoom(5f);
     }
 

@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
+import android.content.Context;
+import com.tobbetu.en4s.Utils;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.json.JSONArray;
@@ -283,9 +285,9 @@ public class Announcement implements Serializable {
         return list;
     }
 
-    public void getImage(String url, String size, ImageView iv) {
+    public void getImage(Context context, String url, ImageView iv) {
         if (!url.equals(null)) {
-            Cache.getInstance().getImage(url, iv);
+            Utils.getImage(context, url, iv);
         }
     }
 }

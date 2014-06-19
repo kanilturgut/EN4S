@@ -1,24 +1,24 @@
 package com.tobbetu.en4s.complaint;
 
-import java.util.List;
-
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Point;
 import android.util.Log;
-import android.view.Display;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.*;
-
+import android.view.*;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import com.androidquery.AQuery;
+import com.bugsense.trace.BugSenseHandler;
 import com.tobbetu.en4s.R;
 import com.tobbetu.en4s.backend.Image;
 import com.tobbetu.en4s.backend.User;
 import com.tobbetu.en4s.helpers.BetterAsyncTask;
 import com.tobbetu.en4s.login.Login;
 import com.tobbetu.en4s.service.EnforceService;
+
+import java.util.List;
 
 public class BugListAdapter extends ArrayAdapter<Complaint> {
 
@@ -29,6 +29,8 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
     private Complaint complaint;
     private final User user = Login.getMe();
 
+    AQuery aQuery = null;
+
     public BugListAdapter(Context context, List<Complaint> complaints, int pos) {
 
         super(context, R.layout.bug_list_item, complaints);
@@ -36,6 +38,8 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
         this.context = context;
         this.complaints = complaints;
         this.tabPosition = pos;
+
+        aQuery = new AQuery(context);
     }
 
     @SuppressLint("DefaultLocale")
@@ -83,7 +87,7 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
         complaint = complaints.get(position);
 
         holder.problemImage.setImageResource(R.drawable.loading);
-        complaint.getImage(0, Image.SIZE_512, holder.problemImage);
+        complaint.getImage(0, Image.SIZE_512, holder.problemImage, context);
 
         WindowManager wm = (WindowManager) context
                 .getSystemService(Context.WINDOW_SERVICE);
@@ -117,11 +121,15 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
 
         holder.tvComplaintCity.setText(complaint.getCity());
 
-        holder.tvAdditionalInfo.setText(complaint
-                .getDateAsString(this.context) + " / " + complaint.getDistance(this.context,
-                EnforceService.getLocation().getLatitude(), EnforceService
-                        .getLocation().getLongitude()));
-
+        try {
+            holder.tvAdditionalInfo.setText(complaint
+                    .getDateAsString(this.context) + " / " + complaint.getDistance(this.context,
+                    EnforceService.getLocation().getLatitude(), EnforceService
+                            .getLocation().getLongitude()));
+        } catch (Exception e) {
+            Log.e(TAG, "ERROR occured for additionalInfo", e);
+            BugSenseHandler.sendException(e);
+        }
         return convertView;
     }
 
@@ -138,18 +146,18 @@ public class BugListAdapter extends ArrayAdapter<Complaint> {
             Log.d(TAG, "Loading more -> " + sinceId);
 
             switch (tabPosition) {
-            case 0: // Hot
-                return Complaint.getHotList(sinceId);
-            case 1: // New
-                return Complaint.getNewList(sinceId);
-            case 2: // Near
-                return Complaint.getNearList(sinceId, EnforceService
-                        .getLocation().getLatitude(), EnforceService
-                        .getLocation().getLongitude());
-            case 3: // Top
-                return Complaint.getTopList(sinceId);
-            default:
-                throw new RuntimeException();
+                case 0: // Hot
+                    return Complaint.getHotList(sinceId);
+                case 1: // New
+                    return Complaint.getNewList(sinceId);
+                case 2: // Near
+                    return Complaint.getNearList(sinceId, EnforceService
+                            .getLocation().getLatitude(), EnforceService
+                            .getLocation().getLongitude());
+                case 3: // Top
+                    return Complaint.getTopList(sinceId);
+                default:
+                    throw new RuntimeException();
             }
         }
 

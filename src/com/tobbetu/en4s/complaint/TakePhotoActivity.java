@@ -219,7 +219,7 @@ public class TakePhotoActivity extends Activity implements OnClickListener, Surf
 
                 bmp = BitmapFactory.decodeByteArray(data, 0, data.length);
 
-                Log.e("Bitmap1",
+                Log.e("Bitmap1, işlem uygulanmadan",
                         "width : " + bmp.getWidth() + ", height : "
                                 + bmp.getHeight() + " ,bitmap.size : "
                                 + (bmp.getByteCount() / 1000000) + " mb");
@@ -231,13 +231,12 @@ public class TakePhotoActivity extends Activity implements OnClickListener, Surf
                             bmp.getHeight(), matrix, true);
                 }
 
-                Log.e("Bitmap2",
+                Log.e("Bitmap2 90 derece döndürüldü",
                         "width : " + bmp.getWidth() + ", height : "
                                 + bmp.getHeight() + " ,bitmap.size : "
                                 + (bmp.getByteCount() / 1000000) + " mb");
 
-                bmp = Bitmap.createBitmap(bmp, 0, 100, pictureHeight,
-                        pictureHeight);
+                bmp = Bitmap.createBitmap(bmp, 0, 100, pictureHeight, pictureHeight);
 
                 if (pg != null)
                     pg.dismiss();

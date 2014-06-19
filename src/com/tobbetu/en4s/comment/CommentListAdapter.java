@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.tobbetu.en4s.R;
+import com.tobbetu.en4s.Utils;
 import com.tobbetu.en4s.cache.Cache;
 
 public class CommentListAdapter extends ArrayAdapter<Comment> {
@@ -49,8 +50,8 @@ public class CommentListAdapter extends ArrayAdapter<Comment> {
         tvComment.setText(aComment.getText().trim());
         tvCommentUser.setText(aComment.getAuthor().getName().trim());
 
-        Cache.getInstance()
-                .getImage(aComment.getAuthor().getAvatar(), ivAvatar);
+
+        Utils.getImageWithoutDomain(context, aComment.getAuthor().getAvatar(), ivAvatar);
 
         return myRowView;
     }
