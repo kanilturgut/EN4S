@@ -16,13 +16,6 @@ package com.tobbetu.en4s.navigationDrawer;
  * limitations under the License.
  */
 
-import java.io.IOException;
-import java.util.List;
-
-import android.widget.*;
-import com.tobbetu.en4s.Utils;
-import org.json.JSONException;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
@@ -33,20 +26,15 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
+import android.view.*;
+import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
-
 import com.bugsense.trace.BugSenseHandler;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.tobbetu.en4s.R;
+import com.tobbetu.en4s.Utils;
 import com.tobbetu.en4s.announcement.AnnouncementsActivity;
 import com.tobbetu.en4s.backend.User;
-import com.tobbetu.en4s.cache.Cache;
 import com.tobbetu.en4s.circularImageView.CircularImageView;
 import com.tobbetu.en4s.complaint.BugListAdapter;
 import com.tobbetu.en4s.complaint.Complaint;
@@ -56,8 +44,12 @@ import com.tobbetu.en4s.helpers.BetterAsyncTask;
 import com.tobbetu.en4s.login.Login;
 import com.tobbetu.en4s.service.EnforceService;
 import com.tobbetu.en4s.settingsList.SettingsListActivity;
+import org.json.JSONException;
 
-@SuppressLint({ "NewApi", "ValidFragment" })
+import java.io.IOException;
+import java.util.List;
+
+@SuppressLint({"NewApi", "ValidFragment"})
 public class ListActivity extends Activity {
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList, mDrawerMenuList;
@@ -118,22 +110,22 @@ public class ListActivity extends Activity {
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the sliding drawer and the action bar app icon
         mDrawerToggle = new ActionBarDrawerToggle(this, /* host Activity */
-        mDrawerLayout, /* DrawerLayout object */
-        R.drawable.ic_drawer, /* nav drawer image to replace 'Up' caret */
-        R.string.drawer_open, /* "open drawer" description for accessibility */
-        R.string.drawer_close /* "close drawer" description for accessibility */
+                mDrawerLayout, /* DrawerLayout object */
+                R.drawable.ic_drawer, /* nav drawer image to replace 'Up' caret */
+                R.string.drawer_open, /* "open drawer" description for accessibility */
+                R.string.drawer_close /* "close drawer" description for accessibility */
         ) {
             @Override
             public void onDrawerClosed(View view) {
                 getActionBar().setSubtitle(mTitle);
                 invalidateOptionsMenu(); // creates call to
-                                         // onPrepareOptionsMenu()
+                // onPrepareOptionsMenu()
             }
 
             @Override
             public void onDrawerOpened(View drawerView) {
                 invalidateOptionsMenu(); // creates call to
-                                         // onPrepareOptionsMenu()
+                // onPrepareOptionsMenu()
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
@@ -181,20 +173,20 @@ public class ListActivity extends Activity {
 
         switch (item.getItemId()) {
 
-        case R.id.action_contact:
+            case R.id.action_contact:
 
-            if (EnforceService.getLocation().getLatitude() == 0
-                    && EnforceService.getLocation().getLongitude() == 0) {
-                Toast.makeText(getApplicationContext(),
-                        getResources().getString(R.string.ma_no_location),
-                        Toast.LENGTH_LONG).show();
-            } else {
+                if (EnforceService.getLocation().getLatitude() == 0
+                        && EnforceService.getLocation().getLongitude() == 0) {
+                    Toast.makeText(getApplicationContext(),
+                            getResources().getString(R.string.ma_no_location),
+                            Toast.LENGTH_LONG).show();
+                } else {
 
-                Intent i = new Intent(ListActivity.this,
-                        TakePhotoActivity.class);
-                startActivity(i);
-            }
-            break;
+                    Intent i = new Intent(ListActivity.this,
+                            TakePhotoActivity.class);
+                    startActivity(i);
+                }
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -206,7 +198,7 @@ public class ListActivity extends Activity {
             ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position,
-                long id) {
+                                long id) {
             selectItem(position);
             myPosition = position;
         }
@@ -219,7 +211,7 @@ public class ListActivity extends Activity {
 
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position,
-                long id) {
+                                long id) {
 
             // start intents for new activities
             if (position == -1) { // normalde bu sifir olacak
@@ -297,7 +289,7 @@ public class ListActivity extends Activity {
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
+                                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_bug_list,
                     container, false);
             int i = getArguments().getInt(ARG_COMPLAINT_NUMBER);
@@ -327,10 +319,10 @@ public class ListActivity extends Activity {
 
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-                    long arg3) {
+                                    long arg3) {
 
                 Complaint temp = (Complaint) bugList.getItemAtPosition(arg2);
-                Intent anIntent = new Intent(ListActivity.this,
+                  Intent anIntent = new Intent(ListActivity.this,
                         DetailsActivity.class);
                 anIntent.putExtra("class", temp);
                 startActivity(anIntent);
@@ -346,18 +338,18 @@ public class ListActivity extends Activity {
         @Override
         protected List<Complaint> task(Void... arg0) throws Exception {
             switch (myPosition) {
-            case 0: // Hot
-                return Complaint.getHotList(null);
-            case 1: // New
-                return Complaint.getNewList(null);
-            case 2: // Near
-                return Complaint.getNearList(null, EnforceService.getLocation()
-                        .getLatitude(), EnforceService.getLocation()
-                        .getLongitude());
-            case 3: // Top
-                return Complaint.getTopList(null);
-            default:
-                throw new RuntimeException();
+                case 0: // Hot
+                    return Complaint.getHotList(null);
+                case 1: // New
+                    return Complaint.getNewList(null);
+                case 2: // Near
+                    return Complaint.getNearList(null, EnforceService.getLocation()
+                            .getLatitude(), EnforceService.getLocation()
+                            .getLongitude());
+                case 3: // Top
+                    return Complaint.getTopList(null);
+                default:
+                    throw new RuntimeException();
             }
         }
 

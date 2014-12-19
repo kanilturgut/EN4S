@@ -1,7 +1,5 @@
 package com.tobbetu.en4s.comment;
 
-import java.util.List;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,10 +7,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.tobbetu.en4s.R;
 import com.tobbetu.en4s.Utils;
-import com.tobbetu.en4s.cache.Cache;
+
+import java.util.List;
 
 public class CommentListAdapter extends ArrayAdapter<Comment> {
 
